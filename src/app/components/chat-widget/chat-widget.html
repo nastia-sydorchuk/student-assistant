@@ -1,0 +1,59 @@
+<div class="position-fixed bottom-0 end-0 m-4 z-3 d-flex flex-column align-items-end">
+        
+  <div class="card shadow mb-3 d-flex flex-column chat-bubble" *ngIf="isOpen" style="width: 350px; height: 500px;">
+      <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center p-3">
+          <strong>HW Student Assistant</strong>
+          <button type="button" class="btn-close btn-close-white" (click)="toggleChat()"></button>
+      </div>
+      
+      <div class="card-body flex-grow-1 overflow-auto bg-light p-3" id="chat-history">
+        <div *ngFor="let msg of messages; let i = index"
+            class="mb-2 p-2 rounded-4 small text-break"
+            [ngClass]="{
+            'bg-primary text-white ms-auto': msg.isUser, 
+            'bg-secondary-subtle text-dark me-auto': !msg.isUser
+            }"
+            [ngStyle]="{
+            'max-width': '85%', 
+            'border-bottom-right-radius': msg.isUser ? '2px' : '15px', 
+            'border-bottom-left-radius': !msg.isUser ? '2px' : '15px'
+            }">
+            
+            <span [innerHTML]="msg.text | markdown"></span>
+            <div *ngIf="msg.sources && msg.sources.length > 0" class="mt-2 pt-2 border-top border-secondary-subtle">
+                    <span class="small fw-semibold text-secondary">Read more:</span>
+                        <div class="d-flex flex-wrap gap-1 mt-1">
+                            <a *ngFor="let src of msg.sources" 
+                            [href]="src.url" 
+                            target="_blank" 
+                            class="badge rounded-pill text-bg-light border text-decoration-none shadow-sm text-dark">
+                            {{ src.label }}
+                            </a>
+                        </div>
+                </div>
+            </div>
+
+          <div *ngIf="isLoading" class="mb-2 p-2 rounded-4 small text-break bg-secondary-subtle text-dark me-auto" style="max-width: 85%; border-bottom-left-radius: 2px;">
+              <em>Thinking...</em>
+          </div>
+      </div>
+      
+      <div class="card-footer bg-white p-2">
+          <div class="input-group">
+              <input type="text" 
+                     class="form-control" 
+                     placeholder="Type a question..." 
+                     [(ngModel)]="userInput" 
+                     (keyup.enter)="sendMessage()"
+                     [disabled]="isLoading">
+              <button class="btn btn-primary" (click)="sendMessage()" [disabled]="isLoading">Send</button>
+          </div>
+      </div>
+  </div>
+
+  <button class="btn btn-primary rounded-circle shadow d-flex justify-content-center align-items-center" 
+          (click)="toggleChat()" 
+          style="width: 60px; height: 60px; font-size: 24px;">
+          <span class="material-icons">smart_toy</span>
+  </button>
+</div>
