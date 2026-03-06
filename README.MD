@@ -1,0 +1,1 @@
+pip install fastapi uvicorn pydantic python-dotenv nest-asyncio beautifulsoup4 langchain langchain-core langchain-community langchain-google-genai langchain-chroma langchain-text-splitters langchain-huggingface chromadb pypdf sentence-transformers
