@@ -1,9 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { LevelData, WelcomePage } from '../models/welcome.model';
+import { InductionEvent, LevelData, WelcomePage } from '../models/welcome.model';
 import { ResourceCategory } from '../models/resources.model';
 import { CampusLife } from '../models/campus-life.model';
+import { ChatRequest } from '../models/chat.model';
 
 @Injectable({
   providedIn: 'root',
@@ -15,6 +16,10 @@ export class Api {
 
   getWelcome(): Observable<WelcomePage> {
     return this.http.get<WelcomePage>('/api/pages/welcome');
+  }
+
+  getInductionEvents(): Observable<InductionEvent[]> {
+    return this.http.get<InductionEvent[]>('/api/pages/welcome/induction-events');
   }
 
   getResources(): Observable<ResourceCategory[]> {
@@ -29,8 +34,11 @@ export class Api {
     return this.http.get<LevelData>(`/api/pages/welcome/${level}`);
   }
 
-  
-  // sendMessage(message: string) {
-  //   return this.http.post<any>(this.apiUrl, { message });
-  // }
+  sendMessage(request: ChatRequest): Observable<any> {
+    return this.http.post<ChatRequest>('http://localhost:8080/api/gemini/chat', request);
+  }
+
+  getGreeting(request: ChatRequest): Observable<any> {
+    return this.http.post<ChatRequest>('http://localhost:8080/api/gemini/greeting', request);
+  }
 }
