@@ -2,6 +2,8 @@ export interface Step {
   order: number;
   summary: string;
   description: string;
+  url: string;
+  actionText: string;
 }
 
 export interface Link {
@@ -13,18 +15,25 @@ export interface WelcomePage {
   steps: Step[];
   source: string;
   cohorts: LevelData[];
+  inductionEvents: InductionEvent[];
 }
 
 export interface LevelData {
   title: string;
+  level: string;
   importantDates: ImportantDate[];
-  event?: EventDetails; // Optional, because some pages might not have it
+  event: EventDetails; // Optional, because some pages might not have it
 }
 
 export interface ImportantDate {
   activity: string;
   date: string;
   type: 'action' | 'deadline' | 'event';
+}
+
+export interface RegistrationForm {
+  label: string;
+  link: string;
 }
 
 export interface EventDetails {
@@ -36,8 +45,13 @@ export interface EventDetails {
   eligibilityList?: string[]; // Used by Undergrad
   contactInfo?: string;       // Used by Undergrad
   
-  registration: {
-    label: string;
-    link: string;
-  };
+  registration: RegistrationForm;
+}
+
+export interface InductionEvent {
+  title: string;
+  icon: string;
+  desc: string;
+  actionText: string;
+  url: string;
 }
