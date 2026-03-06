@@ -55,6 +55,15 @@ export class Academic {
       badgeClass: 'text-bg-info'
     },
     {
+      title: 'Academic Writing consultations',
+      icon: 'edit_document',
+      description: 'Get specialized assistance with essays, citations.',
+      actionText: 'Book a One-to-one Session',
+      url: 'https://outlook.office.com/bookwithme/user/9c463d85864243e390132d3577362e1c@hw.ac.uk?anonymous&ep=signature',
+      label: 'Skills Development',
+      badgeClass: 'text-bg-info'
+    },
+    {
       title: 'English Gym',
       icon: 'spellcheck',
       description: 'Get support with academic English literacy, including assignment and report writing, editing, and proofreading.',
@@ -90,14 +99,5 @@ export class Academic {
       label: 'Research',
       badgeClass: 'text-bg-secondary'
     },
-    {
-      title: 'Academic Writing consultations',
-      icon: 'edit_document',
-      description: 'Get specialized assistance with essays, citations.',
-      actionText: 'Book a One-to-one Session',
-      url: 'https://outlook.office.com/bookwithme/user/9c463d85864243e390132d3577362e1c@hw.ac.uk?anonymous&ep=signature',
-      label: 'Skills Development',
-      badgeClass: 'text-bg-info'
-    }
   ];
 }
