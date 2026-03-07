@@ -22,24 +22,32 @@ export class Registration {
     },
     {
       step: 2,
-      title: 'Course & Module Selection',
-      description: 'Review your mandatory courses and select your optional modules for the upcoming academic year.',
+      title: 'Courses Selection',
+      description: 'Review your mandatory courses and select your optional courses for the upcoming academic year.',
       actionText: 'View Course Selection',
-      url: 'https://www.hw.ac.uk/uk/students/studies/enrolment.htm',
+      url: 'https://curriculum.hw.ac.uk/',
       isSecondary: false
     },
     {
       step: 3,
-      title: 'Tuition Fees & Payments',
-      description: 'Review your fee status, apply for SAAS/student finance, or set up a payment plan with the university.',
-      actionText: 'Manage Payments',
-      url: 'https://www.hw.ac.uk/uk/students/money/pay.htm',
+      title: 'Registering for classes',
+      description: 'Register for your selected courses to get access to the materials and resources on Canvas.',
+      actionText: 'Register for Classes',
+      url: 'https://curriculum.hw.ac.uk/',
       isSecondary: false
     },
+    // {
+    //   step: 3,
+    //   title: 'Tuition Fees & Payments',
+    //   description: 'Review your fee status, apply for SAAS/student finance, or set up a payment plan with the university.',
+    //   actionText: 'Manage Payments',
+    //   url: 'https://www.hw.ac.uk/uk/students/money/pay.htm',
+    //   isSecondary: false
+    // },
     {
-      step: 3,
+      step: 4,
       title: 'Welcome Week Schedule',
-      description: 'Check the official Welcome Guide for orientation schedules, matriculation events, and Freshers activities.',
+      description: 'Check the official Welcome Guide for orientation schedules, and Freshers activities.',
       actionText: 'View Welcome Guide',
       url: '/induction',
       isSecondary: false

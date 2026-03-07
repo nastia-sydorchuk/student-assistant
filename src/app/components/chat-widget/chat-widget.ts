@@ -1,5 +1,5 @@
-import { ChangeDetectorRef, Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { ChangeDetectorRef, Component, Inject, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { filter, finalize } from 'rxjs/operators';
 import { MarkdownPipe } from '../../pipes/markdown-pipe';
@@ -47,7 +47,7 @@ export class ChatWidget {
 
   currentGreeting: string = '';
 
-  constructor(private api: Api, private cdr: ChangeDetectorRef, private router: Router) {}
+  constructor(private api: Api, private cdr: ChangeDetectorRef, private router: Router, @Inject(PLATFORM_ID) private platformId: Object) {}
 
   ngOnInit() {
     this.router.events.subscribe((event: any) => {
@@ -68,22 +68,38 @@ export class ChatWidget {
   }
 
   private setGreetingAndOpen(url: string) {
-    let greeting = this.pageGreetings[url] ||this.pageGreetings['default'];
+    let greetingText = this.pageGreetings[url] ||this.pageGreetings['default'];
 
     if (this.messages.length === 0 || (this.messages.length === 1 && !this.messages[0].isUser)) {
-      this.messages = [{ text: greeting, isUser: false }];
+        this.messages = [{ text: greetingText, isUser: false }];
     }
 
     if (this.openTimer) clearTimeout(this.openTimer);
+
+    let userClosedChat = false; 
+
+    if (isPlatformBrowser(this.platformId)) {
+      userClosedChat = sessionStorage.getItem('chatClosedManually') === 'true';
+    }
     
-    this.openTimer = setTimeout(() => {
-      this.isOpen = true;
-      this.cdr.detectChanges(); 
-    }, 4000);
+    if (!userClosedChat) {
+        this.openTimer = setTimeout(() => {
+          this.isOpen = true;
+          this.cdr.detectChanges();
+        }, 2000);
+    }
   }
 
   toggleChat() {
     this.isOpen = !this.isOpen;
+    
+    if (isPlatformBrowser(this.platformId)) {
+      if (!this.isOpen) {
+        sessionStorage.setItem('chatClosedManually', 'true');
+      } else {
+        sessionStorage.removeItem('chatClosedManually');
+      }
+    }
   }
 
   // Helper to format the raw source strings into clean clickable objects
