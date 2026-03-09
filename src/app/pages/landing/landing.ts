@@ -34,7 +34,7 @@ export class Landing {
       title: 'Campus facilities', 
       route: '/facilities', 
       icon: 'map', 
-      description: 'Explore gyms, labs, dining halls, and campus maps.' 
+      description: 'Explore gyms, health centre, study spaces, dining halls, and campus maps.' 
     },
     { 
       title: 'Cultural integration', 

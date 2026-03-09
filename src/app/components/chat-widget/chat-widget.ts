@@ -27,7 +27,7 @@ export class ChatWidget {
 
   private pageGreetings: { [key: string]: string } = {
     // Main Dashboard
-    '/': 'Welcome back to your Student Portal! Can I help you find any specific resources today?',
+    '/': 'Welcome back to your Student Portal! Can I help you find any specific resources today? (Ask me in English or Spanish!)',
     
     // Core Navigation Pages
     '/academic': 'Hello! Do you need help finding library resources, study spaces, or academic skills support?',
@@ -104,19 +104,40 @@ export class ChatWidget {
 
   // Helper to format the raw source strings into clean clickable objects
   private formatSources(rawSources: string[]): { url: string; label: string }[] {
-    return rawSources.map(sourceStr => {
-      const parts = sourceStr.split(' (Page ');
-      const url = parts[0];
-      const isPdf = url.toLowerCase().includes('.pdf');
-      
-      let label = isPdf ? 'PDF Document' : 'Web Page';
-      
-      if (parts.length > 1) {
-        const pageNum = parts[1].replace(')', '');
-        label += ` (Page ${pageNum})`;
+    return rawSources.map((urlString: string) => {
+      try {
+        const url = new URL(urlString);
+        const pathSegments = url.pathname.split('/').filter(Boolean);
+        
+        let formattedText = "";
+
+        if (pathSegments.length === 0) {
+          const domainName = url.hostname.replace(/^www\./, '').split('.')[0];
+          formattedText = domainName.charAt(0).toUpperCase() + domainName.slice(1);
+        } else {
+          const targetSegments = pathSegments.slice(-2);
+          
+          formattedText = targetSegments.map(segment => {
+            return segment
+              .replace(/[-_]/g, ' ')
+              .split(' ')
+              .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
+              .join(' ');
+          }).join(' - ');
+        }
+
+        return {
+          url: urlString,
+          label: formattedText
+        };
+        
+      } catch (error) {
+        // Safe fallback if the string is not a valid URL
+        return {
+          url: urlString,
+          label: "External Link"
+        };
       }
-      
-      return { url, label };
     });
   }
 
