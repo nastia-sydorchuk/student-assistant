@@ -1,0 +1,117 @@
+{
+  "sources": [
+    {
+      "name": "HW IT Services",
+      "type": "web",
+      "urls": [
+        "https://www.hw.ac.uk/about/professional-services/information-services/it-essentials/wifi",
+        "https://www.hw.ac.uk/about/professional-services/information-services/it-essentials/multi-factor-authentication",
+        "https://www.hw.ac.uk/about/professional-services/information-services/is-guides/software-guides-and-tutorials",
+        "https://www.hw.ac.uk/about/professional-services/information-services/is-guides/other-it-guides"
+      ],
+      "metadata": {
+        "domain": "it_support"
+      }
+    },
+    {
+      "name": "HW International Students",
+      "type": "web",
+      "urls": [
+        "http://hw.ac.uk/students/international-students/uk-campus-students/living-in-the-uk/banking-and-budgeting",
+        "http://hw.ac.uk/students/international-students/uk-campus-students/living-in-the-uk/working-in-the-uk",
+        "https://www.hw.ac.uk/students/international-students/uk-campus-students/living-in-the-uk/practical-information/shopping-and-retail",
+        "https://www.hw.ac.uk/students/international-students/uk-campus-students/living-in-the-uk/practical-information/tv-phone-and-internet",
+        "http://hw.ac.uk/students/international-students/uk-campus-students/living-in-the-uk/practical-information/useful-websites",
+        "https://www.hw.ac.uk/students/international-students/uk-campus-students/living-in-the-uk",
+        "https://www.hwunion.com/get-involved/societies/"
+      ],
+      "metadata": {
+        "domain": "international_students"
+      }
+    },
+    {
+      "name": "HW Student Wellbeing & Medical",
+      "type": "web",
+      "urls": [
+        "https://www.hw.ac.uk/students/health-and-wellbeing/edinburgh-campus/student-wellbeing-services",
+        "https://www.hw.ac.uk/students/health-and-wellbeing/edinburgh-campus/student-wellbeing-services/watts-on-wellbeing",
+        "https://www.hw.ac.uk/students/health-and-wellbeing/edinburgh-campus/student-wellbeing-services/counselling",
+        "https://www.hw.ac.uk/students/health-and-wellbeing/edinburgh-campus/student-wellbeing-services/counselling/confidentiality",
+        "https://www.hw.ac.uk/students/health-and-wellbeing/edinburgh-campus/student-wellbeing-services/counselling/self-help",
+        "https://www.hw.ac.uk/students/health-and-wellbeing/edinburgh-campus/student-wellbeing-services/counselling/crisis-support",
+        "http://hw.ac.uk/students/health-and-wellbeing/edinburgh-campus/student-wellbeing-services/coaching",
+        "https://www.hw.ac.uk/students/health-and-wellbeing/edinburgh-campus/doctor",
+        "http://hw.ac.uk/students/health-and-wellbeing/edinburgh-campus/dentist",
+        "http://hw.ac.uk/students/international-students/uk-campus-students/living-in-the-uk/entitlement-to-healthcare",
+        "https://www.riccartongeneralpractice.co.uk/student"
+      ],
+      "metadata": {
+        "domain": "health_wellbeing"
+      }
+    },
+    {
+      "name": "HW New Students & Welcome Week",
+      "type": "web",
+      "urls": [
+        "https://www.hw.ac.uk/students/new-students/uk/welcome-to-heriot-watt-university/learning-and-teaching/induction-and-enrolment",
+        "https://www.hw.ac.uk/about/professional-services/information-services/is-guides/getting-started",
+        "https://www.hw.ac.uk/students/new-students/uk/welcome-to-heriot-watt-university",
+        "https://www.hw.ac.uk/students/new-students/uk/welcome-to-heriot-watt-university/postgraduate",
+        "https://www.hw.ac.uk/students/new-students/uk/welcome-to-heriot-watt-university/undergraduate",
+        "https://www.hw.ac.uk/students/new-students/uk/welcome-to-heriot-watt-university/kick-start-your-success",
+        "https://www.hw.ac.uk/students/new-students/uk/welcome-to-heriot-watt-university/get-ready-for-success",
+        "https://www.hw.ac.uk/students/manage-your-studies/enrolment/heriot-watt-online",
+        "http://hw.ac.uk/students/manage-your-studies/enrolment/enrolment-contacts",
+        "https://www.hw.ac.uk/study/fees-and-funding/tuition-fees",
+        "http://hw.ac.uk/about/professional-services/registry-services/student-service-centre-ssc/payment",
+        "http://hw.ac.uk/study/fees-and-funding/tuition-fees/postgraduate-tuition-fees",
+        "http://hw.ac.uk/study/fees-and-funding/tuition-fees/undergraduate-tuition-fees",
+        "https://www.hw.ac.uk/about/professional-services/registry-services/student-service-centre-ssc"
+
+      ],
+      "metadata": {
+        "domain": "new_students"
+      }
+    },
+    {
+      "name": "HW Academic Skills and Resources",
+      "type": "web",
+      "urls": [
+        "https://www.hw.ac.uk/about/professional-services/information-services/library-essentials/campus-libraries-and-study-spaces",
+        "https://www.hw.ac.uk/about/professional-services/information-services/library-essentials/borrowing-from-hwu-libraries",
+        "https://curriculum.hw.ac.uk/",
+        "https://www.hw.ac.uk/study/how-to-apply/academic-calendar",
+        "https://www.hw.ac.uk/students/manage-your-studies/teaching-timetables",
+        "http://hw.ac.uk/about/professional-services/information-services/skills-development/academic-study-skills/information-it-and-study-skills",
+        "http://mathsgym.hw.ac.uk/about/edinburgh/",
+        "https://mathsgym.hw.ac.uk/resources-2/",
+        "http://hw.ac.uk/study/how-to-apply/academic-english",
+        "https://www.hw.ac.uk/students/manage-your-studies/examinations-and-assessment",
+        "https://www.hw.ac.uk/students/manage-your-studies/examinations-and-assessment/reassessment-procedures",
+        "https://www.hw.ac.uk/study/international-students/academic-english/academic-skills",
+        "https://www.hw.ac.uk/about/professional-services/registry-services/academic-registry/professionalism-and-academic-integrity/resources-for-students",
+        "http://hw.ac.uk/students/manage-your-studies/examinations-and-assessment/mitigating-circumstances"
+
+      ],
+      "metadata": {
+        "domain": "academic_info"
+      }
+    },
+    {
+      "name": "HW General Campus & Students",
+      "type": "web",
+      "urls": [
+        "https://www.hw.ac.uk/campuses/edinburgh/",
+        "https://www.hw.ac.uk/students/",
+        "https://www.hw.ac.uk/about/professional-services/information-services/library-essentials/campus-libraries-and-study-spaces/edinburgh",
+        "https://www.hw.ac.uk/about/professional-services/information-services/library-essentials/library-opening-hours/edinburgh",
+        "https://www.hw.ac.uk/campuses/edinburgh/facilities",
+        "https://www.hw.ac.uk/students/health-and-wellbeing/edinburgh-campus/student-wellbeing-services/disability-service/essential-campus-information",
+        "https://www.hw.ac.uk/campuses/edinburgh/facilities/catering"
+      ],
+      "metadata": {
+        "domain": "campus_info"
+      }
+    }
+  ]
+}
