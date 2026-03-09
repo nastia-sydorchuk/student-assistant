@@ -16,7 +16,7 @@ export class Landing {
       title: 'Registration & Starting your studies', 
       route: '/registration', 
       icon: 'how_to_reg', 
-      description: 'Everything you need to enroll and kickstart your academic journey.' 
+      description: 'Complete your university enrollment, select your modules, and set up your essential digital tools.' 
     },
     { 
       title: 'University services', 

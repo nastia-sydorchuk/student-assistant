@@ -14,7 +14,7 @@ export class Wellbeing {
       icon: 'local_hospital',
       description: 'Register with the on-campus Medical Centre (Richard Verden Anderson building) or a local NHS GP to ensure you can access healthcare and prescriptions.',
       actionText: 'Register with Medical Centre',
-      url: 'https://www.hw.ac.uk/uk/students/health-wellbeing/edinburgh/medical-centre.htm'
+      url: 'https://www.riccartongeneralpractice.co.uk/student'
     },
     {
       title: 'Student Wellbeing Centre',
