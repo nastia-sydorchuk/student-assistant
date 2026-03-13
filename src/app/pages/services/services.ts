@@ -33,7 +33,7 @@ export class Services {
       description: 'Support for eduroam Wi-Fi, Office 365, password resets, and accessing university software.',
       contact: 'ithelp@hw.ac.uk',
       action: 'Access IT Support',
-      url: 'https://www.hw.ac.uk/uk/services/is/it-essentials.htm'
+      url: 'https://www.hw.ac.uk/about/professional-services/information-services/is-guides/getting-started'
     },
     {
       title: 'Careers & Graduate Futures',

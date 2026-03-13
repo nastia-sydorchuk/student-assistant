@@ -1,10 +1,10 @@
 import { Component, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { RouterLink, RouterOutlet } from '@angular/router';
 import { ChatWidget } from './components/chat-widget/chat-widget';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, ChatWidget],
+  imports: [RouterOutlet, ChatWidget, RouterLink],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
