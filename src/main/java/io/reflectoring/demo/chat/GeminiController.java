@@ -6,12 +6,11 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/gemini")
-@CrossOrigin(origins = "http://localhost:4200")
-public class ChatController {
+public class GeminiController {
 
-    private final ChatService geminiService;
+    private final GeminiService geminiService;
 
-    public ChatController(ChatService geminiService) {
+    public GeminiController(GeminiService geminiService) {
         this.geminiService = geminiService;
     }
 

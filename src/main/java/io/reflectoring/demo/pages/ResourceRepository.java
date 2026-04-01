@@ -4,8 +4,10 @@ import io.reflectoring.demo.dto.ResourceCategory;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface ResourceRepository extends MongoRepository<ResourceCategory, String> {
-    //ResourceCategory findAll();
+    Optional<ResourceCategory> findByCategoryIdAndLanguage(String categoryId, String language);
 
 }

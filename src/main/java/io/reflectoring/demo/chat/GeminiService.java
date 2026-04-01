@@ -11,11 +11,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Service
-public class ChatService {
+public class GeminiService {
     private final WebClient webClient;
     private final String PYTHON_SERVICE_URL = "http://localhost:8000/rag-query";
     @Autowired
-    public ChatService(WebClient.Builder webClientBuilder) {
+    public GeminiService(WebClient.Builder webClientBuilder) {
         this.webClient = webClientBuilder.baseUrl(PYTHON_SERVICE_URL).build();
     }
 
