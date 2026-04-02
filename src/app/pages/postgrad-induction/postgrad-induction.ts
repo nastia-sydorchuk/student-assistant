@@ -32,7 +32,7 @@ export class PostgradInduction {
 
   fetchInductionData(level: string): void {
     this.isLoading = true;
-    this.welcomeService.getWelcomeByLevel(level).subscribe({
+    this.welcomeService.getOnboardingConfigByLevel(level).subscribe({
       next: (data) => {
         this.pageData = data;
         this.isLoading = false;

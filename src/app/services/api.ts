@@ -1,10 +1,11 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { InductionEvent, LevelData, WelcomePage } from '../models/welcome.model';
+import { InductionEvent, LevelData, Step, WelcomePage } from '../models/welcome.model';
 import { ResourceCategory } from '../models/resources.model';
 import { CampusLife } from '../models/campus-life.model';
 import { ChatRequest } from '../models/chat.model';
+import { PortalCard } from '../models/portal-card.model';
 
 @Injectable({
   providedIn: 'root',
@@ -14,31 +15,29 @@ export class Api {
 
   constructor(private http: HttpClient) {}
 
-  getWelcome(): Observable<WelcomePage> {
-    return this.http.get<WelcomePage>('/api/pages/welcome');
+  getOnboardingSteps(): Observable<Step[]> {
+    return this.http.get<Step[]>('/api/onboarding/steps');
   }
 
   getInductionEvents(): Observable<InductionEvent[]> {
-    return this.http.get<InductionEvent[]>('/api/pages/welcome/induction-events');
+    return this.http.get<InductionEvent[]>('/api/onboarding/induction-events');
   }
 
-  getResources(): Observable<ResourceCategory[]> {
-    return this.http.get<ResourceCategory[]>('/api/resources');
+  getResources(category: string, languageCode: string): Observable<ResourceCategory> {
+    const headers = new HttpHeaders().set('Accept-Language', languageCode);
+    return this.http.get<ResourceCategory>(`/api/resources/${category}`, { headers });
   }
 
-  getFacilities(): Observable<CampusLife[]> {
-    return this.http.get<CampusLife[]>('/api/campus-life');
-  }
-
-  getWelcomeByLevel(level: string): Observable<LevelData> {
-    return this.http.get<LevelData>(`/api/pages/welcome/${level}`);
+  getOnboardingConfigByLevel(level: string): Observable<LevelData> {
+    return this.http.get<LevelData>(`/api/onboarding/${level}`);
   }
 
   sendMessage(request: ChatRequest): Observable<any> {
     return this.http.post<ChatRequest>('http://localhost:8080/api/gemini/chat', request);
   }
 
-  getGreeting(request: ChatRequest): Observable<any> {
-    return this.http.post<ChatRequest>('http://localhost:8080/api/gemini/greeting', request);
+  getPortalCards(languageCode: string): Observable<PortalCard[]> {
+    const headers = new HttpHeaders().set('Accept-Language', languageCode);
+    return this.http.get<PortalCard[]>('/api/portal-cards', { headers });
   }
 }

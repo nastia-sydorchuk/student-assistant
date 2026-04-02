@@ -1,6 +1,7 @@
 import { Component, signal } from '@angular/core';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { ChatWidget } from './components/chat-widget/chat-widget';
+import { LanguageService } from './services/language.service';
 
 @Component({
   selector: 'app-root',
@@ -10,11 +11,14 @@ import { ChatWidget } from './components/chat-widget/chat-widget';
 })
 export class App {
   protected readonly title = signal('frontend');
-  currentLanguage = 'EN';
+  currentLang = 'EN';
 
-  toggleTranslation() {
-    this.currentLanguage = this.currentLanguage === 'EN' ? 'ES' : 'EN';
-    console.log(`Language switched to: ${this.currentLanguage}`);
-    // hook into Angular i18n or ngx-translate
+  constructor(private languageService: LanguageService) {
+    this.currentLang = this.languageService.getCurrentLanguage();
+  }
+
+  onLanguageChange(event: Event): void {
+    const selectElement = event.target as HTMLSelectElement;
+    this.languageService.changeLanguage(selectElement.value);
   }
 }

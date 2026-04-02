@@ -1,12 +1,19 @@
 export interface ResourceCategory {
   id: string;
-  category: string;
-  icon: string;
+  categoryTitle: string;
   description: string;
-  resources: ResourceItem[];
+  items: ResourceItem[];
 }
 
 export interface ResourceItem {
-  name: string;
+  title: string;
+  icon: string;
   description: string;
+  
+  actionText?: string;
+  url?: string;
+  label?: string;
+  badgeClass?: string;
+  location: string;
+  contact?: string;
 }

@@ -1,0 +1,45 @@
+{
+  "DASHBOARD": {
+    "TITLE": "Welcome to the Student Portal",
+    "SUBTITLE": "Select a category below to access resources and information.",
+    "HEADER": "Student Portal"
+  },
+  "COMMON": {
+    "LOADING": "Loading...",
+    "ERROR": "Could not load resources at this time.",
+    "NAV": "Back to Dashboard"
+  },
+  "WELLBEING": {
+    "TITLE": "Support Services",
+    "SUBTITLE": "New to Edinburgh?",
+    "SUBSUBTITLE": "It is highly recommended that you register with an NHS General Practitioner (GP) as soon as you arrive, rather than waiting until you are ill. See the `Register with a Doctor` link below to sign up."
+  },
+  "REGISTRATION": {
+    "TITLE": "Registration & Starting Your Studies",
+    "SUBTITLE": "Welcome! Complete the administrative and digital setup steps below to finalize your enrollment.",
+    "PART1": "Part 1: Administrative Checklist",
+    "PART2": "Part 2: Digital Setup",
+    "PART2SUBTITLE": "Need hands-on IT Help?",
+    "PART2DESCRIPTION": "The Information Services (IS) Helpdesk is located in the Cameron Smail Library. You can drop in with your laptop, or email them at"
+  },
+  "INDUCTION": {
+    "TITLE": "Induction & Welcome Events",
+    "SUBTITLE": "Kickstart your university journey with essential academic inductions, fairs, and social events.",
+    "SUBTITLE1": "Important Dates",
+    "SUBTITLE2": "Programme Outline",
+    "SUBTITLE3": "Eligibility Criteria"
+  },
+  "FACILITIES": {
+    "TITLE": "Interactive Campus Map",
+    "DESCRIPTION": "Find your classes, parking, and dining locations across the Edinburgh Campus.",
+    "SUBTITLE": "Featured Facilities"
+  },
+  "MAP": {
+    "STARTING_LABEL": "Starting point",
+    "DESTINATION_LABEL": "Destination",
+    "SEARCH_LABEL": "Search",
+    "NAVIGATION_BUTTON": "Start Navigation",
+    "CANCEL_BUTTON": "Cancel Route",
+    "LOADING": "Loading Map..."
+  }
+}

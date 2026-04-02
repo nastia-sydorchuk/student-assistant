@@ -1,173 +1,112 @@
-<!-- <div class="bg-primary text-white p-4 p-md-5 mb-5 shadow-sm">
-  <div class="container">
-    <a routerLink="/" class="text-white-50 text-decoration-none d-inline-flex align-items-center mb-4 fw-semibold back-link">
-      <span class="material-icons me-2 fs-5">arrow_back</span> Back to Dashboard
-    </a>
-    
-    <h1 class="display-5 fw-bold mb-2">Registration & Starting Your Studies</h1>
-    <p class="lead mb-3">Welcome! Complete the steps below to finalize your enrollment.</p>
+<div class="container mt-5 text-center" *ngIf="isLoading">
+  <div class="spinner-border text-primary" role="status">
+    <span class="visually-hidden">Loading...</span>
   </div>
 </div>
 
-  @if (isLoading) {
-    <div class="text-center p-5 bg-light rounded text-secondary mb-4 border" style="border-style: dashed !important;">
-      <div class="spinner-border text-primary mb-3" role="status">
-        <span class="visually-hidden">Loading...</span>
-      </div>
-      <p class="mb-0 fs-5">Loading upcoming steps...</p>
-    </div>
-  } 
-  
-  @else if (eventsError) {
-    <div class="text-center p-5 bg-danger bg-opacity-10 border border-danger border-opacity-25 rounded text-danger mb-4">
-      <span class="material-icons display-4 mb-3">error_outline</span>
-      <p class="fs-5">{{ eventsError }}</p>
-      <button class="btn btn-outline-danger mt-3 px-4 fw-bold" (click)="fetchInductionSteps()">Retry</button>
-    </div>
-  }
+<div class="container mt-5" *ngIf="errorMessage">
+  <div class="alert alert-danger" role="alert">
+    {{ errorMessage }}
+  </div>
+</div>
 
-  @else {
-    <main class="container mb-5">
-    <h2 class="mb-4 text-dark fw-bold">Your Onboarding Checklist</h2>
+<div *ngIf="onboardingSteps && techResources">
+  <div class="bg-primary text-white p-4 p-md-5 mb-5 shadow-sm">
+    <div class="container">
+      <a routerLink="/" class="text-white-50 text-decoration-none d-inline-flex align-items-center mb-4 fw-semibold back-link">
+        <span class="material-icons me-2 fs-5">arrow_back</span> Back to Dashboard
+      </a>
+      
+      <h1 class="display-5 fw-bold mb-2">Registration & Starting Your Studies</h1>
+      <p class="lead mb-3">Welcome! Complete the administrative and digital setup steps below to finalize your enrollment.</p>
+    </div>
+  </div>
+  
+  <main class="container mb-5">
     
-    <div class="row g-4">
-        @for (item of onboardingSteps; track item.order) {
+    <div class="d-flex align-items-center gap-3 mb-4">
+      <h2 class="mb-0 text-dark fw-bold">Part 1: Administrative Checklist</h2>
+    </div>
+    
+    <div class="row g-4 mb-5">
+      @for (item of onboardingSteps; track item.order) {
         <div class="col-md-6 col-lg-3 mt-4">
-            <div class="card h-100 shadow-sm border-0 hover-lift pt-3">
+          <div class="card h-100 shadow-sm border-0 hover-lift pt-3">
             <div class="card-body d-flex flex-column position-relative">
-                
-                <span class="position-absolute top-0 start-0 translate-middle badge rounded-pill bg-primary border border-white border-3 d-flex align-items-center justify-content-center shadow-sm" style="width: 45px; height: 45px; font-size: 1.15rem;">
+              
+              <span class="position-absolute top-0 start-0 translate-middle badge rounded-pill bg-primary border border-white border-3 d-flex align-items-center justify-content-center shadow-sm" style="width: 45px; height: 45px; font-size: 1.15rem;">
                 {{ item.order }}
-                </span>
-                
-                <h5 class="card-title fw-bold text-dark mt-2 mb-3">{{ item.summary }}</h5>
-                <p class="card-text text-secondary mb-4 flex-grow-1">{{ item.description }}</p>
-                
-                  <div class="card-footer bg-transparent border-0 text-center pb-3">
-              
-                      <a *ngIf="!item.url.startsWith('http')" 
-                          [routerLink]="item.url" 
-                          class="btn btn-primary w-100 fw-bold mt-auto">
-                          {{ item.actionText }}
-                      </a>
-
-                      <a *ngIf="item.url.startsWith('http')" 
-                          [href]="item.url" 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          class="btn btn-primary w-100 fw-bold mt-auto">
-                          {{ item.actionText }}
-                      </a>
-                  </div>
-                
-            </div>
-            </div>
-        </div>
-        }
-    </div>
-    </main>
-} -->
-    <div class="bg-primary text-white p-4 p-md-5 mb-5 shadow-sm">
-  <div class="container">
-    <a routerLink="/" class="text-white-50 text-decoration-none d-inline-flex align-items-center mb-4 fw-semibold back-link">
-      <span class="material-icons me-2 fs-5">arrow_back</span> Back to Dashboard
-    </a>
-    
-    <h1 class="display-5 fw-bold mb-2">Registration & Starting Your Studies</h1>
-    <p class="lead mb-3">Welcome! Complete the administrative and digital setup steps below to finalize your enrollment.</p>
-  </div>
-</div>
-
-<main class="container mb-5">
-  
-  <div class="d-flex align-items-center gap-3 mb-4">
-    <h2 class="mb-0 text-dark fw-bold">Part 1: Administrative Checklist</h2>
-  </div>
-  
-  <div class="row g-4 mb-5">
-    @for (item of onboardingSteps; track item.step) {
-      <div class="col-md-6 col-lg-3 mt-4">
-        <div class="card h-100 shadow-sm border-0 hover-lift pt-3">
-          <div class="card-body d-flex flex-column position-relative">
-            
-            <span class="position-absolute top-0 start-0 translate-middle badge rounded-pill bg-primary border border-white border-3 d-flex align-items-center justify-content-center shadow-sm" style="width: 45px; height: 45px; font-size: 1.15rem;">
-              {{ item.step }}
-            </span>
-            
-            <h5 class="card-title fw-bold text-dark mt-2 mb-3">{{ item.title }}</h5>
-            <p class="card-text text-secondary mb-4 flex-grow-1">{{ item.description }}</p>
-            <div class="card-footer bg-transparent border-0 text-center pb-3">
-              
-                      <a *ngIf="!item.url.startsWith('http')" 
-                          [routerLink]="item.url" 
-                          class="btn btn-primary w-100 fw-bold mt-auto">
-                          {{ item.actionText }}
-                      </a>
-
-                      <a *ngIf="item.url.startsWith('http')" 
-                          [href]="item.url" 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          class="btn btn-primary w-100 fw-bold mt-auto">
-                          {{ item.actionText }}
-                      </a>
-            </div>
-            <!-- <a [href]="item.url" target="_blank" rel="noopener noreferrer" 
-               class="btn w-100 fw-bold mt-auto"
-               [class.btn-primary]="!item.isSecondary"
-               [class.btn-outline-secondary]="item.isSecondary">
-              {{ item.actionText }}
-            </a> -->
-            
-          </div>
-        </div>
-      </div>
-    }
-  </div>
-
-  <hr class="my-5 border-secondary opacity-25">
-
-  <div class="d-flex align-items-center gap-3 mb-4">
-    <h2 class="mb-0 text-dark fw-bold">Part 2: Digital Setup & IT</h2>
-  </div>
-
-  <div class="alert border border-secondary border-opacity-25 shadow-sm d-flex gap-3 align-items-center p-4 mb-4 rounded-4 bg-light">
-    <span class="material-icons text-primary display-6 flex-shrink-0">support_agent</span>
-    <div>
-      <h4 class="alert-heading fw-bold mb-1 text-dark">Need hands-on IT Help?</h4>
-      <p class="mb-0 text-secondary">
-        The Information Services (IS) Helpdesk is located in the Cameron Smail Library. You can drop in with your laptop, or email them at <a href="mailto:ithelp@hw.ac.uk" class="fw-bold text-primary text-decoration-none">ithelp&#64;hw.ac.uk</a>.
-      </p>
-    </div>
-  </div>
-
-  <div class="row g-4">
-    @for (item of techResources; track item.title) {
-      <div class="col-md-6 col-lg-6 xl-3">
-        <div class="card h-100 shadow-sm border-0 hover-lift p-3">
-          <div class="card-body d-flex flex-column">
-            
-            <div class="d-flex justify-content-between align-items-start mb-4">
-              <div class="bg-primary-subtle text-primary rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 60px; height: 60px;">
-                <span class="material-icons fs-2">{{ item.icon }}</span>
-              </div>
-              <span class="badge {{ item.badgeClass }} rounded-pill px-3 py-2 shadow-sm fw-semibold mt-1">
-                {{ item.label }}
               </span>
+              
+              <h5 class="card-title fw-bold text-dark mt-2 mb-3">{{ item.summary }}</h5>
+              <p class="card-text text-secondary mb-4 flex-grow-1">{{ item.description }}</p>
+              <div class="card-footer bg-transparent border-0 text-center pb-3">
+                
+                        <a *ngIf="!item.url.startsWith('http')" 
+                            [routerLink]="item.url" 
+                            class="btn btn-primary w-100 fw-bold mt-auto">
+                            {{ item.actionText }}
+                        </a>
+  
+                        <a *ngIf="item.url.startsWith('http')" 
+                            [href]="item.url" 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            class="btn btn-primary w-100 fw-bold mt-auto">
+                            {{ item.actionText }}
+                        </a>
+              </div>
             </div>
-            
-            <h4 class="card-title h5 fw-bold text-dark">{{ item.title }}</h4>
-            <p class="card-text text-secondary mb-4 flex-grow-1">{{ item.description }}</p>
-            
-            <a [href]="item.url" target="_blank" rel="noopener noreferrer" class="text-decoration-none fw-bold text-primary action-link d-inline-flex align-items-center">
-              {{ item.actionText }}
-              <span class="material-icons ms-1 fs-6 transition-transform">arrow_forward</span>
-            </a>
-            
           </div>
         </div>
+      }
+    </div>
+  
+    <hr class="my-5 border-secondary opacity-25">
+  
+    
+    <div class="d-flex align-items-center gap-3 mb-4">
+      <h2 class="mb-0 text-dark fw-bold">Part 2: Digital Setup & IT</h2>
+    </div>
+  
+    <div class="alert border border-secondary border-opacity-25 shadow-sm d-flex gap-3 align-items-center p-4 mb-4 rounded-4 bg-light">
+      <span class="material-icons text-primary display-6 flex-shrink-0">support_agent</span>
+      <div>
+        <h4 class="alert-heading fw-bold mb-1 text-dark">Need hands-on IT Help?</h4>
+        <p class="mb-0 text-secondary">
+          The Information Services (IS) Helpdesk is located in the Cameron Smail Library. You can drop in with your laptop, or email them at <a href="mailto:ithelp@hw.ac.uk" class="fw-bold text-primary text-decoration-none">ithelp&#64;hw.ac.uk</a>.
+        </p>
       </div>
-    }
-  </div>
-
-</main>
+    </div>
+  
+    <div class="row g-4">
+      @for (item of techResources.items; track item.title) {
+        <div class="col-md-6 col-lg-6 xl-3">
+          <div class="card h-100 shadow-sm border-0 hover-lift p-3">
+            <div class="card-body d-flex flex-column">
+              
+              <div class="d-flex justify-content-between align-items-start mb-4">
+                <div class="bg-primary-subtle text-primary rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 60px; height: 60px;">
+                  <span class="material-icons fs-2">{{ item.icon }}</span>
+                </div>
+                <span class="badge {{ item.badgeClass }} rounded-pill px-3 py-2 shadow-sm fw-semibold mt-1">
+                  {{ item.label }}
+                </span>
+              </div>
+              
+              <h4 class="card-title h5 fw-bold text-dark">{{ item.title }}</h4>
+              <p class="card-text text-secondary mb-4 flex-grow-1">{{ item.description }}</p>
+              
+              <a [href]="item.url" target="_blank" rel="noopener noreferrer" class="text-decoration-none fw-bold text-primary action-link d-inline-flex align-items-center">
+                {{ item.actionText }}
+                <span class="material-icons ms-1 fs-6 transition-transform">arrow_forward</span>
+              </a>
+              
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  
+  </main>
+</div>

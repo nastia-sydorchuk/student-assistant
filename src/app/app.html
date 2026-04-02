@@ -5,6 +5,16 @@
       Student Portal
     </a>
 
+    <div class="d-flex align-items-center ms-auto">
+      <!-- <span class="material-icons me-2 text-secondary fs-5">translate</span> -->
+      <select class="form-select form-select-sm" 
+              (change)="onLanguageChange($event)" 
+              [value]="currentLang" 
+              style="width: auto; cursor: pointer;">
+        <option value="en">English</option>
+        <option value="es">Español</option>
+      </select>
+    </div>
     <!-- <div class="d-flex">
       <button class="btn btn-outline-light d-flex align-items-center gap-2 fw-semibold" (click)="toggleTranslation()" aria-label="Translate page">
         <span class="material-icons fs-5">language</span> 
