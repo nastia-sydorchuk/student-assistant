@@ -6,10 +6,11 @@ import { MarkdownPipe } from '../../pipes/markdown-pipe';
 import { Api } from '../../services/api';
 import { ChatMessage, ChatRequest } from '../../models/chat.model';
 import { NavigationEnd, NavigationStart, Router } from '@angular/router';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-chat-widget',
-  imports: [CommonModule, FormsModule, MarkdownPipe],
+  imports: [CommonModule, FormsModule, MarkdownPipe, TranslateModule],
   templateUrl: './chat-widget.html',
   styleUrl: './chat-widget.css',
 })
@@ -21,33 +22,24 @@ export class ChatWidget {
 
   sessionId = 'session_' + Math.random().toString(36).substring(7);
 
-  messages: ChatMessage[] = [
-    // { text: 'Hello! I can answer questions about the Heriot-Watt Student Guide in English or Spanish. How can I help?', isUser: false }
-  ];
+  messages: ChatMessage[] = [];
 
   private pageGreetings: { [key: string]: string } = {
-    // Main Dashboard
-    '/': 'Welcome back to your Student Portal! Can I help you find any specific resources today? (Ask me in English or Spanish!)',
-    
-    // Core Navigation Pages
-    '/academic': 'Hello! Do you need help finding library resources, study spaces, or academic skills support?',
-    '/facilities': 'Hi there! Want to know more about our facilities or how to get here?',
-    '/services': 'Welcome! Need assistance with IT support, student wellbeing, accommodation, or your career plans?',
-    '/cultural': 'Hi! Want to know more about the Student Union, societies, sports clubs, or volunteering opportunities?',
-    
-    // Onboarding & Events
-    '/registration': 'Hello! Do you have any questions about your enrollment checklist, courses selection, or paying tuition fees?',
-    '/induction': 'Welcome! Are you looking for specific welcome events, fairs, or orientation schedules?',
-    
-    '/induction/undergraduate': 'Hi! Ready to start your undergraduate journey? Ask me anything about the Welcome Week or eligibility for the success events!',
-    '/induction/postgraduate': 'Welcome to your postgraduate studies! Need help finding your specific networking events or academic timetable?',
-    
-    'default': 'Hi! How can I help you with your Heriot-Watt queries today?'
+    '/': 'GREETINGS.HOME',
+    '/academic': 'GREETINGS.ACADEMIC',
+    '/facilities': 'GREETINGS.FACILITIES',
+    '/services': 'GREETINGS.SERVICES',
+    '/cultural': 'GREETINGS.CULTURAL',
+    '/registration': 'GREETINGS.REGISTRATION',
+    '/induction': 'GREETINGS.INDUCTION',
+    '/induction/undergraduate': 'GREETINGS.INDUCTION_UNDERGRADUATE',
+    '/induction/postgraduate': 'GREETINGS.INDUCTION_POSTGRADUATE',
+    'default': 'GREETINGS.DEFAULT'
   };
 
   currentGreeting: string = '';
 
-  constructor(private api: Api, private cdr: ChangeDetectorRef, private router: Router, @Inject(PLATFORM_ID) private platformId: Object) {}
+  constructor(private api: Api, private cdr: ChangeDetectorRef, private router: Router, @Inject(PLATFORM_ID) private platformId: Object, private translateService: TranslateService) {}
 
   ngOnInit() {
     this.router.events.subscribe((event: any) => {
@@ -68,10 +60,11 @@ export class ChatWidget {
   }
 
   private setGreetingAndOpen(url: string) {
-    let greetingText = this.pageGreetings[url] ||this.pageGreetings['default'];
+    const key = this.pageGreetings[url] ||this.pageGreetings['default'];
+    const greetingText = this.translateService.instant(key);
 
     if (this.messages.length === 0 || (this.messages.length === 1 && !this.messages[0].isUser)) {
-        this.messages = [{ text: greetingText, isUser: false }];
+      this.messages = [{ text: greetingText, isUser: false }];
     }
 
     if (this.openTimer) clearTimeout(this.openTimer);

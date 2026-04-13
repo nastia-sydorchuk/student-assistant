@@ -41,5 +41,17 @@
     "NAVIGATION_BUTTON": "Iniciar navegación",
     "CANCEL_BUTTON": "Cancelar ruta",
     "LOADING": "Cargando mapa..."
+  },
+  "GREETINGS": {
+    "HOME": "¡Bienvenido/a de nuevo a tu Portal de Estudiantes! ¿Puedo ayudarte a encontrar algún recurso en particular hoy? (¡Pregúntame en inglés o español!)",
+    "ACADEMIC": "¡Hola! ¿Necesitas ayuda para encontrar recursos en la biblioteca, espacios de estudio o apoyo para el desarrollo de habilidades académicas?",
+    "FACILITIES": "¡Hola! ¿Quieres saber más sobre nuestras instalaciones o cómo llegar hasta aquí?",
+    "SERVICES": "¡Bienvenidos! ¿Necesitan ayuda con soporte informático, bienestar estudiantil, alojamiento o sus planes de carrera?",
+    "CULTURAL": "¡Hola! ¿Quieres saber más sobre la Unión de Estudiantes, las asociaciones estudiantiles, los clubes deportivos o las oportunidades de voluntariado?",
+    "REGISTRATION": "¡Hola! ¿Tienes alguna pregunta sobre tu inscripción, la selección de cursos o el pago de la matrícula?",
+    "INDUCTION": "¡Bienvenidos! ¿Están buscando eventos de bienvenida o ferias específicas?",
+    "INDUCTION_UNDERGRADUATE": "¡Hola! ¿Listo para comenzar tu trayectoria universitaria? ¡Pregúntame lo que quieras sobre la Semana de Bienvenida o los requisitos para participar en los eventos de éxito!",
+    "INDUCTION_POSTGRADUATE": "¡Bienvenido/a a tus estudios de posgrado! ¿Necesitas ayuda para encontrar eventos de networking o tu horario académico?",
+    "DEFAULT": "¡Hola! ¿En qué puedo ayudarte hoy con tus consultas sobre Heriot-Watt?"
   }
 }

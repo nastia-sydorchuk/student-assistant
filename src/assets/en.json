@@ -41,5 +41,17 @@
     "NAVIGATION_BUTTON": "Start Navigation",
     "CANCEL_BUTTON": "Cancel Route",
     "LOADING": "Loading Map..."
+  },
+  "GREETINGS": {
+    "HOME": "Welcome back to your Student Portal! Can I help you find any specific resources today? (Ask me in English or Spanish!)",
+    "ACADEMIC": "Hello! Do you need help finding library resources, study spaces, or academic skills support?",
+    "FACILITIES": "Hi there! Want to know more about our facilities or how to get here?",
+    "SERVICES": "Welcome! Need assistance with IT support, student wellbeing, accommodation, or your career plans?",
+    "CULTURAL": "Hi! Want to know more about the Student Union, societies, sports clubs, or volunteering opportunities?",
+    "REGISTRATION": "Hello! Do you have any questions about your enrollment, courses selection, or paying tuition fees?",
+    "INDUCTION": "Welcome! Are you looking for specific welcome events, or fairs?",
+    "INDUCTION_UNDERGRADUATE": "Hi! Ready to start your undergraduate journey? Ask me anything about the Welcome Week or eligibility for the success events!",
+    "INDUCTION_POSTGRADUATE": "Welcome to your postgraduate studies! Need help finding your specific networking events or academic timetable?",
+    "DEFAULT": "Hi! How can I help you with your Heriot-Watt queries today?"
   }
 }
