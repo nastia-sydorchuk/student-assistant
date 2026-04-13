@@ -1,35 +1,29 @@
 import os
-import time
+import json
 import html2text
 import nest_asyncio
-from bs4 import BeautifulSoup, SoupStrainer
+
+from bs4 import BeautifulSoup
 from fastapi import FastAPI
 from pydantic import BaseModel
+from dotenv import load_dotenv
+from urllib.parse import urljoin
+
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_chroma import Chroma
 from langchain_classic.chains import create_retrieval_chain
 from langchain_classic.chains.combine_documents import create_stuff_documents_chain
 from langchain_core.prompts import ChatPromptTemplate
-from langchain_community.document_loaders import PyPDFLoader, SitemapLoader, TextLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langchain_community.document_loaders import WebBaseLoader
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_core.prompts import MessagesPlaceholder
 from langchain_classic.chains import create_history_aware_retriever
 from langchain_core.runnables.history import RunnableWithMessageHistory
-from langchain_community.chat_message_histories import ChatMessageHistory
 from langchain_core.messages import AIMessage
 from langchain_core.chat_history import InMemoryChatMessageHistory
-import os
-import json
-from dotenv import load_dotenv
-
 from langchain_classic.chains.query_constructor.base import AttributeInfo
 from langchain_classic.retrievers.self_query.base import SelfQueryRetriever
 from langchain_community.document_loaders import AsyncHtmlLoader
-from urllib.parse import urljoin
-
-import json
 
 # Load the dynamic contact directory
 with open("contacts.json", "r") as f:
@@ -49,6 +43,7 @@ class SourceManager:
     def load_and_tag_documents(self):
         all_docs = []
         
+        # 1. Setup the standalone Markdown converter
         md_converter = html2text.HTML2Text()
         md_converter.ignore_links = False
         md_converter.ignore_images = True
@@ -57,14 +52,18 @@ class SourceManager:
             if source['type'] == 'web':
                 print(f"Loading raw HTML from {source['name']}...")
 
+                # 2. Load the raw HTML asynchronously
                 loader = AsyncHtmlLoader(web_path=source.get('urls', []))
                 raw_docs = loader.load()
                 
+                # 3. Filter with BeautifulSoup and convert to Markdown
                 for doc in raw_docs:
+                    # Grab the actual URL of the page
                     current_url = doc.metadata.get('source', '')
                     
                     soup = BeautifulSoup(doc.page_content, "html.parser")
                     
+                    # Convert relative links to absolute links
                     for a_tag in soup.find_all('a', href=True):
                         a_tag['href'] = urljoin(current_url, a_tag['href'])
                     
@@ -74,6 +73,7 @@ class SourceManager:
                         doc.page_content = md_converter.handle(str(main_content))
                     else:
                         doc.page_content = md_converter.handle(str(soup))
+                    # 4. Inject the JSON metadata
                     doc.metadata.update(source.get('metadata', {}))
                     doc.metadata['source_name'] = source.get('name', 'Unknown')
                     
@@ -90,8 +90,8 @@ if not os.path.exists("./chroma_db"):
     all_docs = manager.load_and_tag_documents()
     
     text_splitter = RecursiveCharacterTextSplitter(
-        chunk_size=6000,
-        chunk_overlap=500,
+        chunk_size=1000,
+        chunk_overlap=200,
         separators=["\n\n", "\n", " ", ""]
     )
     splits = text_splitter.split_documents(all_docs)
@@ -115,16 +115,16 @@ metadata_field_info = [
     AttributeInfo(
         name="domain",
         description=(
-            "The specific department or topic the user is asking about. "
-            "You MUST choose exactly one of these valid values based on the query: "
-            "1. 'it_support' (Use for: WiFi, Eduroam, passwords, laptops, software, login issues) "
-            "2. 'health_wellbeing' (Use for: doctors, GP, mental health, counseling, illness, disability) "
-            "3. 'new_students' (Use for: Welcome Week, freshers, induction, fees, events) "
-            "4. 'academic_info' (Use for: studying, library, exams, revision, writing, study spaces, academic skills) "
-            "5. 'campus_info' (Use for: general campus location, maps, finding buildings, general student life). "
-            "6. 'international_students' (Use for: visas, immigration, BRP, moving to the UK, global student office, culture shock, general UK information, council, societies) "
-            "7. SAFEGUARDING & WELLBEING (CRITICAL): If the user expresses feelings of isolation, loneliness, depression, or emotional distress, you MUST prioritize their safety. You must express brief, warm empathy, and immediately urge them to contact the Student Wellbeing team at studentwellbeing@hw.ac.uk or visit the campus wellbeing desk. Do this regardless of what the Context says.\n"
-            "If you are unsure, default to 'campus_info'."
+            "The specific university department this document belongs to. "
+            "You MUST restrict your output to ONLY one of these exact strings: "
+            "['it_support', 'health_wellbeing', 'international_students', 'academic_info', 'campus_info', 'new_students']. "
+            "CRITICAL ROUTING RULES: "
+            "- If the user asks about visas, CAS, or moving to the UK -> use 'international_students'. "
+            "- If the user asks about Wi-Fi, passwords, laptops, software, login issues, or Eduroam -> use 'it_support'. "
+            "- If the user asks about gp, doctors, isolation, mental health, or counseling -> use 'health_wellbeing'. "
+            "- If the user asks about library hours, studying, or assignments -> use 'academic_info'. "
+            "- If the user asks about Welcome Week, freshers, induction, fees, or events -> use 'new_students'. "
+            "If you are unsure, do NOT guess a domain. Leave the filter blank."
         ),
         type="string",
     )
@@ -137,9 +137,11 @@ retriever = SelfQueryRetriever.from_llm(
     vectorstore=vectorstore,
     document_contents=document_content_description,
     metadata_field_info=metadata_field_info,
-    search_type="similarity_score_threshold",
+    search_type="mmr",
     search_kwargs={
-        "score_threshold": 0.3,
+        "k": 4,             # The final number of chunks to send to the LLM
+        "fetch_k": 40,      # The initial pool of chunks to fetch before filtering
+        "lambda_mult": 0.5  # Diversity vs Relevance (0.0 to 1.0)
     }
 )
 
@@ -172,14 +174,16 @@ system_prompt = (
     "You are a strict and helpful assistant for Heriot-Watt students. "
     "CRITICAL INSTRUCTIONS:\n"
     "0. CONVERSATIONAL FLOW: Read the chat history. If the user replies with an agreement (e.g., 'yes', 'please', 'list them') to your previous response, you MUST fulfill that offer using the provided Context.\n"
-    "1. ELABORATION: If the user asks for more details, provide NEW details from the Context that you haven't mentioned yet.\n"
-    "2. You MUST answer the user's question using ONLY the information found in the provided Context.\n"
-    "3. Do NOT use outside knowledge, guess, or make assumptions.\n"
-    "4. OFF-TOPIC REJECTION: If the provided Context is completely empty and the question is NOT about the university, politely decline to answer.\n"
-    "5. GRACEFUL HANDOFF: If the user asks a university-related question but the Context is empty, state: 'I cannot find the exact answer to that in my current official university files.' Then, determine the topic of their question, find the matching department in the Contact Directory below, and provide them with that exact email address.\n"
+    "1. SAFEGUARDING & WELLBEING (CRITICAL): If the user expresses feelings of isolation, loneliness, depression, or emotional distress, you MUST prioritize their safety. You must express brief, warm empathy, and immediately urge them to contact the Student Wellbeing team at studentwellbeing@hw.ac.uk. Do this regardless of what the Context says.\n"
+    "2. ELABORATION: If the user asks for more details, provide NEW details from the Context that you haven't mentioned yet.\n"
+    "3. You MUST answer the user's question using ONLY the information found in the Context. Do NOT use outside knowledge, guess, or make assumptions.\n"
+    "4. OFF-TOPIC REJECTION (CRITICAL): If the user's question is clearly NOT about Heriot-Watt University (e.g., pancake recipes, coding help, general trivia, movies), you MUST politely decline to answer. You must NOT provide any contact emails. Do this even if there is text in the Context.\n"
+    "5. MISSING INFORMATION & HANDOFF: If the question IS about the university, but the provided Context does NOT contain the answer (or the Context is completely empty), you must state exactly: 'I cannot find the exact answer to that in my current official university files.' THEN, use the Contact Directory below to provide the best matching email address.\n"
     "6. LINK FORMATTING: Format all provided URLs as clickable Markdown links.\n"
     "7. You MUST reply in the EXACT SAME LANGUAGE as the user's original question.\n"
-
+    "8. At the very end of your response, on a new line, output exactly one of these tags:\n"
+    "   - [SOURCES_USED] if your answer was based on the Context.\n"
+    "   - [NO_SOURCES] if you declined, handed off, or did not use the Context.\n"
     "\nContact Directory: {contacts}\n"
     "Context: {context}"
 )
@@ -188,7 +192,7 @@ qa_prompt = ChatPromptTemplate.from_messages([
     ("system", system_prompt),
     MessagesPlaceholder("chat_history"),
     ("human", "{input}")
-])
+]).partial(contacts=CONTACT_DIRECTORY)
 
 question_answer_chain = create_stuff_documents_chain(llm, qa_prompt)
 rag_chain = create_retrieval_chain(history_aware_retriever, question_answer_chain)
@@ -226,23 +230,19 @@ async def query_rag(request: QueryRequest):
         config={"configurable": {"session_id": request.session_id}}
     )
 
-    retrieved_docs = response.get("context", [])
-    print(f"Database returned {len(retrieved_docs)} results.")
-    
     answer = response["answer"]
-    sources = set()
 
-    for doc in response["context"]:
-        source_name = doc.metadata.get("source", "Unknown Source")
-        
-        page_num = doc.metadata.get("page")
-        
-        if page_num is not None:
-            source_name = f"{source_name} (Page {page_num + 1})"
-            
-        sources.add(source_name)
-        
-    return {
-        "answer": answer,
-        "sources": list(sources)
-    }
+    used_sources = "[SOURCES_USED]" in answer
+
+    # Strip the tag before returning to the user
+    answer = answer.replace("[SOURCES_USED]", "").replace("[NO_SOURCES]", "").strip()
+
+    sources = []
+    if used_sources:
+        sources = list(set([
+            doc.metadata.get("source")
+            for doc in response["context"]
+            if "source" in doc.metadata
+        ]))
+
+    return {"answer": answer, "sources": sources}
