@@ -2,10 +2,11 @@ import { Component, signal } from '@angular/core';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { ChatWidget } from './components/chat-widget/chat-widget';
 import { LanguageService } from './services/language.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, ChatWidget, RouterLink],
+  imports: [RouterOutlet, ChatWidget, RouterLink, TranslateModule],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })

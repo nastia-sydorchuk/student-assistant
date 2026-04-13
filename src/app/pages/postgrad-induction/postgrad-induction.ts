@@ -3,10 +3,12 @@ import { ActivatedRoute, RouterModule } from '@angular/router';
 import { LevelData } from '../../models/welcome.model';
 import { Api } from '../../services/api';
 import { CommonModule } from '@angular/common';
+import { LanguageService } from '../../services/language.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-postgrad-induction',
-  imports: [RouterModule, CommonModule],
+  imports: [RouterModule, CommonModule, TranslateModule],
   templateUrl: './postgrad-induction.html',
   styleUrl: './postgrad-induction.css',
 })
@@ -18,21 +20,22 @@ export class PostgradInduction {
   constructor(
     private route: ActivatedRoute,
     private welcomeService: Api,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private languageService: LanguageService
   ) {}
 
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
       const level = params.get('level');
       if (level) {
-        this.fetchInductionData(level);
+        this.fetchInductionData(level, this.languageService.getCurrentLanguage());
       }
     });
   }
 
-  fetchInductionData(level: string): void {
+  fetchInductionData(level: string, languageCode: string): void {
     this.isLoading = true;
-    this.welcomeService.getOnboardingConfigByLevel(level).subscribe({
+    this.welcomeService.getOnboardingConfigByLevel(level, languageCode).subscribe({
       next: (data) => {
         this.pageData = data;
         this.isLoading = false;

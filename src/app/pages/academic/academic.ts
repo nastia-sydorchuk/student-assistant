@@ -5,10 +5,11 @@ import { Api } from '../../services/api';
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { LanguageService } from '../../services/language.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-academic',
-  imports: [RouterLink, CommonModule],
+  imports: [RouterLink, CommonModule, TranslateModule],
   templateUrl: './academic.html',
   styleUrl: './academic.css',
 })

@@ -3,10 +3,11 @@ import { GoogleMapsModule, GoogleMap, MapAdvancedMarker, MapDirectionsRenderer, 
 import { isPlatformBrowser, CommonModule } from '@angular/common';
 import { map, Observable } from 'rxjs';
 import { environment } from '../../../environments/environment.development';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-map',
-  imports: [GoogleMapsModule, MapDirectionsRenderer, CommonModule],
+  imports: [GoogleMapsModule, MapDirectionsRenderer, CommonModule, TranslateModule],
   templateUrl: './map.html',
   styleUrl: './map.css',
 })

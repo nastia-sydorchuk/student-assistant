@@ -5,10 +5,11 @@ import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ResourceCategory } from '../../models/resources.model';
 import { LanguageService } from '../../services/language.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-registration',
-  imports: [RouterLink, CommonModule],
+  imports: [RouterLink, CommonModule, TranslateModule],
   templateUrl: './registration.html',
   styleUrl: './registration.css',
 })
@@ -22,9 +23,9 @@ export class Registration {
   constructor(private resourceService: Api, private cdr: ChangeDetectorRef, private languageService: LanguageService) {}
 
   ngOnInit(): void {
-    this.fetchInductionSteps();
     this.languageService.currentLanguage$.subscribe(newLang => {
       this.loadCategory('tech', newLang);
+      this.fetchInductionSteps(newLang);
     });
   }
 
@@ -46,8 +47,8 @@ export class Registration {
     });
   }
 
-  fetchInductionSteps() {
-    this.resourceService.getOnboardingSteps().subscribe({
+  fetchInductionSteps(languageCode: string): void {
+    this.resourceService.getOnboardingSteps(languageCode).subscribe({
       next: (data) => {
         this.onboardingSteps = data;
         this.isLoading = false;

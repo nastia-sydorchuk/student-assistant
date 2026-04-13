@@ -4,10 +4,11 @@ import { RouterLink } from '@angular/router';
 import { ResourceCategory } from '../../models/resources.model';
 import { Api } from '../../services/api';
 import { LanguageService } from '../../services/language.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-services',
-  imports: [RouterLink, CommonModule],
+  imports: [RouterLink, CommonModule, TranslateModule],
   templateUrl: './services.html',
   styleUrl: './services.css',
 })

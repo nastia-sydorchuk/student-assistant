@@ -40,8 +40,8 @@
       
       <div class="col-lg-4">
         <h3 class="fw-bold mb-4 d-flex align-items-center gap-2">
-          <span class="material-icons text-primary">calendar_month</span> 
-          Important Dates
+          <span class="material-icons text-primary">calendar_month</span>
+          {{ 'INDUCTION.SUBTITLE1' | translate }}
         </h3>
         
         <div class="d-flex flex-column gap-3">
@@ -74,7 +74,7 @@
 
           <div class="card-body p-4 p-md-5">
             
-            <h4 class="fw-bold mb-3">Programme Outline</h4>
+            <h4 class="fw-bold mb-3">{{ 'INDUCTION.SUBTITLE2' | translate }}</h4>
             <ul class="list-unstyled mb-5">
               @for (point of pageData.event.programmeOutline; track point) {
                 <li class="d-flex align-items-start mb-3">
@@ -87,7 +87,7 @@
             <div class="bg-light rounded p-4 mb-5 border">
               <h4 class="fw-bold mb-3 d-flex align-items-center gap-2">
                 <span class="material-icons text-warning">verified_user</span> 
-                Eligibility
+                {{ 'INDUCTION.SUBTITLE3' | translate }}
               </h4>
               
               @if (pageData.event.eligibility) {

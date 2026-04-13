@@ -5,10 +5,11 @@ import { CommonModule, ViewportScroller } from '@angular/common';
 import { ResourceCategory } from '../../models/resources.model';
 import { Api } from '../../services/api';
 import { LanguageService } from '../../services/language.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-facilities',
-  imports: [RouterLink, Map, CommonModule],
+  imports: [RouterLink, Map, CommonModule, TranslateModule],
   templateUrl: './facilities.html',
   styleUrl: './facilities.css',
 })

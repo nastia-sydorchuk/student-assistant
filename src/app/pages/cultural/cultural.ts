@@ -4,10 +4,11 @@ import { ResourceCategory } from '../../models/resources.model';
 import { Api } from '../../services/api';
 import { CommonModule } from '@angular/common';
 import { LanguageService } from '../../services/language.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-cultural',
-  imports: [RouterLink, CommonModule],
+  imports: [RouterLink, CommonModule, TranslateModule],
   templateUrl: './cultural.html',
   styleUrl: './cultural.css',
 })

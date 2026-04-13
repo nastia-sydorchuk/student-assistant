@@ -14,7 +14,7 @@
   <div class="bg-primary text-white p-4 p-md-5 mb-5 shadow-sm">
     <div class="container">
       <a routerLink="/" class="text-white-50 text-decoration-none d-inline-flex align-items-center mb-4 fw-semibold back-link">
-        <span class="material-icons me-2 fs-5">arrow_back</span> Back to Dashboard
+        <span class="material-icons me-2 fs-5">arrow_back</span> {{ 'COMMON.NAV' | translate }}
       </a>
       <h1 class="display-5 fw-bold mb-2">{{ wellbeingResources.categoryTitle }}</h1>
       <p class="lead mb-0">{{ wellbeingResources.description }}</p>
@@ -25,10 +25,10 @@
     <div class="alert alert-info border-info border-opacity-25 shadow-sm d-flex gap-3 align-items-center p-3 mb-5 rounded-4">
       <span class="material-icons text-info fs-3">info</span>
       <p class="mb-0 text-dark">
-          <strong>New to Edinburgh?</strong> It is highly recommended that you register with an NHS General Practitioner (GP) as soon as you arrive, rather than waiting until you are ill. See the "Register with a Doctor" link below to sign up.
+          <strong>{{ 'WELLBEING.SUBTITLE' | translate }}</strong> {{ 'WELLBEING.SUBSUBTITLE' | translate }}
       </p>
     </div>
-    <div class="alert alert-danger border-danger border-opacity-25 shadow-sm d-flex gap-3 align-items-start p-4 mb-5 rounded-4">
+    <!-- <div class="alert alert-danger border-danger border-opacity-25 shadow-sm d-flex gap-3 align-items-start p-4 mb-5 rounded-4">
       <span class="material-icons display-6 text-danger flex-shrink-0">emergency</span>
       <div>
         <h4 class="alert-heading fw-bold mb-2">Need help right now?</h4>
@@ -38,9 +38,9 @@
           <li><strong>Off Campus Emergency:</strong> Dial <strong>999</strong> for Police or Ambulance.</li>
         </ul>
       </div>
-    </div>
+    </div> -->
   
-    <h2 class="fw-bold text-dark mb-4">Support Services</h2>
+    <h2 class="fw-bold text-dark mb-4">{{ 'WELLBEING.TITLE' | translate }}</h2>
   
     <div class="row g-4">
       @for (resource of wellbeingResources.items; track resource.title) {

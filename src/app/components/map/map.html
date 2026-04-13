@@ -2,25 +2,25 @@
   <div class="position-absolute top-0 start-0 m-3 p-3 bg-white rounded shadow" style="width: 320px; max-width: calc(100vw - 2rem); z-index: 10;">
       @if (showNavigation) {
         <div class="mb-3">
-          <label class="form-label small text-muted mb-1 fw-bold">Starting point</label>
+          <label class="form-label small text-muted mb-1 fw-bold">{{ 'MAP.STARTING_LABEL' | translate }}</label>
           <div #originContainer></div></div>
       }
       <div>
         <label class="form-label small text-muted mb-1 fw-bold">
-          {{ showNavigation ? 'Destination' : 'Search' }}
+          {{ (showNavigation ? 'MAP.DESTINATION_LABEL' : 'MAP.SEARCH_LABEL') | translate }}
         </label>
         <div #searchContainer></div>
       </div>
 
       @if (currentDestinationCoords && !showNavigation) {
         <button class="btn btn-primary w-100 mt-3 shadow-sm fw-bold" (click)="startNavigation()">
-          Start Navigation
+          {{ 'MAP.NAVIGATION_BUTTON' | translate }}
         </button>
       }
       
       @if (showNavigation) {
         <button class="btn btn-light border w-100 mt-3 btn-sm text-danger" (click)="cancelNavigation()">
-          Cancel Route
+          {{ 'MAP.CANCEL_BUTTON' | translate }}
         </button>
       }
     </div>
@@ -41,7 +41,7 @@
     } @else {
       <div class="d-flex flex-column align-items-center justify-content-center bg-light w-100" style="height: 500px;">
         <div class="spinner-border text-primary" role="status"></div>
-        <span class="mt-2 text-muted fw-semibold">Loading Map...</span>
+        <span class="mt-2 text-muted fw-semibold">{{ 'MAP.LOADING' | translate }}</span>
       </div>
     }
 </div>

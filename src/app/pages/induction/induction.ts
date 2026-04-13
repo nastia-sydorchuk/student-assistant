@@ -3,10 +3,12 @@ import { Api } from '../../services/api';
 import { InductionEvent } from '../../models/welcome.model';
 import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { LanguageService } from '../../services/language.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-induction',
-  imports: [RouterLink, CommonModule],
+  imports: [RouterLink, CommonModule, TranslateModule],
   templateUrl: './induction.html',
   styleUrl: './induction.css',
 })
@@ -15,16 +17,18 @@ export class Induction {
   isLoadingEvents = true;
   eventsError = '';
   
-  constructor(private service: Api, private cdr: ChangeDetectorRef) { }
-  
+  constructor(private service: Api, private cdr: ChangeDetectorRef, private languageService: LanguageService) { }
+
   ngOnInit() {
-    this.fetchInductionEvents();
+    this.languageService.currentLanguage$.subscribe(newLang => {
+      this.fetchInductionEvents(newLang);
+    });
   }
 
-  fetchInductionEvents() {
+  fetchInductionEvents(languageCode: string): void {
     this.isLoadingEvents = true;
 
-    this.service.getInductionEvents().subscribe({
+    this.service.getInductionEvents(languageCode).subscribe({
       next: (data) => {
         this.inductionEvents = data;
         this.isLoadingEvents = false;

@@ -15,12 +15,14 @@ export class Api {
 
   constructor(private http: HttpClient) {}
 
-  getOnboardingSteps(): Observable<Step[]> {
-    return this.http.get<Step[]>('/api/onboarding/steps');
+  getOnboardingSteps(languageCode: string): Observable<Step[]> {
+    const headers = new HttpHeaders().set('Accept-Language', languageCode);
+    return this.http.get<Step[]>('/api/onboarding/steps', { headers });
   }
 
-  getInductionEvents(): Observable<InductionEvent[]> {
-    return this.http.get<InductionEvent[]>('/api/onboarding/induction-events');
+  getInductionEvents(languageCode: string): Observable<InductionEvent[]> {
+    const headers = new HttpHeaders().set('Accept-Language', languageCode);
+    return this.http.get<InductionEvent[]>('/api/onboarding/induction-events', { headers });
   }
 
   getResources(category: string, languageCode: string): Observable<ResourceCategory> {
@@ -28,8 +30,9 @@ export class Api {
     return this.http.get<ResourceCategory>(`/api/resources/${category}`, { headers });
   }
 
-  getOnboardingConfigByLevel(level: string): Observable<LevelData> {
-    return this.http.get<LevelData>(`/api/onboarding/${level}`);
+  getOnboardingConfigByLevel(level: string, languageCode: string): Observable<LevelData> {
+    const headers = new HttpHeaders().set('Accept-Language', languageCode);
+    return this.http.get<LevelData>(`/api/onboarding/${level}`, { headers });
   }
 
   sendMessage(request: ChatRequest): Observable<any> {
