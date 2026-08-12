@@ -1,7 +1,12 @@
 const fs = require('fs');
 const { Translate } = require('@google-cloud/translate').v2;
 
-const translate = new Translate({ key: 'AIzaSyC5t66ZKET1bxvtGsqM9S5CvgNSl-VMq1Y' });
+if (!process.env.GOOGLE_TRANSLATE_KEY) {
+    console.error('GOOGLE_TRANSLATE_KEY environment variable is not set.');
+    process.exit(1);
+}
+
+const translate = new Translate({ key: process.env.GOOGLE_TRANSLATE_KEY });
 
 const i18nPath = './src/assets/';
 const sourceFile = 'en.json';

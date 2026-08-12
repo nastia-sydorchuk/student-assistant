@@ -2,7 +2,7 @@ import { Component, ElementRef, NgZone, ViewChild, AfterViewInit, Inject, PLATFO
 import { GoogleMapsModule, GoogleMap, MapAdvancedMarker, MapDirectionsRenderer, MapDirectionsService } from '@angular/google-maps';
 import { isPlatformBrowser, CommonModule } from '@angular/common';
 import { map, Observable } from 'rxjs';
-import { environment } from '../../../environments/environment.development';
+import { environment } from '../../../environments/environment';
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
@@ -78,7 +78,7 @@ export class Map {
       }
 
       const script = document.createElement('script');
-      script.src = `https://maps.googleapis.com/maps/api/js?key=${environment.googleMapsApiKey}&v=weekly&language=en&region=GB`;
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${environment.GOOGLE_MAPS_API_KEY}&v=weekly&language=en&region=GB`;
       script.async = true;
       script.defer = true;
       
