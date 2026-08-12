@@ -11,8 +11,6 @@ import { PortalCard } from '../models/portal-card.model';
   providedIn: 'root',
 })
 export class Api {
-  private apiUrl = 'http://localhost:8080/api/event';
-
   constructor(private http: HttpClient) {}
 
   getOnboardingSteps(languageCode: string): Observable<Step[]> {
@@ -36,7 +34,7 @@ export class Api {
   }
 
   sendMessage(request: ChatRequest): Observable<any> {
-    return this.http.post<ChatRequest>('http://localhost:8080/api/gemini/chat', request);
+    return this.http.post<ChatRequest>('/api/gemini/chat', request);
   }
 
   getPortalCards(languageCode: string): Observable<PortalCard[]> {
