@@ -1,34 +1,34 @@
-<div class="container mt-5 text-center" *ngIf="isLoading">
+<div class="container mt-5 text-center" *ngIf="isLoading()">
   <div class="spinner-border text-primary" role="status">
     <span class="visually-hidden">Loading...</span>
   </div>
 </div>
 
-<div class="container mt-5" *ngIf="errorMessage">
+<div class="container mt-5" *ngIf="errorMessage()">
   <div class="alert alert-danger" role="alert">
-    {{ errorMessage }}
+    {{ errorMessage() }}
   </div>
 </div>
 
-<div *ngIf="resources">
+<div *ngIf="resources() as res">
   <div class="bg-primary text-white p-4 p-md-5 mb-5 shadow-sm">
     <div class="container">
       <a routerLink="/" class="text-white-50 text-decoration-none d-inline-flex align-items-center mb-4 fw-semibold back-link">
         <span class="material-icons me-2 fs-5">arrow_back</span> {{ 'COMMON.NAV' | translate }}
       </a>
-      <h1 class="display-5 fw-bold mb-2">{{ resources.categoryTitle }}</h1>
-      <p class="lead mb-0">{{ resources.description }}</p>
+      <h1 class="display-5 fw-bold mb-2">{{ res.categoryTitle }}</h1>
+      <p class="lead mb-0">{{ res.description }}</p>
     </div>
   </div>
   <main class="container mb-5">
       <h2 class="fw-bold text-dark" id="campus-map">{{ 'FACILITIES.TITLE' | translate }}</h2>
       <p class="text-secondary mb-4">{{ 'FACILITIES.DESCRIPTION' | translate }}</p>
       <app-map [targetLocation]="activeMapLocation"></app-map>
-  
+
     <h2 class="fw-bold text-dark mb-4 mt-4">{{ 'FACILITIES.SUBTITLE' | translate }}</h2>
-    
+
     <div class="row g-4">
-      @for (facility of resources.items; track facility.title) {
+      @for (facility of res.items; track facility.title) {
         <div class="col-lg-6">
           <div class="card h-100 shadow-sm border-0 hover-lift overflow-hidden">
             <div class="row g-0 h-100">

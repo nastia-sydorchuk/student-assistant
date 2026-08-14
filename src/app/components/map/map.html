@@ -1,41 +1,41 @@
 <div class="position-relative w-100 shadow-sm rounded" style="min-height: 500px;">
   <div class="position-absolute top-0 start-0 m-3 p-3 bg-white rounded shadow" style="width: 320px; max-width: calc(100vw - 2rem); z-index: 10;">
-      @if (showNavigation) {
+      @if (showNavigation()) {
         <div class="mb-3">
           <label class="form-label small text-muted mb-1 fw-bold">{{ 'MAP.STARTING_LABEL' | translate }}</label>
           <div #originContainer></div></div>
       }
       <div>
         <label class="form-label small text-muted mb-1 fw-bold">
-          {{ (showNavigation ? 'MAP.DESTINATION_LABEL' : 'MAP.SEARCH_LABEL') | translate }}
+          {{ (showNavigation() ? 'MAP.DESTINATION_LABEL' : 'MAP.SEARCH_LABEL') | translate }}
         </label>
         <div #searchContainer></div>
       </div>
 
-      @if (currentDestinationCoords && !showNavigation) {
+      @if (currentDestinationCoords() && !showNavigation()) {
         <button class="btn btn-primary w-100 mt-3 shadow-sm fw-bold" (click)="startNavigation()">
           {{ 'MAP.NAVIGATION_BUTTON' | translate }}
         </button>
       }
-      
-      @if (showNavigation) {
+
+      @if (showNavigation()) {
         <button class="btn btn-light border w-100 mt-3 btn-sm text-danger" (click)="cancelNavigation()">
           {{ 'MAP.CANCEL_BUTTON' | translate }}
         </button>
       }
     </div>
 
-    @if (apiLoaded) {
-      <google-map 
-        width="100%" 
-        height="500px" 
-        [center]="center" 
+    @if (apiLoaded()) {
+      <google-map
+        width="100%"
+        height="500px"
+        [center]="center()"
         [zoom]="zoom"
         [mapId]="mapId"
-        [options]="mapOptions"> 
-        
-        @if (directionsResults) {
-          <map-directions-renderer [directions]="directionsResults"></map-directions-renderer>
+        [options]="mapOptions">
+
+        @if (directionsResults(); as results) {
+          <map-directions-renderer [directions]="results"></map-directions-renderer>
         }
       </google-map>
     } @else {
