@@ -4,7 +4,7 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { finalize } from 'rxjs/operators';
 import { MarkdownPipe } from '../../pipes/markdown-pipe';
-import { Api } from '../../services/api';
+import { ApiService } from '../../services/api.service';
 import { ChatMessage, ChatRequest } from '../../models/chat.model';
 import { NavigationEnd, NavigationStart, Router } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -16,7 +16,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
   styleUrl: './chat-widget.css',
 })
 export class ChatWidget {
-  private api = inject(Api);
+  private apiService = inject(ApiService);
   private router = inject(Router);
   private platformId = inject(PLATFORM_ID);
   private translateService = inject(TranslateService);
@@ -157,7 +157,7 @@ export class ChatWidget {
       bot_greeting: currentGreeting
     };
 
-    this.api.sendMessage(requestPayload).pipe(
+    this.apiService.sendMessage(requestPayload).pipe(
       finalize(() => {
         this.isLoading.set(false);
         this.scrollToBottom();

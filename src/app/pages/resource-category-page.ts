@@ -1,14 +1,14 @@
 import { DestroyRef, Directive, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ResourceCategory } from '../models/resources.model';
-import { Api } from '../services/api';
+import { ApiService } from '../services/api.service';
 import { LanguageService } from '../services/language.service';
 
 @Directive()
 export abstract class ResourceCategoryPage {
   protected abstract categoryId: string;
 
-  private resourceService = inject(Api);
+  private apiService = inject(ApiService);
   private languageService = inject(LanguageService);
   private destroyRef = inject(DestroyRef);
 
@@ -19,13 +19,13 @@ export abstract class ResourceCategoryPage {
   ngOnInit(): void {
     this.languageService.currentLanguage$
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(newLang => this.loadCategory(newLang));
+      .subscribe(() => this.loadCategory());
   }
 
-  private loadCategory(languageCode: string): void {
+  private loadCategory(): void {
     this.isLoading.set(true);
 
-    this.resourceService.getResources(this.categoryId, languageCode).subscribe({
+    this.apiService.getResources(this.categoryId).subscribe({
       next: (data) => {
         this.resources.set(data);
         this.isLoading.set(false);

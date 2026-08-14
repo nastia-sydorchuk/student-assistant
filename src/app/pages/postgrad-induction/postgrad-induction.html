@@ -1,4 +1,4 @@
-@if (isLoading) {
+@if (isLoading()) {
   <div class="container mt-5 pt-5">
     <div class="text-center p-5 bg-light rounded text-secondary border" style="border-style: dashed !important;">
       <div class="spinner-border text-primary mb-3" role="status">
@@ -9,11 +9,11 @@
   </div>
 } 
 
-@else if (errorMessage) {
+@else if (errorMessage()) {
   <div class="container mt-5 pt-5">
     <div class="text-center p-5 bg-danger bg-opacity-10 border border-danger border-opacity-25 rounded text-danger">
       <span class="material-icons display-4 mb-3">error_outline</span>
-      <p class="fs-5">{{ errorMessage }}</p>
+      <p class="fs-5">{{ errorMessage() }}</p>
       <div class="mt-4">
         <a routerLink="/induction" class="text-danger fw-semibold"><span class="material-icons me-2 fs-5">arrow_back</span> Return to Inductions</a>
       </div>
@@ -21,7 +21,7 @@
   </div>
 }
 
-@else if (pageData) {
+@else if (pageData(); as data) {
   <div class="bg-primary text-white p-4 p-md-5 mb-5 shadow-sm">
     <div class="container">
       <a routerLink="/induction" class="text-white-50 text-decoration-none d-inline-flex align-items-center mb-4 fw-semibold back-link">
@@ -29,9 +29,9 @@
       </a>
       
       <div class="d-flex align-items-center gap-3 mb-2">
-        <span class="badge bg-light text-primary fs-6 text-capitalize">{{ pageData.level }}</span>
+        <span class="badge bg-light text-primary fs-6 text-capitalize">{{ data.level }}</span>
       </div>
-      <h1 class="display-5 fw-bold mb-0">{{ pageData.title }}</h1>
+      <h1 class="display-5 fw-bold mb-0">{{ data.title }}</h1>
     </div>
   </div>
 
@@ -45,7 +45,7 @@
         </h3>
         
         <div class="d-flex flex-column gap-3">
-          @for (item of pageData.importantDates; track item.activity) {
+          @for (item of data.importantDates; track item.activity) {
             <div class="card border-0 shadow-sm">
               <div class="card-body p-3 d-flex justify-content-between align-items-center">
                 <div>
@@ -67,16 +67,16 @@
           <div class="bg-primary bg-opacity-10 p-4 border-bottom border-primary border-opacity-25">
             <div class="d-flex align-items-center gap-3 mb-2">
               <span class="material-icons display-5 text-primary">campaign</span>
-              <h2 class="fw-bold text-primary mb-0">{{ pageData.event.title }}</h2>
+              <h2 class="fw-bold text-primary mb-0">{{ data.event.title }}</h2>
             </div>
-            <p class="lead text-dark mt-3 mb-0">{{ pageData.event.description }}</p>
+            <p class="lead text-dark mt-3 mb-0">{{ data.event.description }}</p>
           </div>
 
           <div class="card-body p-4 p-md-5">
             
             <h4 class="fw-bold mb-3">{{ 'INDUCTION.SUBTITLE2' | translate }}</h4>
             <ul class="list-unstyled mb-5">
-              @for (point of pageData.event.programmeOutline; track point) {
+              @for (point of data.event.programmeOutline; track point) {
                 <li class="d-flex align-items-start mb-3">
                   <span class="material-icons text-success me-3 mt-1 fs-5">check_circle</span>
                   <span class="fs-6 text-secondary">{{ point }}</span>
@@ -90,32 +90,32 @@
                 {{ 'INDUCTION.SUBTITLE3' | translate }}
               </h4>
               
-              @if (pageData.event.eligibility) {
-                <p class="text-secondary mb-3 fw-semibold">{{ pageData.event.eligibility }}</p>
+              @if (data.event.eligibility) {
+                <p class="text-secondary mb-3 fw-semibold">{{ data.event.eligibility }}</p>
               }
 
-              @if (pageData.event.eligibilityList) {
+              @if (data.event.eligibilityList) {
                 <p class="text-secondary mb-3 fw-semibold">This event is open to:</p>
                 <ul class="text-secondary">
-                  @for (criteria of pageData.event.eligibilityList; track criteria) {
+                  @for (criteria of data.event.eligibilityList; track criteria) {
                     <li class="mb-2">{{ criteria }}</li>
                   }
                 </ul>
               }
 
-              @if (pageData.event.contactInfo) {
+              @if (data.event.contactInfo) {
                 <hr class="my-4">
                 <p class="text-secondary mb-0 small">
                   <span class="material-icons fs-6 align-text-bottom me-1">info</span>
-                  {{ pageData.event.contactInfo }}
+                  {{ data.event.contactInfo }}
                 </p>
               }
             </div>
 
             <div class="text-center mt-auto">
-              <a [href]="pageData.event.registration.link" target="_blank" rel="noopener noreferrer" 
+              <a [href]="data.event.registration.link" target="_blank" rel="noopener noreferrer" 
                  class="btn btn-primary btn-lg px-5 py-3 fw-bold shadow-sm d-inline-flex align-items-center gap-2 registration-btn">
-                {{ pageData.event.registration.label }}
+                {{ data.event.registration.label }}
                 <span class="material-icons">open_in_new</span>
               </a>
             </div>

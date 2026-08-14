@@ -1,9 +1,9 @@
-import { ChangeDetectorRef, Component } from '@angular/core';
+import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { LevelData } from '../../models/welcome.model';
-import { Api } from '../../services/api';
+import { ApiService } from '../../services/api.service';
 import { CommonModule } from '@angular/common';
-import { LanguageService } from '../../services/language.service';
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
@@ -13,38 +13,36 @@ import { TranslateModule } from '@ngx-translate/core';
   styleUrl: './postgrad-induction.css',
 })
 export class PostgradInduction {
-  pageData: LevelData | null = null;
-  isLoading = true;
-  errorMessage = '';
+  private route = inject(ActivatedRoute);
+  private apiService = inject(ApiService);
+  private destroyRef = inject(DestroyRef);
 
-  constructor(
-    private route: ActivatedRoute,
-    private welcomeService: Api,
-    private cdr: ChangeDetectorRef,
-    private languageService: LanguageService
-  ) {}
+  pageData = signal<LevelData | null>(null);
+  isLoading = signal(true);
+  errorMessage = signal('');
 
   ngOnInit(): void {
-    this.route.paramMap.subscribe(params => {
-      const level = params.get('level');
-      if (level) {
-        this.fetchInductionData(level, this.languageService.getCurrentLanguage());
-      }
-    });
+    this.route.paramMap
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(params => {
+        const level = params.get('level');
+        if (level) {
+          this.fetchInductionData(level);
+        }
+      });
   }
 
-  fetchInductionData(level: string, languageCode: string): void {
-    this.isLoading = true;
-    this.welcomeService.getOnboardingConfigByLevel(level, languageCode).subscribe({
+  fetchInductionData(level: string): void {
+    this.isLoading.set(true);
+    this.apiService.getOnboardingConfigByLevel(level).subscribe({
       next: (data) => {
-        this.pageData = data;
-        this.isLoading = false;
-        this.cdr.detectChanges();
+        this.pageData.set(data);
+        this.isLoading.set(false);
       },
       error: (err) => {
         console.error('Error loading welcome data:', err);
-        this.errorMessage = 'Could not load the welcome guide. Please try again later.';
-        this.isLoading = false;
+        this.errorMessage.set('Could not load the welcome guide. Please try again later.');
+        this.isLoading.set(false);
       }
     });
   }

@@ -1,6 +1,7 @@
-import { ChangeDetectorRef, Component } from '@angular/core';
-import { Step, WelcomePage } from '../../models/welcome.model';
-import { Api } from '../../services/api';
+import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Step } from '../../models/welcome.model';
+import { ApiService } from '../../services/api.service';
 import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ResourceCategory } from '../../models/resources.model';
@@ -14,50 +15,51 @@ import { TranslateModule } from '@ngx-translate/core';
   styleUrl: './registration.css',
 })
 export class Registration {
-  onboardingSteps: Step[] | null = null;
-  techResources: ResourceCategory | null = null;
-    
-  isLoading = true;
-  errorMessage = '';
+  private apiService = inject(ApiService);
+  private languageService = inject(LanguageService);
+  private destroyRef = inject(DestroyRef);
 
-  constructor(private resourceService: Api, private cdr: ChangeDetectorRef, private languageService: LanguageService) {}
+  onboardingSteps = signal<Step[] | null>(null);
+  techResources = signal<ResourceCategory | null>(null);
+
+  isLoading = signal(true);
+  errorMessage = signal('');
 
   ngOnInit(): void {
-    this.languageService.currentLanguage$.subscribe(newLang => {
-      this.loadCategory('tech', newLang);
-      this.fetchInductionSteps(newLang);
-    });
+    this.languageService.currentLanguage$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
+        this.loadCategory('tech');
+        this.fetchInductionSteps();
+      });
   }
 
-  loadCategory(categoryId: string, languageCode: string): void {
-    this.isLoading = true;
-    
-    this.resourceService.getResources(categoryId, languageCode).subscribe({
+  loadCategory(categoryId: string): void {
+    this.isLoading.set(true);
+
+    this.apiService.getResources(categoryId).subscribe({
       next: (data) => {
-        this.techResources = data;
-        this.isLoading = false;
-        this.cdr.detectChanges();
+        this.techResources.set(data);
+        this.isLoading.set(false);
       },
       error: (error) => {
         console.error('Error fetching resources:', error);
-        this.errorMessage = 'Could not load resources at this time. Please try again later.';
-        this.isLoading = false;
-        this.cdr.detectChanges();
+        this.errorMessage.set('Could not load resources at this time. Please try again later.');
+        this.isLoading.set(false);
       }
     });
   }
 
-  fetchInductionSteps(languageCode: string): void {
-    this.resourceService.getOnboardingSteps(languageCode).subscribe({
+  fetchInductionSteps(): void {
+    this.apiService.getOnboardingSteps().subscribe({
       next: (data) => {
-        this.onboardingSteps = data;
-        this.isLoading = false;
-        this.cdr.detectChanges();
+        this.onboardingSteps.set(data);
+        this.isLoading.set(false);
       },
       error: (error) => {
         console.error('Error fetching events:', error);
-        this.errorMessage = 'Unable to load onboarding steps at this time. Please try again later.';
-        this.isLoading = false;
+        this.errorMessage.set('Unable to load onboarding steps at this time. Please try again later.');
+        this.isLoading.set(false);
       }
     });
   }
