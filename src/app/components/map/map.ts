@@ -4,6 +4,15 @@ import { isPlatformBrowser, CommonModule } from '@angular/common';
 import { environment } from '../../../environments/environment';
 import { TranslateModule } from '@ngx-translate/core';
 
+/**
+ * The installed @types/google.maps defs type this event with a `.place`
+ * property, but the actual `v=quaterly` API exposes `.placePrediction`
+ * instead (confirmed at runtime — `.place` is undefined).
+ */
+interface PlaceAutocompleteSelectEvent extends Event {
+  placePrediction: google.maps.places.PlacePrediction;
+}
+
 @Component({
   selector: 'app-map',
   imports: [GoogleMapsModule, MapDirectionsRenderer, CommonModule, TranslateModule],
@@ -25,7 +34,7 @@ export class Map {
   zoom = 15;
 
   mapId = 'cfdc1d4d800bb4bafd016cc7';
-  activeMarker: any = null;
+  activeMarker: google.maps.marker.AdvancedMarkerElement | null = null;
 
   directionsResults = signal<google.maps.DirectionsResult | undefined>(undefined);
   originAutocompleteElement: any;
@@ -77,7 +86,7 @@ export class Map {
       }
 
       const script = document.createElement('script');
-      script.src = `https://maps.googleapis.com/maps/api/js?key=${environment.GOOGLE_MAPS_API_KEY}&v=weekly&language=en&region=GB`;
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${environment.GOOGLE_MAPS_API_KEY}&v=quarterly&language=en&region=GB`;
       script.async = true;
       script.defer = true;
 
@@ -88,7 +97,7 @@ export class Map {
     });
   }
 
-  private async processSelectedPlace(place: any) {
+  private async processSelectedPlace(place: google.maps.places.Place) {
     if (!place.location) {
       console.warn("No location data available for:", place.displayName);
       return;
@@ -110,7 +119,7 @@ export class Map {
     if (this.activeMarker) {
       this.activeMarker.map = null;
     }
-    const markerLib = await google.maps.importLibrary("marker") as any;
+    const markerLib = await google.maps.importLibrary("marker") as google.maps.MarkerLibrary;
     this.activeMarker = new markerLib.AdvancedMarkerElement({
       map: this.mapComponent.googleMap,
       position: newPos,
@@ -135,7 +144,7 @@ export class Map {
 
     this.searchContainer.nativeElement.appendChild(this.autocompleteElement);
 
-    this.autocompleteElement.addEventListener('gmp-select', async (event: any) => {
+    this.autocompleteElement.addEventListener('gmp-select', async (event: PlaceAutocompleteSelectEvent) => {
       const place = event.placePrediction.toPlace();
 
       await place.fetchFields({ fields: ['displayName', 'location', 'viewport', 'types', 'primaryType'] });
@@ -144,7 +153,7 @@ export class Map {
   }
 
   async searchAndDisplayLocation(searchQuery: string) {
-    const { Place } = await google.maps.importLibrary("places") as any;
+    const { Place } = await google.maps.importLibrary("places") as google.maps.PlacesLibrary;
 
     if (this.autocompleteElement) {
       this.autocompleteElement.value = searchQuery;
@@ -235,7 +244,7 @@ export class Map {
     });
     this.originContainer.nativeElement.appendChild(this.originAutocompleteElement);
 
-    this.originAutocompleteElement.addEventListener('gmp-select', async (event: any) => {
+    this.originAutocompleteElement.addEventListener('gmp-select', async (event: PlaceAutocompleteSelectEvent) => {
       const place = event.placePrediction.toPlace();
       await place.fetchFields({ fields: ['location'] });
 

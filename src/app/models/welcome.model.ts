@@ -11,13 +11,6 @@ export interface Link {
   url: string;
 }
 
-export interface WelcomePage {
-  steps: Step[];
-  source: string;
-  cohorts: LevelData[];
-  inductionEvents: InductionEvent[];
-}
-
 export interface LevelData {
   title: string;
   level: string;
