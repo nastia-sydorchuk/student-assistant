@@ -3,6 +3,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ResourceCategory } from '../models/resources.model';
 import { ApiService } from '../services/api.service';
 import { LanguageService } from '../services/language.service';
+import { LoggerService } from '../services/logger.service';
 
 @Directive()
 export abstract class ResourceCategoryPage {
@@ -10,6 +11,7 @@ export abstract class ResourceCategoryPage {
 
   private apiService = inject(ApiService);
   private languageService = inject(LanguageService);
+  private logger = inject(LoggerService);
   private destroyRef = inject(DestroyRef);
 
   resources = signal<ResourceCategory | null>(null);
@@ -31,7 +33,7 @@ export abstract class ResourceCategoryPage {
         this.isLoading.set(false);
       },
       error: (error) => {
-        console.error('Error fetching resources:', error);
+        this.logger.error('Error fetching resources:', error);
         this.errorMessage.set('Could not load resources at this time. Please try again later.');
         this.isLoading.set(false);
       }

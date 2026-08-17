@@ -16,7 +16,6 @@ export const appConfig: ApplicationConfig = {
     provideClientHydration(withEventReplay()),
     provideHttpClient(withFetch(), withInterceptors([languageInterceptor])),
     provideTranslateService({
-      defaultLanguage: 'en',
       fallbackLang: 'en',
       loader: provideTranslateHttpLoader({
         prefix: '/assets/',

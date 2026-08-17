@@ -3,6 +3,7 @@ import { GoogleMapsModule, GoogleMap, MapDirectionsRenderer, MapDirectionsServic
 import { isPlatformBrowser, CommonModule } from '@angular/common';
 import { environment } from '../../../environments/environment';
 import { TranslateModule } from '@ngx-translate/core';
+import { LoggerService } from '../../services/logger.service';
 
 /**
  * The installed @types/google.maps defs type this event with a `.place`
@@ -28,6 +29,7 @@ export class Map {
 
   private platformId = inject(PLATFORM_ID);
   private directionsService = inject(MapDirectionsService);
+  private logger = inject(LoggerService);
 
   apiLoaded = signal(false);
   center = signal<google.maps.LatLngLiteral>({ lat: 55.9097, lng: -3.3203 }); // HW
@@ -37,6 +39,7 @@ export class Map {
   activeMarker: google.maps.marker.AdvancedMarkerElement | null = null;
 
   directionsResults = signal<google.maps.DirectionsResult | undefined>(undefined);
+  routeError = signal('');
   originAutocompleteElement: any;
   showNavigation = signal(false);
   currentDestinationCoords = signal<google.maps.LatLngLiteral | null>(null);
@@ -65,10 +68,10 @@ export class Map {
 
         setTimeout(() => this.initAutocomplete(), 0);
       } catch (error) {
-        console.error("Error loading Google Maps", error);
+        this.logger.error("Error loading Google Maps", error);
       }
       } else {
-        console.log('Skipping Google Maps load during Server-Side Rendering.');
+        this.logger.log('Skipping Google Maps load during Server-Side Rendering.');
       }
   }
 
@@ -80,17 +83,18 @@ export class Map {
 
   loadGoogleMapsApi(): Promise<void> {
     return new Promise((resolve, reject) => {
-      if ((window as any).google?.maps) {
+      if ((window as any).google?.maps?.importLibrary) {
         resolve();
         return;
       }
 
+      (window as any).__onGoogleMapsLoaded = () => resolve();
+
       const script = document.createElement('script');
-      script.src = `https://maps.googleapis.com/maps/api/js?key=${environment.GOOGLE_MAPS_API_KEY}&v=quarterly&language=en&region=GB`;
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${environment.GOOGLE_MAPS_API_KEY}&v=quarterly&language=en&region=GB&loading=async&callback=__onGoogleMapsLoaded`;
       script.async = true;
       script.defer = true;
 
-      script.onload = () => resolve();
       script.onerror = (error) => reject(error);
 
       document.head.appendChild(script);
@@ -99,7 +103,7 @@ export class Map {
 
   private async processSelectedPlace(place: google.maps.places.Place) {
     if (!place.location) {
-      console.warn("No location data available for:", place.displayName);
+      this.logger.warn("No location data available for:", place.displayName);
       return;
     }
 
@@ -126,7 +130,7 @@ export class Map {
       title: place.displayName
     });
 
-    console.log(`Successfully mapped: ${place.displayName}`);
+    this.logger.log(`Successfully mapped: ${place.displayName}`);
   }
 
   async initAutocomplete() {
@@ -171,10 +175,10 @@ export class Map {
       if (places && places.length > 0) {
         await this.processSelectedPlace(places[0]);
       } else {
-        console.warn(`Google could not find a match for: ${searchQuery}`);
+        this.logger.warn(`Google could not find a match for: ${searchQuery}`);
       }
     } catch (error) {
-      console.error("Programmatic search failed", error);
+      this.logger.error("Programmatic search failed", error);
     }
   }
 
@@ -185,17 +189,21 @@ export class Map {
       travelMode: google.maps.TravelMode.WALKING
     };
 
+    this.routeError.set('');
+
     this.directionsService.route(request).subscribe({
       next: (response) => {
         if (response.result) {
-          console.log("Route calculated successfully!");
+          this.logger.log("Route calculated successfully!");
           this.directionsResults.set(response.result);
         } else {
-          console.warn("Google returned an empty route.");
+          this.logger.warn("Google returned an empty route.");
+          this.routeError.set('Could not calculate a walking route. Please try a different location.');
         }
       },
       error: (err) => {
-        console.error("Directions API failed:", err);
+        this.logger.error("Directions API failed:", err);
+        this.routeError.set('Could not calculate a walking route. Please try a different location.');
       }
     });
   }
@@ -220,6 +228,7 @@ export class Map {
   cancelNavigation() {
     this.showNavigation.set(false);
     this.directionsResults.set(undefined);
+    this.routeError.set('');
     this.originAutocompleteElement = null;
 
     const destination = this.currentDestinationCoords();

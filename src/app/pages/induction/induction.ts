@@ -5,6 +5,7 @@ import { InductionEvent } from '../../models/welcome.model';
 import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { LanguageService } from '../../services/language.service';
+import { LoggerService } from '../../services/logger.service';
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
@@ -16,6 +17,7 @@ import { TranslateModule } from '@ngx-translate/core';
 export class Induction {
   private apiService = inject(ApiService);
   private languageService = inject(LanguageService);
+  private logger = inject(LoggerService);
   private destroyRef = inject(DestroyRef);
 
   inductionEvents = signal<InductionEvent[]>([]);
@@ -39,7 +41,7 @@ export class Induction {
         this.isLoadingEvents.set(false);
       },
       error: (error) => {
-        console.error('Error fetching events:', error);
+        this.logger.error('Error fetching events:', error);
         this.eventsError.set('Unable to load induction events at this time. Please try again later.');
         this.isLoadingEvents.set(false);
       }

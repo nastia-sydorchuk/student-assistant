@@ -6,6 +6,7 @@ import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ResourceCategory } from '../../models/resources.model';
 import { LanguageService } from '../../services/language.service';
+import { LoggerService } from '../../services/logger.service';
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
@@ -17,6 +18,7 @@ import { TranslateModule } from '@ngx-translate/core';
 export class Registration {
   private apiService = inject(ApiService);
   private languageService = inject(LanguageService);
+  private logger = inject(LoggerService);
   private destroyRef = inject(DestroyRef);
 
   onboardingSteps = signal<Step[] | null>(null);
@@ -43,7 +45,7 @@ export class Registration {
         this.isLoading.set(false);
       },
       error: (error) => {
-        console.error('Error fetching resources:', error);
+        this.logger.error('Error fetching resources:', error);
         this.errorMessage.set('Could not load resources at this time. Please try again later.');
         this.isLoading.set(false);
       }
@@ -57,7 +59,7 @@ export class Registration {
         this.isLoading.set(false);
       },
       error: (error) => {
-        console.error('Error fetching events:', error);
+        this.logger.error('Error fetching events:', error);
         this.errorMessage.set('Unable to load onboarding steps at this time. Please try again later.');
         this.isLoading.set(false);
       }

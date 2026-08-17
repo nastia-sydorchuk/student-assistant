@@ -3,6 +3,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { LevelData } from '../../models/welcome.model';
 import { ApiService } from '../../services/api.service';
+import { LoggerService } from '../../services/logger.service';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -15,6 +16,7 @@ import { TranslateModule } from '@ngx-translate/core';
 export class PostgradInduction {
   private route = inject(ActivatedRoute);
   private apiService = inject(ApiService);
+  private logger = inject(LoggerService);
   private destroyRef = inject(DestroyRef);
 
   pageData = signal<LevelData | null>(null);
@@ -40,7 +42,7 @@ export class PostgradInduction {
         this.isLoading.set(false);
       },
       error: (err) => {
-        console.error('Error loading welcome data:', err);
+        this.logger.error('Error loading welcome data:', err);
         this.errorMessage.set('Could not load the welcome guide. Please try again later.');
         this.isLoading.set(false);
       }

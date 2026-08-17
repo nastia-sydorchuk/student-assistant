@@ -23,6 +23,10 @@
           {{ 'MAP.CANCEL_BUTTON' | translate }}
         </button>
       }
+
+      @if (routeError()) {
+        <div class="alert alert-danger py-2 px-3 mt-3 mb-0 small">{{ routeError() }}</div>
+      }
     </div>
 
     @if (apiLoaded()) {
