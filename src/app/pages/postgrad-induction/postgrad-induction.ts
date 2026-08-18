@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { LevelData } from '../../models/welcome.model';
@@ -13,7 +13,7 @@ import { TranslateModule } from '@ngx-translate/core';
   templateUrl: './postgrad-induction.html',
   styleUrl: './postgrad-induction.css',
 })
-export class PostgradInduction {
+export class PostgradInduction implements OnInit {
   private route = inject(ActivatedRoute);
   private apiService = inject(ApiService);
   private logger = inject(LoggerService);

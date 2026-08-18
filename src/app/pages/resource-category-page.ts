@@ -1,4 +1,4 @@
-import { DestroyRef, Directive, inject, signal } from '@angular/core';
+import { DestroyRef, Directive, OnInit, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ResourceCategory } from '../models/resources.model';
 import { ApiService } from '../services/api.service';
@@ -6,7 +6,7 @@ import { LanguageService } from '../services/language.service';
 import { LoggerService } from '../services/logger.service';
 
 @Directive()
-export abstract class ResourceCategoryPage {
+export abstract class ResourceCategoryPage implements OnInit {
   protected abstract categoryId: string;
 
   private apiService = inject(ApiService);

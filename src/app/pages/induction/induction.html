@@ -42,19 +42,10 @@
               </div>
               
               <p class="card-text text-secondary mb-4">{{ event.desc }}</p>
-              <a *ngIf="!event.url.startsWith('http')" 
-                    [routerLink]="event.url" 
+              <a [appSmartLink]="event.url"
                     class="text-decoration-none fw-bold mt-auto d-inline-flex align-items-center action-link">
                     {{ event.actionText }} <span class="material-icons ms-1 fs-6 transition-transform">arrow_forward</span>
               </a>
-
-                <a *ngIf="event.url.startsWith('http')" 
-                    [href]="event.url" 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    class="text-decoration-none fw-bold mt-auto d-inline-flex align-items-center action-link">
-                    {{ event.actionText }} <span class="material-icons ms-1 fs-6 transition-transform">arrow_forward</span>
-                </a>
             </div>
           </div>
         </div>

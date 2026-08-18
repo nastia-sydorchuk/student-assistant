@@ -1,16 +1,21 @@
-<div class="container mt-5 text-center" *ngIf="isLoading()">
-  <div class="spinner-border text-primary" role="status">
-    <span class="visually-hidden">Loading...</span>
+@if (isLoading()) {
+  <div class="container mt-5 text-center">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
   </div>
-</div>
+}
 
-<div class="container mt-5" *ngIf="errorMessage()">
-  <div class="alert alert-danger" role="alert">
-    {{ errorMessage() }}
+@if (errorMessage()) {
+  <div class="container mt-5">
+    <div class="alert alert-danger" role="alert">
+      {{ errorMessage() }}
+    </div>
   </div>
-</div>
+}
 
-<div *ngIf="onboardingSteps() && techResources()">
+@if (onboardingSteps() && techResources()) {
+<div>
   <div class="bg-primary text-white p-4 p-md-5 mb-5 shadow-sm">
     <div class="container">
       <a routerLink="/" class="text-white-50 text-decoration-none d-inline-flex align-items-center mb-4 fw-semibold back-link">
@@ -41,17 +46,7 @@
               <h5 class="card-title fw-bold text-dark mt-2 mb-3">{{ item.summary }}</h5>
               <p class="card-text text-secondary mb-4 flex-grow-1">{{ item.description }}</p>
               <div class="card-footer bg-transparent border-0 text-center pb-3">
-                
-                        <a *ngIf="!item.url.startsWith('http')" 
-                            [routerLink]="item.url" 
-                            class="btn btn-primary w-100 fw-bold mt-auto">
-                            {{ item.actionText }}
-                        </a>
-  
-                        <a *ngIf="item.url.startsWith('http')" 
-                            [href]="item.url" 
-                            target="_blank" 
-                            rel="noopener noreferrer"
+                        <a [appSmartLink]="item.url"
                             class="btn btn-primary w-100 fw-bold mt-auto">
                             {{ item.actionText }}
                         </a>
@@ -110,3 +105,4 @@
 
   </main>
 </div>
+}

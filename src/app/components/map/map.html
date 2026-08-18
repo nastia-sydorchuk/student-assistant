@@ -2,13 +2,13 @@
   <div class="position-absolute top-0 start-0 m-3 p-3 bg-white rounded shadow" style="width: 320px; max-width: calc(100vw - 2rem); z-index: 10;">
       @if (showNavigation()) {
         <div class="mb-3">
-          <label class="form-label small text-muted mb-1 fw-bold">{{ 'MAP.STARTING_LABEL' | translate }}</label>
+          <span class="form-label small text-muted mb-1 fw-bold d-block">{{ 'MAP.STARTING_LABEL' | translate }}</span>
           <div #originContainer></div></div>
       }
       <div>
-        <label class="form-label small text-muted mb-1 fw-bold">
+        <span class="form-label small text-muted mb-1 fw-bold d-block">
           {{ (showNavigation() ? 'MAP.DESTINATION_LABEL' : 'MAP.SEARCH_LABEL') | translate }}
-        </label>
+        </span>
         <div #searchContainer></div>
       </div>
 

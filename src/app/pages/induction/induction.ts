@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ApiService } from '../../services/api.service';
 import { InductionEvent } from '../../models/welcome.model';
@@ -7,14 +7,15 @@ import { CommonModule } from '@angular/common';
 import { LanguageService } from '../../services/language.service';
 import { LoggerService } from '../../services/logger.service';
 import { TranslateModule } from '@ngx-translate/core';
+import { SmartLinkDirective } from '../../directives/smart-link.directive';
 
 @Component({
   selector: 'app-induction',
-  imports: [RouterLink, CommonModule, TranslateModule],
+  imports: [RouterLink, CommonModule, TranslateModule, SmartLinkDirective],
   templateUrl: './induction.html',
   styleUrl: './induction.css',
 })
-export class Induction {
+export class Induction implements OnInit {
   private apiService = inject(ApiService);
   private languageService = inject(LanguageService);
   private logger = inject(LoggerService);
@@ -24,7 +25,7 @@ export class Induction {
   isLoadingEvents = signal(true);
   eventsError = signal('');
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.languageService.currentLanguage$
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {

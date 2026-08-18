@@ -8,7 +8,8 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "serve:ssr:frontend": "node dist/frontend/server/server.mjs",
-    "translate": "node translate.js"
+    "translate": "node translate.js",
+    "lint": "ng lint"
   },
   "prettier": {
     "printWidth": 100,
@@ -47,12 +48,16 @@
     "@angular/build": "^21.1.0",
     "@angular/cli": "^21.1.0",
     "@angular/compiler-cli": "^21.1.0",
+    "@eslint/js": "^10.0.1",
     "@types/express": "^5.0.1",
-    "@types/google.maps": "^3.58.1",
+    "@types/google.maps": "^3.65.5",
     "@types/marked": "^5.0.2",
     "@types/node": "^20.17.19",
+    "angular-eslint": "21.4.0",
+    "eslint": "^10.3.0",
     "jsdom": "^27.1.0",
     "typescript": "~5.9.2",
+    "typescript-eslint": "8.59.2",
     "vitest": "^4.0.8"
   }
 }

@@ -1,16 +1,21 @@
-<div class="container mt-5 text-center" *ngIf="isLoading()">
-  <div class="spinner-border text-primary" role="status">
-    <span class="visually-hidden">Loading...</span>
+@if (isLoading()) {
+  <div class="container mt-5 text-center">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
   </div>
-</div>
+}
 
-<div class="container mt-5" *ngIf="errorMessage()">
-  <div class="alert alert-danger" role="alert">
-    {{ errorMessage() }}
+@if (errorMessage()) {
+  <div class="container mt-5">
+    <div class="alert alert-danger" role="alert">
+      {{ errorMessage() }}
+    </div>
   </div>
-</div>
+}
 
-<div *ngIf="resources() as res">
+@if (resources(); as res) {
+<div>
   <div class="bg-primary text-white p-4 p-md-5 mb-5 shadow-sm">
     <div class="container">
       <a routerLink="/" class="text-white-50 text-decoration-none d-inline-flex align-items-center mb-4 fw-semibold back-link">
@@ -42,17 +47,7 @@
                   <span class="material-icons fs-5 text-primary">mail</span> {{ service.contact }}
                 </a>
                 <div class="card-footer bg-transparent border-0 text-center pb-3">
-              
-                      <a *ngIf="!service.url?.startsWith('http')" 
-                          [routerLink]="service.url" 
-                          class="btn btn-primary w-100 fw-bold mt-auto">
-                          {{ service.actionText }}
-                      </a>
-  
-                      <a *ngIf="service.url?.startsWith('http')" 
-                          [href]="service.url" 
-                          target="_blank" 
-                          rel="noopener noreferrer"
+                      <a [appSmartLink]="service.url"
                           class="btn btn-primary w-100 fw-bold mt-auto">
                           {{ service.actionText }}
                       </a>
@@ -66,3 +61,4 @@
     </div>
   </main>
 </div>
+}

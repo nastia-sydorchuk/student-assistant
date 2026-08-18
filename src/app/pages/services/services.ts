@@ -3,10 +3,11 @@ import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { ResourceCategoryPage } from '../resource-category-page';
+import { SmartLinkDirective } from '../../directives/smart-link.directive';
 
 @Component({
   selector: 'app-services',
-  imports: [RouterLink, CommonModule, TranslateModule],
+  imports: [RouterLink, CommonModule, TranslateModule, SmartLinkDirective],
   templateUrl: './services.html',
   styleUrl: './services.css',
 })

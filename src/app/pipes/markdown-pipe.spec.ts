@@ -30,6 +30,7 @@ describe('MarkdownPipe', () => {
     const span = fixture.debugElement.query(By.css('span')).nativeElement as HTMLElement;
 
     expect(span.innerHTML).not.toContain('<script');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- checking a canary global that only exists if the XSS payload executed
     expect((window as any).__pwned).toBeUndefined();
   });
 
@@ -45,6 +46,7 @@ describe('MarkdownPipe', () => {
     const span = fixture.debugElement.query(By.css('span')).nativeElement as HTMLElement;
 
     expect(span.innerHTML).not.toContain('onerror');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- checking a canary global that only exists if the XSS payload executed
     expect((window as any).__pwned).toBeUndefined();
   });
 });

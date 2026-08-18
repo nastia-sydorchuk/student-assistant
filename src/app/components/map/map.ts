@@ -1,17 +1,14 @@
-import { Component, ElementRef, ViewChild, PLATFORM_ID, SimpleChanges, Input, inject, signal } from '@angular/core';
+import { Component, ElementRef, ViewChild, PLATFORM_ID, SimpleChanges, Input, OnChanges, OnInit, inject, signal } from '@angular/core';
 import { GoogleMapsModule, GoogleMap, MapDirectionsRenderer, MapDirectionsService } from '@angular/google-maps';
 import { isPlatformBrowser, CommonModule } from '@angular/common';
 import { environment } from '../../../environments/environment';
 import { TranslateModule } from '@ngx-translate/core';
 import { LoggerService } from '../../services/logger.service';
 
-/**
- * The installed @types/google.maps defs type this event with a `.place`
- * property, but the actual `v=quaterly` API exposes `.placePrediction`
- * instead (confirmed at runtime — `.place` is undefined).
- */
-interface PlaceAutocompleteSelectEvent extends Event {
-  placePrediction: google.maps.places.PlacePrediction;
+declare global {
+  interface Window {
+    __onGoogleMapsLoaded?: () => void;
+  }
 }
 
 @Component({
@@ -20,7 +17,7 @@ interface PlaceAutocompleteSelectEvent extends Event {
   templateUrl: './map.html',
   styleUrl: './map.css',
 })
-export class Map {
+export class Map implements OnInit, OnChanges {
   @ViewChild('searchContainer') searchContainer!: ElementRef;
   @ViewChild('originContainer') originContainer?: ElementRef;
   @ViewChild(GoogleMap) mapComponent!: GoogleMap;
@@ -35,17 +32,17 @@ export class Map {
   center = signal<google.maps.LatLngLiteral>({ lat: 55.9097, lng: -3.3203 }); // HW
   zoom = 15;
 
-  mapId = 'cfdc1d4d800bb4bafd016cc7';
+  mapId = 'aef90f5ee87e873ee49948e9';
   activeMarker: google.maps.marker.AdvancedMarkerElement | null = null;
 
   directionsResults = signal<google.maps.DirectionsResult | undefined>(undefined);
   routeError = signal('');
-  originAutocompleteElement: any;
+  originAutocompleteElement: google.maps.places.PlaceAutocompleteElement | null = null;
   showNavigation = signal(false);
   currentDestinationCoords = signal<google.maps.LatLngLiteral | null>(null);
   fallbackOrigin: google.maps.LatLngLiteral = { lat: 55.9125, lng: -3.3214 };
 
-  autocompleteElement: any;
+  autocompleteElement: google.maps.places.PlaceAutocompleteElement | null = null;
 
   mapOptions: google.maps.MapOptions = {
     mapTypeControl: false,
@@ -54,7 +51,7 @@ export class Map {
     zoomControl: true
   };
 
-  async ngOnInit() {
+  async ngOnInit(): Promise<void> {
     if (isPlatformBrowser(this.platformId)) {
       try {
         await this.loadGoogleMapsApi();
@@ -75,7 +72,7 @@ export class Map {
       }
   }
 
-  ngOnChanges(changes: SimpleChanges) {
+  ngOnChanges(changes: SimpleChanges): void {
     if (changes['targetLocation'] && this.targetLocation) {
       this.searchAndDisplayLocation(this.targetLocation);
     }
@@ -83,12 +80,12 @@ export class Map {
 
   loadGoogleMapsApi(): Promise<void> {
     return new Promise((resolve, reject) => {
-      if ((window as any).google?.maps?.importLibrary) {
+      if (typeof google !== 'undefined' && typeof google.maps?.importLibrary === 'function') {
         resolve();
         return;
       }
 
-      (window as any).__onGoogleMapsLoaded = () => resolve();
+      window.__onGoogleMapsLoaded = () => resolve();
 
       const script = document.createElement('script');
       script.src = `https://maps.googleapis.com/maps/api/js?key=${environment.GOOGLE_MAPS_API_KEY}&v=quarterly&language=en&region=GB&loading=async&callback=__onGoogleMapsLoaded`;
@@ -135,20 +132,21 @@ export class Map {
 
   async initAutocomplete() {
     await google.maps.importLibrary("places");
-    this.autocompleteElement = new google.maps.places.PlaceAutocompleteElement({
+    const autocompleteElement = new google.maps.places.PlaceAutocompleteElement({
       locationRestriction: {
         north: 55.916,
         south: 55.904,
         east: -3.308,
         west: -3.335
       },
-      componentRestrictions: { country: ['gb'] },
-      types: ['establishment', 'premise']
+      includedRegionCodes: ['gb'],
+      includedPrimaryTypes: ['establishment', 'premise']
     });
+    this.autocompleteElement = autocompleteElement;
 
-    this.searchContainer.nativeElement.appendChild(this.autocompleteElement);
+    this.searchContainer.nativeElement.appendChild(autocompleteElement);
 
-    this.autocompleteElement.addEventListener('gmp-select', async (event: PlaceAutocompleteSelectEvent) => {
+    autocompleteElement.addEventListener('gmp-select', async (event) => {
       const place = event.placePrediction.toPlace();
 
       await place.fetchFields({ fields: ['displayName', 'location', 'viewport', 'types', 'primaryType'] });
@@ -241,19 +239,20 @@ export class Map {
   async initOriginAutocomplete() {
     if (!this.originContainer) return;
 
-    this.originAutocompleteElement = new google.maps.places.PlaceAutocompleteElement({
+    const originAutocompleteElement = new google.maps.places.PlaceAutocompleteElement({
       locationRestriction: {
         north: 55.916,
         south: 55.904,
         east: -3.308,
         west: -3.335
       },
-      componentRestrictions: { country: ['gb'] },
-      types: ['establishment', 'premise']
+      includedRegionCodes: ['gb'],
+      includedPrimaryTypes: ['establishment', 'premise']
     });
-    this.originContainer.nativeElement.appendChild(this.originAutocompleteElement);
+    this.originAutocompleteElement = originAutocompleteElement;
+    this.originContainer.nativeElement.appendChild(originAutocompleteElement);
 
-    this.originAutocompleteElement.addEventListener('gmp-select', async (event: PlaceAutocompleteSelectEvent) => {
+    originAutocompleteElement.addEventListener('gmp-select', async (event) => {
       const place = event.placePrediction.toPlace();
       await place.fetchFields({ fields: ['location'] });
 
@@ -270,7 +269,7 @@ export class Map {
       if (typeof navigator !== 'undefined' && navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
           (position) => resolve({ lat: position.coords.latitude, lng: position.coords.longitude }),
-          (error) => resolve(this.fallbackOrigin),
+          () => resolve(this.fallbackOrigin),
           { enableHighAccuracy: true, timeout: 5000 }
         );
       } else {

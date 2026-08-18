@@ -1,4 +1,4 @@
-import { Component, DestroyRef, PLATFORM_ID, inject, signal } from '@angular/core';
+import { Component, DestroyRef, OnInit, PLATFORM_ID, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -6,7 +6,7 @@ import { finalize } from 'rxjs/operators';
 import { MarkdownPipe } from '../../pipes/markdown-pipe';
 import { ApiService } from '../../services/api.service';
 import { ChatMessage, ChatRequest } from '../../models/chat.model';
-import { NavigationEnd, NavigationStart, Router } from '@angular/router';
+import { Event as RouterEvent, NavigationEnd, NavigationStart, Router } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
@@ -15,7 +15,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
   templateUrl: './chat-widget.html',
   styleUrl: './chat-widget.css',
 })
-export class ChatWidget {
+export class ChatWidget implements OnInit {
   private apiService = inject(ApiService);
   private router = inject(Router);
   private platformId = inject(PLATFORM_ID);
@@ -27,11 +27,11 @@ export class ChatWidget {
   messages = signal<ChatMessage[]>([]);
 
   userInput = '';
-  private openTimer: any;
+  private openTimer: ReturnType<typeof setTimeout> | undefined;
 
   sessionId = 'session_' + Math.random().toString(36).substring(7);
 
-  private pageGreetings: { [key: string]: string } = {
+  private pageGreetings: Record<string, string> = {
     '/': 'GREETINGS.HOME',
     '/academic': 'GREETINGS.ACADEMIC',
     '/facilities': 'GREETINGS.FACILITIES',
@@ -44,10 +44,10 @@ export class ChatWidget {
     'default': 'GREETINGS.DEFAULT'
   };
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.router.events
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((event: any) => {
+      .subscribe((event: RouterEvent) => {
         this.setGreetingAndOpen(this.router.url);
         if (event instanceof NavigationStart && this.messages().length <= 1) {
           this.isOpen.set(false);
@@ -127,7 +127,7 @@ export class ChatWidget {
           label: formattedText
         };
         
-      } catch (error) {
+      } catch {
         // Safe fallback if the string is not a valid URL
         return {
           url: urlString,

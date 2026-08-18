@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Step } from '../../models/welcome.model';
 import { ApiService } from '../../services/api.service';
@@ -8,14 +8,15 @@ import { ResourceCategory } from '../../models/resources.model';
 import { LanguageService } from '../../services/language.service';
 import { LoggerService } from '../../services/logger.service';
 import { TranslateModule } from '@ngx-translate/core';
+import { SmartLinkDirective } from '../../directives/smart-link.directive';
 
 @Component({
   selector: 'app-registration',
-  imports: [RouterLink, CommonModule, TranslateModule],
+  imports: [RouterLink, CommonModule, TranslateModule, SmartLinkDirective],
   templateUrl: './registration.html',
   styleUrl: './registration.css',
 })
-export class Registration {
+export class Registration implements OnInit {
   private apiService = inject(ApiService);
   private languageService = inject(LanguageService);
   private logger = inject(LoggerService);

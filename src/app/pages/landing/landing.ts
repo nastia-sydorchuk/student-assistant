@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ApiService } from '../../services/api.service';
 import { RouterLink, RouterModule } from '@angular/router';
@@ -14,7 +14,7 @@ import { TranslateModule } from '@ngx-translate/core';
   templateUrl: './landing.html',
   styleUrl: './landing.css',
 })
-export class Landing {
+export class Landing implements OnInit {
   private apiService = inject(ApiService);
   private languageService = inject(LanguageService);
   private logger = inject(LoggerService);

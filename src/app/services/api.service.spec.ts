@@ -3,6 +3,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { ApiService } from './api.service';
 import { ChatRequest } from '../models/chat.model';
+import { LevelData } from '../models/welcome.model';
 
 describe('ApiService', () => {
   let service: ApiService;
@@ -58,7 +59,17 @@ describe('ApiService', () => {
   });
 
   it('fetches onboarding config by level', () => {
-    const mockLevel = { title: 't', level: 'postgraduate', importantDates: [], event: {} as any };
+    const mockLevel: LevelData = {
+      title: 't',
+      level: 'postgraduate',
+      importantDates: [],
+      event: {
+        title: 'et',
+        description: 'ed',
+        programmeOutline: [],
+        registration: { label: 'l', link: 'link' },
+      },
+    };
 
     service.getOnboardingConfigByLevel('postgraduate').subscribe((level) => {
       expect(level).toEqual(mockLevel);

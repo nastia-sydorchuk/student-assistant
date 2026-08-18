@@ -12,6 +12,7 @@ describe('Map', () => {
 
   beforeEach(async () => {
     directionsService = { route: vi.fn() };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- mocking the ambient `google` namespace for the test
     (globalThis as any).google = { maps: { TravelMode: { WALKING: 'WALKING' } } };
 
     await TestBed.configureTestingModule({
@@ -28,6 +29,7 @@ describe('Map', () => {
   });
 
   afterEach(() => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- mocking the ambient `google` namespace for the test
     delete (globalThis as any).google;
   });
 
@@ -99,7 +101,7 @@ describe('Map', () => {
     component.showNavigation.set(true);
     component.directionsResults.set({ routes: [] } as unknown as google.maps.DirectionsResult);
     component.routeError.set('Could not calculate a walking route. Please try a different location.');
-    component.originAutocompleteElement = {};
+    component.originAutocompleteElement = {} as unknown as typeof component.originAutocompleteElement;
 
     component.cancelNavigation();
 
