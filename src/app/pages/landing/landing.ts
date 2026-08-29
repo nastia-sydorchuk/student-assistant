@@ -5,7 +5,6 @@ import { ApiService } from '../../services/api.service';
 import { RouterLink, RouterModule } from '@angular/router';
 import { PortalCard } from '../../models/portal-card.model';
 import { LanguageService } from '../../services/language.service';
-import { LoggerService } from '../../services/logger.service';
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
@@ -17,7 +16,6 @@ import { TranslateModule } from '@ngx-translate/core';
 export class Landing implements OnInit {
   private apiService = inject(ApiService);
   private languageService = inject(LanguageService);
-  private logger = inject(LoggerService);
   private destroyRef = inject(DestroyRef);
 
   portalCards = signal<PortalCard[]>([]);
@@ -32,8 +30,7 @@ export class Landing implements OnInit {
             this.portalCards.set(data);
             this.isLoading.set(false);
           },
-          error: (err) => {
-            this.logger.error('Failed to load dashboard config', err);
+          error: () => {
             this.isLoading.set(false);
           }
         });

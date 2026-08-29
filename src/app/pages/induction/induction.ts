@@ -5,7 +5,6 @@ import { InductionEvent } from '../../models/welcome.model';
 import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { LanguageService } from '../../services/language.service';
-import { LoggerService } from '../../services/logger.service';
 import { TranslateModule } from '@ngx-translate/core';
 import { SmartLinkDirective } from '../../directives/smart-link.directive';
 
@@ -18,7 +17,6 @@ import { SmartLinkDirective } from '../../directives/smart-link.directive';
 export class Induction implements OnInit {
   private apiService = inject(ApiService);
   private languageService = inject(LanguageService);
-  private logger = inject(LoggerService);
   private destroyRef = inject(DestroyRef);
 
   inductionEvents = signal<InductionEvent[]>([]);
@@ -41,8 +39,7 @@ export class Induction implements OnInit {
         this.inductionEvents.set(data);
         this.isLoadingEvents.set(false);
       },
-      error: (error) => {
-        this.logger.error('Error fetching events:', error);
+      error: () => {
         this.eventsError.set('Unable to load induction events at this time. Please try again later.');
         this.isLoadingEvents.set(false);
       }

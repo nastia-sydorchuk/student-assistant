@@ -8,13 +8,14 @@ import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/
 import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
 import { provideTranslateService } from '@ngx-translate/core';
 import { languageInterceptor } from './interceptors/language.interceptor';
+import { errorInterceptor } from './interceptors/error.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
     provideClientHydration(withEventReplay()),
-    provideHttpClient(withFetch(), withInterceptors([languageInterceptor])),
+    provideHttpClient(withFetch(), withInterceptors([languageInterceptor, errorInterceptor])),
     provideTranslateService({
       fallbackLang: 'en',
       loader: provideTranslateHttpLoader({

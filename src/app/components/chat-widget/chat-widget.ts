@@ -29,7 +29,7 @@ export class ChatWidget implements OnInit {
   userInput = '';
   private openTimer: ReturnType<typeof setTimeout> | undefined;
 
-  sessionId = 'session_' + Math.random().toString(36).substring(7);
+  sessionId = 'session_' + crypto.randomUUID();
 
   private pageGreetings: Record<string, string> = {
     '/': 'GREETINGS.HOME',

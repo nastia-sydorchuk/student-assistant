@@ -6,7 +6,6 @@ import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ResourceCategory } from '../../models/resources.model';
 import { LanguageService } from '../../services/language.service';
-import { LoggerService } from '../../services/logger.service';
 import { TranslateModule } from '@ngx-translate/core';
 import { SmartLinkDirective } from '../../directives/smart-link.directive';
 
@@ -19,7 +18,6 @@ import { SmartLinkDirective } from '../../directives/smart-link.directive';
 export class Registration implements OnInit {
   private apiService = inject(ApiService);
   private languageService = inject(LanguageService);
-  private logger = inject(LoggerService);
   private destroyRef = inject(DestroyRef);
 
   onboardingSteps = signal<Step[] | null>(null);
@@ -45,8 +43,7 @@ export class Registration implements OnInit {
         this.techResources.set(data);
         this.isLoading.set(false);
       },
-      error: (error) => {
-        this.logger.error('Error fetching resources:', error);
+      error: () => {
         this.errorMessage.set('Could not load resources at this time. Please try again later.');
         this.isLoading.set(false);
       }
@@ -59,8 +56,7 @@ export class Registration implements OnInit {
         this.onboardingSteps.set(data);
         this.isLoading.set(false);
       },
-      error: (error) => {
-        this.logger.error('Error fetching events:', error);
+      error: () => {
         this.errorMessage.set('Unable to load onboarding steps at this time. Please try again later.');
         this.isLoading.set(false);
       }
