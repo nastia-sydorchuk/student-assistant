@@ -131,7 +131,7 @@ export class ChatWidget implements OnInit {
         // Safe fallback if the string is not a valid URL
         return {
           url: urlString,
-          label: "External Link"
+          label: this.translateService.instant('CHAT.EXTERNAL_LINK')
         };
       }
     });
@@ -173,7 +173,7 @@ export class ChatWidget implements OnInit {
       },
       error: () => {
         this.messages.update(msgs => [...msgs, {
-          text: 'Sorry, I could not connect to the server.',
+          text: this.translateService.instant('CHAT.CONNECTION_ERROR'),
           isUser: false
         }]);
       }

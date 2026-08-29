@@ -53,5 +53,15 @@
     "INDUCTION_UNDERGRADUATE": "Hi! Ready to start your undergraduate journey? Ask me anything about the Welcome Week or eligibility for the success events!",
     "INDUCTION_POSTGRADUATE": "Welcome to your postgraduate studies! Need help finding your specific networking events or academic timetable?",
     "DEFAULT": "Hi! How can I help you with your Heriot-Watt queries today?"
+  },
+  "CHAT": {
+    "TITLE": "HW Student Assistant",
+    "CLOSE_ARIA": "Close chat",
+    "PLACEHOLDER": "Type a question...",
+    "SEND": "Send",
+    "THINKING": "Thinking...",
+    "READ_MORE": "Read more:",
+    "CONNECTION_ERROR": "Sorry, I could not connect to the server.",
+    "EXTERNAL_LINK": "External Link"
   }
 }

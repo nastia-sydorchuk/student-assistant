@@ -72,7 +72,7 @@ describe('ChatWidget', () => {
     expect(component.isLoading()).toBe(false);
     const messages = component.messages();
     expect(messages[messages.length - 1]).toEqual({
-      text: 'Sorry, I could not connect to the server.',
+      text: 'CHAT.CONNECTION_ERROR',
       isUser: false,
     });
   });

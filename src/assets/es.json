@@ -53,5 +53,15 @@
     "INDUCTION_UNDERGRADUATE": "¡Hola! ¿Listo para comenzar tu trayectoria universitaria? ¡Pregúntame lo que quieras sobre la Semana de Bienvenida o los requisitos para participar en los eventos de éxito!",
     "INDUCTION_POSTGRADUATE": "¡Bienvenido/a a tus estudios de posgrado! ¿Necesitas ayuda para encontrar eventos de networking o tu horario académico?",
     "DEFAULT": "¡Hola! ¿En qué puedo ayudarte hoy con tus consultas sobre Heriot-Watt?"
+  },
+  "CHAT": {
+    "TITLE": "Asistente Estudiantil HW",
+    "CLOSE_ARIA": "Cerrar chat",
+    "PLACEHOLDER": "Escribe una pregunta...",
+    "SEND": "Enviar",
+    "THINKING": "Pensando...",
+    "READ_MORE": "Más información:",
+    "CONNECTION_ERROR": "Lo sentimos, no pudimos conectar con el servidor.",
+    "EXTERNAL_LINK": "Enlace externo"
   }
 }
