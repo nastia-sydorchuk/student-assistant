@@ -1,4 +1,5 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, PLATFORM_ID, inject } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject } from 'rxjs';
 
@@ -7,6 +8,7 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class LanguageService {
   private translate = inject(TranslateService);
+  private platformId = inject(PLATFORM_ID);
 
   private languageSubject = new BehaviorSubject<string>('en');
 
@@ -14,7 +16,12 @@ export class LanguageService {
 
   constructor() {
     this.translate.setFallbackLang('en');
-    const savedLang = 'en';
+
+    let savedLang = 'en';
+    if (isPlatformBrowser(this.platformId)) {
+      savedLang = localStorage.getItem('lang') ?? 'en';
+    }
+
     this.languageSubject.next(savedLang);
     this.translate.use(savedLang);
   }
@@ -22,6 +29,10 @@ export class LanguageService {
   changeLanguage(lang: string): void {
     this.languageSubject.next(lang);
     this.translate.use(lang);
+
+    if (isPlatformBrowser(this.platformId)) {
+      localStorage.setItem('lang', lang);
+    }
   }
 
   getCurrentLanguage(): string {

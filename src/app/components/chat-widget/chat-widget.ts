@@ -60,6 +60,10 @@ export class ChatWidget implements OnInit {
           this.setGreetingAndOpen(event.urlAfterRedirects || '');
         }
       });
+
+    this.translateService.onLangChange
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.setGreetingAndOpen(this.router.url));
   }
 
   private setGreetingAndOpen(url: string) {

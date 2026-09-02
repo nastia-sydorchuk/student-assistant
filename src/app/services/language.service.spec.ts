@@ -8,6 +8,8 @@ describe('LanguageService', () => {
   let fallbackSpy: ReturnType<typeof vi.spyOn>;
 
   beforeEach(() => {
+    localStorage.clear();
+
     TestBed.configureTestingModule({
       providers: [provideTranslateService()],
     });
@@ -17,7 +19,11 @@ describe('LanguageService', () => {
     fallbackSpy = vi.spyOn(translate, 'setFallbackLang');
   });
 
-  it('sets the fallback language and defaults to English on construction', () => {
+  afterEach(() => {
+    localStorage.clear();
+  });
+
+  it('sets the fallback language and defaults to English when nothing is saved', () => {
     const service = TestBed.inject(LanguageService);
 
     expect(fallbackSpy).toHaveBeenCalledWith('en');
@@ -25,7 +31,16 @@ describe('LanguageService', () => {
     expect(service.getCurrentLanguage()).toBe('en');
   });
 
-  it('changes the current language and delegates to TranslateService', () => {
+  it('restores a previously saved language on construction', () => {
+    localStorage.setItem('lang', 'es');
+
+    const service = TestBed.inject(LanguageService);
+
+    expect(useSpy).toHaveBeenCalledWith('es');
+    expect(service.getCurrentLanguage()).toBe('es');
+  });
+
+  it('changes the current language, persists it, and delegates to TranslateService', () => {
     const service = TestBed.inject(LanguageService);
     useSpy.mockClear();
 
@@ -33,6 +48,7 @@ describe('LanguageService', () => {
 
     expect(service.getCurrentLanguage()).toBe('es');
     expect(useSpy).toHaveBeenCalledWith('es');
+    expect(localStorage.getItem('lang')).toBe('es');
   });
 
   it('emits the current language on currentLanguage$', () => {
