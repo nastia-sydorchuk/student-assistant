@@ -9,18 +9,21 @@
   <div class="row g-4 justify-content-center">
     @for (card of portalCards(); track card.title) {
       <div class="col-md-6 col-lg-4">
-        <div class="card h-100 shadow-sm border-0 text-center p-4 hover-lift" [routerLink]="card.route" tabindex="0" style="cursor: pointer;">
-          
+        <a class="card h-100 shadow-sm border-0 text-center p-4 hover-lift text-decoration-none text-reset"
+           [routerLink]="card.route"
+           [attr.aria-label]="card.title"
+           style="cursor: pointer;">
+
           <div class="d-flex justify-content-center mb-4">
             <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
               <span class="material-icons display-4">{{ card.icon }}</span>
             </div>
           </div>
-          
+
           <h3 class="card-title h5 fw-bold text-dark mb-3">{{ card.title }}</h3>
           <p class="card-text text-secondary">{{ card.description }}</p>
-          
-        </div>
+
+        </a>
       </div>
     }
   </div>

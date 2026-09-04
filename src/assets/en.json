@@ -7,7 +7,8 @@
   "COMMON": {
     "LOADING": "Loading...",
     "ERROR": "Could not load resources at this time.",
-    "NAV": "Back to Dashboard"
+    "NAV": "Back to Dashboard",
+    "LANGUAGE_SELECT_LABEL": "Select language"
   },
   "WELLBEING": {
     "TITLE": "Support Services",

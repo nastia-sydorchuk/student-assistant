@@ -7,7 +7,8 @@
   "COMMON": {
     "LOADING": "Cargando...",
     "ERROR": "No se pudieron cargar los recursos en este momento.",
-    "NAV": "Volver al panel de control"
+    "NAV": "Volver al panel de control",
+    "LANGUAGE_SELECT_LABEL": "Seleccionar idioma"
   },
   "WELLBEING": {
     "TITLE": "Servicios de apoyo",

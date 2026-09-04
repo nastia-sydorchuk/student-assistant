@@ -1,23 +1,14 @@
 import { Routes } from '@angular/router';
-import { Landing } from './pages/landing/landing';
-import { PostgradInduction } from './pages/postgrad-induction/postgrad-induction';
-import { Registration } from './pages/registration/registration';
-import { Services } from './pages/services/services';
-import { Academic } from './pages/academic/academic';
-import { Facilities } from './pages/facilities/facilities';
-import { Cultural } from './pages/cultural/cultural';
-import { Induction } from './pages/induction/induction';
-import { Wellbeing } from './pages/wellbeing/wellbeing';
 
 export const routes: Routes = [
-    { path: '', component: Landing },
-    { path: 'home', component: Landing },
-    { path: 'registration', component: Registration },
-    { path: 'services', component: Services },
-    { path: 'academic', component: Academic },
-    { path: 'facilities', component: Facilities },
-    { path: 'cultural', component: Cultural },
-    { path: 'induction', component: Induction },
-    { path: 'wellbeing', component: Wellbeing },
-    { path: 'induction/:level', component: PostgradInduction },
+    { path: '', loadComponent: () => import('./pages/landing/landing').then(m => m.Landing) },
+    { path: 'home', loadComponent: () => import('./pages/landing/landing').then(m => m.Landing) },
+    { path: 'registration', loadComponent: () => import('./pages/registration/registration').then(m => m.Registration) },
+    { path: 'services', loadComponent: () => import('./pages/services/services').then(m => m.Services) },
+    { path: 'academic', loadComponent: () => import('./pages/academic/academic').then(m => m.Academic) },
+    { path: 'facilities', loadComponent: () => import('./pages/facilities/facilities').then(m => m.Facilities) },
+    { path: 'cultural', loadComponent: () => import('./pages/cultural/cultural').then(m => m.Cultural) },
+    { path: 'induction', loadComponent: () => import('./pages/induction/induction').then(m => m.Induction) },
+    { path: 'wellbeing', loadComponent: () => import('./pages/wellbeing/wellbeing').then(m => m.Wellbeing) },
+    { path: 'induction/:level', loadComponent: () => import('./pages/postgrad-induction/postgrad-induction').then(m => m.PostgradInduction) },
 ];

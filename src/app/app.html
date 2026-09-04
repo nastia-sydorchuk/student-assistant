@@ -6,9 +6,10 @@
     </a>
 
     <div class="d-flex align-items-center ms-auto">
-      <select class="form-select form-select-sm" 
-              (change)="onLanguageChange($event)" 
-              [value]="currentLang" 
+      <select class="form-select form-select-sm"
+              (change)="onLanguageChange($event)"
+              [value]="currentLang"
+              [attr.aria-label]="'COMMON.LANGUAGE_SELECT_LABEL' | translate"
               style="width: auto; cursor: pointer;">
         <option value="en">English</option>
         <option value="es">Español</option>

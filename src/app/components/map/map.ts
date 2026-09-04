@@ -32,7 +32,7 @@ export class Map implements OnInit, OnChanges {
   center = signal<google.maps.LatLngLiteral>({ lat: 55.9097, lng: -3.3203 }); // HW
   zoom = 15;
 
-  mapId = 'aef90f5ee87e873ee49948e9';
+  mapId = environment.GOOGLE_MAPS_MAP_ID;
   activeMarker: google.maps.marker.AdvancedMarkerElement | null = null;
 
   directionsResults = signal<google.maps.DirectionsResult | undefined>(undefined);
