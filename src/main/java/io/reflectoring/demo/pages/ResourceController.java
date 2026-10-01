@@ -1,6 +1,7 @@
 package io.reflectoring.demo.pages;
 
 import io.reflectoring.demo.TranslationService;
+import io.reflectoring.demo.common.language.LanguageResolver;
 import io.reflectoring.demo.dto.ResourceCategory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -19,12 +20,17 @@ public class ResourceController {
     @Autowired
     private TranslationService translationService;
 
+    @Autowired
+    private LanguageResolver languageResolver;
+
     @GetMapping("/{categoryId}")
     public ResponseEntity<ResourceCategory> getCategory(
             @PathVariable String categoryId,
             @RequestHeader(name = "Accept-Language", defaultValue = "en") String language) {
 
-        Optional<ResourceCategory> cachedCategory = repository.findByCategoryIdAndLanguage(categoryId, language);
+        String resolvedLanguage = languageResolver.resolve(language);
+
+        Optional<ResourceCategory> cachedCategory = repository.findByCategoryIdAndLanguage(categoryId, resolvedLanguage);
 
         if (cachedCategory.isPresent()) {
             return ResponseEntity.ok(cachedCategory.get());
@@ -36,7 +42,7 @@ public class ResourceController {
             return ResponseEntity.notFound().build(); // Category doesn't exist at all
         }
 
-        ResourceCategory newlyTranslatedCategory = translationService.translateCategory(englishCategory.get(), language);
+        ResourceCategory newlyTranslatedCategory = translationService.translateCategory(englishCategory.get(), resolvedLanguage);
 
         repository.save(newlyTranslatedCategory);
 

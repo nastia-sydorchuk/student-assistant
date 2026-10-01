@@ -4,6 +4,7 @@ import com.google.cloud.translate.Translate;
 import com.google.cloud.translate.TranslateOptions;
 import com.google.cloud.translate.Translation;
 import io.reflectoring.demo.dto.*;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -11,16 +12,14 @@ import java.util.List;
 
 @Service
 public class TranslationService {
-    private final String GOOGLE_API_KEY = "";
+    private final Translate translate;
 
-    // Tell Java to build the translator using that specific key
-    private final Translate translate = TranslateOptions.newBuilder()
-            .setApiKey(GOOGLE_API_KEY)
-            .build()
-            .getService();
-
-    // Initialize the Google Translate Client
-    //  private final Translate translate = TranslateOptions.getDefaultInstance().getService();
+    public TranslationService(@Value("${google.api.key}") String googleApiKey) {
+        this.translate = TranslateOptions.newBuilder()
+                .setApiKey(googleApiKey)
+                .build()
+                .getService();
+    }
 
     public ResourceCategory translateCategory(ResourceCategory englishCategory, String targetLanguage) {
 

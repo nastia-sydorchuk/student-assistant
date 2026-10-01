@@ -2,6 +2,7 @@ package io.reflectoring.demo.pages;
 
 
 import io.reflectoring.demo.TranslationService;
+import io.reflectoring.demo.common.language.LanguageResolver;
 import io.reflectoring.demo.dto.PortalCard;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -19,11 +20,16 @@ public class PortalCardController {
     @Autowired
     private TranslationService translationService;
 
+    @Autowired
+    private LanguageResolver languageResolver;
+
     @GetMapping
     public ResponseEntity<List<PortalCard>> getAllCards(
             @RequestHeader(name = "Accept-Language", defaultValue = "en") String language) {
 
-        List<PortalCard> cachedCards = repository.findByLanguage(language);
+        String resolvedLanguage = languageResolver.resolve(language);
+
+        List<PortalCard> cachedCards = repository.findByLanguage(resolvedLanguage);
         if (!cachedCards.isEmpty()) {
             return ResponseEntity.ok(cachedCards);
         }
@@ -33,7 +39,7 @@ public class PortalCardController {
             return ResponseEntity.notFound().build();
         }
 
-        List<PortalCard> translatedCards = translationService.translatePortalCards(englishCards, language);
+        List<PortalCard> translatedCards = translationService.translatePortalCards(englishCards, resolvedLanguage);
 
         repository.saveAll(translatedCards);
 
