@@ -1,10 +1,8 @@
 package io.reflectoring.demo;
 
 import com.google.cloud.translate.Translate;
-import com.google.cloud.translate.TranslateOptions;
 import com.google.cloud.translate.Translation;
 import io.reflectoring.demo.dto.*;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,11 +11,8 @@ import java.util.List;
 public class TranslationService {
     private final Translate translate;
 
-    public TranslationService(@Value("${google.api.key}") String googleApiKey) {
-        this.translate = TranslateOptions.newBuilder()
-                .setApiKey(googleApiKey)
-                .build()
-                .getService();
+    public TranslationService(Translate translate) {
+        this.translate = translate;
     }
 
     public ResourceCategory translateCategory(ResourceCategory englishCategory, String targetLanguage) {
