@@ -7,7 +7,6 @@ import io.reflectoring.demo.dto.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -35,29 +34,21 @@ public class TranslationService {
         localizedCategory.setCategoryTitle(translateText(englishCategory.getCategoryTitle(), targetLanguage));
         localizedCategory.setDescription(translateText(englishCategory.getDescription(), targetLanguage));
 
-        // 4. Loop through the items and translate them
-        List<ResourceItem> localizedItems = new ArrayList<>();
-        for (ResourceItem item : englishCategory.getItems()) {
-            ResourceItem localizedItem = new ResourceItem();
-
-            // Translate the text fields
-            localizedItem.setTitle(translateText(item.getTitle(), targetLanguage));
-            localizedItem.setDescription(translateText(item.getDescription(), targetLanguage));
-
-            // Only translate Action Text if it exists
-            if (item.getActionText() != null) {
-                localizedItem.setActionText(translateText(item.getActionText(), targetLanguage));
-            }
-
-            // Keep the non-translatable fields exactly the same (URLs, Icons, Emails)
-            localizedItem.setIcon(item.getIcon());
-            localizedItem.setUrl(item.getUrl());
-            localizedItem.setContact(item.getContact());
-
-            localizedItems.add(localizedItem);
+        // 4. Translate the text fields of each item; keep URLs, icons, emails etc. exactly the same
+        if (englishCategory.getItems() != null) {
+            localizedCategory.setItems(englishCategory.getItems().stream().map(item -> new ResourceItem(
+                    translateText(item.title(), targetLanguage),
+                    item.icon(),
+                    translateText(item.description(), targetLanguage),
+                    translateText(item.actionText(), targetLanguage),
+                    item.url(),
+                    translateText(item.label(), targetLanguage),
+                    item.badgeClass(),
+                    item.location(),
+                    item.contact()
+            )).toList());
         }
 
-        localizedCategory.setItems(localizedItems);
         return localizedCategory;
     }
 
@@ -74,28 +65,18 @@ public class TranslationService {
     }
 
     public List<PortalCard> translatePortalCards(List<PortalCard> englishCards, String targetLanguage) {
-        List<PortalCard> translatedCards = new ArrayList<>();
+        if (englishCards == null) return List.of();
 
-        for (PortalCard card : englishCards) {
-            PortalCard localizedCard = new PortalCard();
-
-            // Set the IDs safely (e.g., "academic_es")
-            localizedCard.setId(card.getCardId() + "_" + targetLanguage);
-            localizedCard.setCardId(card.getCardId());
-            localizedCard.setLanguage(targetLanguage);
-
-            // NEVER translate internal routes or icons!
-            localizedCard.setRoute(card.getRoute());
-            localizedCard.setIcon(card.getIcon());
-
-            // Translate the display text
-            localizedCard.setTitle(translateText(card.getTitle(), targetLanguage));
-            localizedCard.setDescription(translateText(card.getDescription(), targetLanguage));
-
-            translatedCards.add(localizedCard);
-        }
-
-        return translatedCards;
+        // Translate the display text; NEVER translate internal routes or icons!
+        return englishCards.stream().map(card -> new PortalCard(
+                card.cardId() + "_" + targetLanguage, // e.g., "academic_es"
+                translateText(card.title(), targetLanguage),
+                card.route(),
+                card.icon(),
+                translateText(card.description(), targetLanguage),
+                card.cardId(),
+                targetLanguage
+        )).toList();
     }
 
     public Onboarding translateOnboarding(Onboarding source, String lang) {

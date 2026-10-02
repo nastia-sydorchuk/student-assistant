@@ -3,7 +3,6 @@ package io.reflectoring.demo.pages;
 import io.reflectoring.demo.common.language.LanguageResolver;
 import io.reflectoring.demo.dto.Cohort;
 import io.reflectoring.demo.dto.InductionEvent;
-import io.reflectoring.demo.dto.PortalCard;
 import io.reflectoring.demo.dto.StepDTO;
 import io.reflectoring.demo.exceptions.RecordNotFoundException;
 import org.springframework.http.ResponseEntity;

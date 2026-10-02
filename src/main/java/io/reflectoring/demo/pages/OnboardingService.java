@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -30,20 +31,24 @@ public class OnboardingService {
         if (results.isEmpty()) {
             throw new RecordNotFoundException("Steps not found.");
         }
-        return results.stream().flatMap(p -> p.getSteps().stream()).toList();
+        return results.stream()
+                .flatMap(p -> p.getSteps() == null ? Stream.empty() : p.getSteps().stream())
+                .toList();
     }
 
     public Cohort getCohortByLevel(String level, String language) {
         ensureTranslationExists(language);
         return repository.findByCohortLevelAndLanguage(level, language)
-                .map(p -> p.getCohorts().get(0))
-                .orElseThrow(() -> new RuntimeException("Cohort not found for level: " + level));
+                .map(CohortProjection::getCohorts)
+                .filter(cohorts -> cohorts != null && !cohorts.isEmpty())
+                .map(cohorts -> cohorts.get(0))
+                .orElseThrow(() -> new RecordNotFoundException("Cohort not found for level: " + level));
     }
 
     public List<InductionEvent> getInductionEvents(String language) {
         ensureTranslationExists(language);
         return repository.findInductionEventsByLanguage(language)
                 .map(InductionEventProjection::getInductionEvents)
-                .orElseThrow(() -> new RuntimeException("Induction events not found"));
+                .orElseThrow(() -> new RecordNotFoundException("Induction events not found"));
     }
 }

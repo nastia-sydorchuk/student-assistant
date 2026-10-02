@@ -3,6 +3,7 @@ package io.reflectoring.demo.chat;
 import io.reflectoring.demo.dto.ChatRequest;
 import io.reflectoring.demo.dto.ChatResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
@@ -13,10 +14,10 @@ import java.util.Map;
 @Service
 public class GeminiService {
     private final WebClient webClient;
-    private final String PYTHON_SERVICE_URL = "http://localhost:8000/rag-query";
+
     @Autowired
-    public GeminiService(WebClient.Builder webClientBuilder) {
-        this.webClient = webClientBuilder.baseUrl(PYTHON_SERVICE_URL).build();
+    public GeminiService(WebClient.Builder webClientBuilder, @Value("${app.rag.url}") String ragServiceUrl) {
+        this.webClient = webClientBuilder.baseUrl(ragServiceUrl).build();
     }
 
     public ChatResponse callGemini(ChatRequest request) {
