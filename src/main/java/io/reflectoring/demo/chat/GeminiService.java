@@ -4,20 +4,21 @@ import io.reflectoring.demo.dto.ChatRequest;
 import io.reflectoring.demo.dto.ChatResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
+import org.springframework.web.client.RestClient;
+import org.springframework.web.client.RestClientResponseException;
 
 import java.util.HashMap;
 import java.util.Map;
 
 @Service
 public class GeminiService {
-    private final WebClient webClient;
+    private final RestClient restClient;
 
     @Autowired
-    public GeminiService(WebClient.Builder webClientBuilder, @Value("${app.rag.url}") String ragServiceUrl) {
-        this.webClient = webClientBuilder.baseUrl(ragServiceUrl).build();
+    public GeminiService(RestClient.Builder restClientBuilder, @Value("${app.rag.url}") String ragServiceUrl) {
+        this.restClient = restClientBuilder.baseUrl(ragServiceUrl).build();
     }
 
     public ChatResponse callGemini(ChatRequest request) {
@@ -28,15 +29,15 @@ public class GeminiService {
             perfectJsonPayload.put("current_url", request.getCurrentUrl());
             perfectJsonPayload.put("bot_greeting", request.getBotGreeting());
 
-            ChatResponse response = webClient.post()
-                    .bodyValue(perfectJsonPayload)
+            ChatResponse response = restClient.post()
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(perfectJsonPayload)
                     .retrieve()
-                    .bodyToMono(ChatResponse.class)
-                    .block();
+                    .body(ChatResponse.class);
 
             return response;
 
-        } catch (WebClientResponseException e) {
+        } catch (RestClientResponseException e) {
             System.err.println("PYTHON REJECTED THE JSON. Reason: " + e.getResponseBodyAsString());
             return new ChatResponse("I'm sorry, my AI brain is currently offline.", null);
 
