@@ -3,17 +3,20 @@ package io.github.nastiasydorchuk.studentportal.onboarding;
 import io.github.nastiasydorchuk.studentportal.translation.TranslationService;
 import io.github.nastiasydorchuk.studentportal.common.error.RecordNotFoundException;
 import io.github.nastiasydorchuk.studentportal.onboarding.domain.*;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Stream;
 
 @Service
-@RequiredArgsConstructor
 public class OnboardingService {
     private final OnboardingRepository repository;
     private final TranslationService translationService;
+
+    public OnboardingService(OnboardingRepository repository, TranslationService translationService) {
+        this.repository = repository;
+        this.translationService = translationService;
+    }
 
     private void ensureTranslationExists(String language) {
         if (repository.findByLanguage(language).isEmpty()) {

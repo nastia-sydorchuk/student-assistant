@@ -2,7 +2,6 @@ package io.github.nastiasydorchuk.studentportal.chat;
 
 import io.github.nastiasydorchuk.studentportal.chat.api.ChatRequest;
 import io.github.nastiasydorchuk.studentportal.chat.api.ChatResponse;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -16,7 +15,6 @@ import java.util.Map;
 public class GeminiService {
     private final RestClient restClient;
 
-    @Autowired
     public GeminiService(RestClient.Builder restClientBuilder, @Value("${app.rag.url}") String ragServiceUrl) {
         this.restClient = restClientBuilder.baseUrl(ragServiceUrl).build();
     }
