@@ -33,6 +33,10 @@ public class LanguageResolver {
         return code;
     }
 
+    public List<String> getSupportedLanguages() {
+        return supportedLanguages;
+    }
+
     // Defensively reduces a full Accept-Language value (e.g. "en-GB,en;q=0.9,fr;q=0.8")
     // to its primary subtag, in case a caller other than the known frontend sends one.
     private String baseTag(String header) {

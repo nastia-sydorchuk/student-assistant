@@ -26,7 +26,7 @@ public class OnboardingController {
         return ResponseEntity.ok(service.getStepsBySource(languageResolver.resolve(language)));
     }
 
-    @GetMapping("/{level}")
+    @GetMapping("/levels/{level}")
     public ResponseEntity<Cohort> getInductionForLevel(@PathVariable String level, @RequestHeader(name = "Accept-Language", defaultValue = "en") String language) {
         return ResponseEntity.ok(service.getCohortByLevel(level, languageResolver.resolve(language)));
     }

@@ -1,9 +1,13 @@
 package io.github.nastiasydorchuk.studentportal.chat.api;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 public class ChatRequest {
 
+    @NotBlank
+    @Size(max = 2000)
     private String query;
 
     @JsonProperty("session_id")

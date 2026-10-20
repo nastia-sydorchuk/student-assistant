@@ -6,7 +6,6 @@ import io.github.nastiasydorchuk.studentportal.onboarding.domain.*;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Stream;
 
 @Service
 public class OnboardingService {
@@ -30,13 +29,9 @@ public class OnboardingService {
 
     public List<Step> getStepsBySource(String language) {
         ensureTranslationExists(language);
-        List<StepProjection> results = repository.findStepsByLanguage(language);
-        if (results.isEmpty()) {
-            throw new RecordNotFoundException("Steps not found.");
-        }
-        return results.stream()
-                .flatMap(p -> p.getSteps() == null ? Stream.empty() : p.getSteps().stream())
-                .toList();
+        StepProjection result = repository.findStepsByLanguage(language)
+                .orElseThrow(() -> new RecordNotFoundException("Steps not found."));
+        return result.getSteps() == null ? List.of() : result.getSteps();
     }
 
     public Cohort getCohortByLevel(String level, String language) {

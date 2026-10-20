@@ -5,6 +5,8 @@ import io.github.nastiasydorchuk.studentportal.common.error.RecordNotFoundExcept
 import io.github.nastiasydorchuk.studentportal.resources.domain.ResourceCategory;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class ResourceService {
     private final ResourceRepository repository;
@@ -29,5 +31,12 @@ public class ResourceService {
         ensureTranslationExists(categoryId, language);
         return repository.findByCategoryIdAndLanguage(categoryId, language)
                 .orElseThrow(() -> new RecordNotFoundException("Resource category not found: " + categoryId));
+    }
+
+    public List<String> listCategoryIds() {
+        // English documents are the source of truth for which categories exist
+        return repository.findByLanguage("en").stream()
+                .map(ResourceCategory::getCategoryId)
+                .toList();
     }
 }

@@ -5,8 +5,10 @@ import io.github.nastiasydorchuk.studentportal.resources.domain.ResourceCategory
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/api/resources")
+@RequestMapping("/api/resource-categories")
 public class ResourceController {
 
     private final ResourceService service;
@@ -15,6 +17,11 @@ public class ResourceController {
     public ResourceController(ResourceService service, LanguageResolver languageResolver) {
         this.service = service;
         this.languageResolver = languageResolver;
+    }
+
+    @GetMapping
+    public ResponseEntity<List<String>> listCategoryIds() {
+        return ResponseEntity.ok(service.listCategoryIds());
     }
 
     @GetMapping("/{categoryId}")
