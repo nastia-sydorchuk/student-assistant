@@ -7,11 +7,8 @@ public record EventDetails(
         String description,
         List<String> programmeOutline, // The bullet points
 
-        // Eligibility: PG uses this string
-        String eligibility,
-
-        // Eligibility: UG uses this list
-        List<String> eligibilityList,
+        // Eligibility criteria; PG has a single entry, UG has several
+        List<String> eligibility,
 
         // Contact info for UG
         String contactInfo,

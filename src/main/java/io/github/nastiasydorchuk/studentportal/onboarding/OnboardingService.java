@@ -10,6 +10,7 @@ import java.util.List;
 
 // Each section is translated on its own, so editing one doesn't re-translate the others.
 // A translation is redone when it is missing or was made from an older version of the English.
+// Only the client-visible content is hashed, so storage fields never invalidate translations.
 @Service
 public class OnboardingService {
     private final OnboardingStepsRepository stepsRepository;
@@ -36,7 +37,7 @@ public class OnboardingService {
 
         OnboardingSteps result = english;
         if (!"en".equals(language)) {
-            String hash = hasher.hash(english);
+            String hash = hasher.hash(english.steps());
             result = stepsRepository.findByLanguage(language)
                     .filter(existing -> hash.equals(existing.sourceHash()))
                     .orElseGet(() -> stepsRepository.save(translationService.translateSteps(english, language, hash)));
@@ -50,7 +51,7 @@ public class OnboardingService {
 
         CohortDocument result = english;
         if (!"en".equals(language)) {
-            String hash = hasher.hash(english);
+            String hash = hasher.hash(english.toCohort());
             result = cohortRepository.findByLevelAndLanguage(level, language)
                     .filter(existing -> hash.equals(existing.sourceHash()))
                     .orElseGet(() -> cohortRepository.save(translationService.translateCohort(english, language, hash)));
@@ -64,7 +65,7 @@ public class OnboardingService {
 
         InductionEvents result = english;
         if (!"en".equals(language)) {
-            String hash = hasher.hash(english);
+            String hash = hasher.hash(english.events());
             result = eventsRepository.findByLanguage(language)
                     .filter(existing -> hash.equals(existing.sourceHash()))
                     .orElseGet(() -> eventsRepository.save(translationService.translateInductionEvents(english, language, hash)));

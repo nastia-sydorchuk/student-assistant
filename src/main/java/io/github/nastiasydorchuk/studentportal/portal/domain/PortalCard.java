@@ -1,6 +1,5 @@
 package io.github.nastiasydorchuk.studentportal.portal.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -13,5 +12,5 @@ public record PortalCard(
         String description,
         String cardId,
         String language,
-        @JsonIgnore String sourceHash // hash of the English cards this was translated from; null on English
+        String sourceHash // hash of the English cards this was translated from; null on English
 ) {}

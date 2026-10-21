@@ -1,6 +1,5 @@
 package io.github.nastiasydorchuk.studentportal.onboarding.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -11,5 +10,5 @@ public record OnboardingSteps(
         @Id String id,             // e.g., "steps_es"
         String language,
         List<Step> steps,
-        @JsonIgnore String sourceHash // hash of the English document this was translated from; null on English
+        String sourceHash // hash of the English document this was translated from; null on English
 ) {}

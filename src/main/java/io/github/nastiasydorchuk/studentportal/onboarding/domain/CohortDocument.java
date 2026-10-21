@@ -1,6 +1,5 @@
 package io.github.nastiasydorchuk.studentportal.onboarding.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -15,7 +14,7 @@ public record CohortDocument(
         String title,
         List<ImportantDate> importantDates,
         EventDetails event,
-        @JsonIgnore String sourceHash // hash of the English document this was translated from; null on English
+        String sourceHash // hash of the English document this was translated from; null on English
 ) {
     public Cohort toCohort() {
         return new Cohort(level, title, importantDates, event);

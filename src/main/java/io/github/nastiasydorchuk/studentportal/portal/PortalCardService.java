@@ -3,6 +3,7 @@ package io.github.nastiasydorchuk.studentportal.portal;
 import io.github.nastiasydorchuk.studentportal.translation.SourceHasher;
 import io.github.nastiasydorchuk.studentportal.translation.TranslationService;
 import io.github.nastiasydorchuk.studentportal.common.error.RecordNotFoundException;
+import io.github.nastiasydorchuk.studentportal.portal.api.PortalCardResponse;
 import io.github.nastiasydorchuk.studentportal.portal.domain.PortalCard;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +29,8 @@ public class PortalCardService {
         if (english.isEmpty()) {
             throw new RecordNotFoundException("English portal cards not found");
         }
-        String hash = hasher.hash(english);
+        // Hash the client-visible content only, so storage fields never invalidate translations
+        String hash = hasher.hash(english.stream().map(PortalCardResponse::from).toList());
 
         List<PortalCard> existing = repository.findByLanguage(language);
         boolean upToDate = !existing.isEmpty()

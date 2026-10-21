@@ -3,6 +3,7 @@ package io.github.nastiasydorchuk.studentportal.resources;
 import io.github.nastiasydorchuk.studentportal.translation.SourceHasher;
 import io.github.nastiasydorchuk.studentportal.translation.TranslationService;
 import io.github.nastiasydorchuk.studentportal.common.error.RecordNotFoundException;
+import io.github.nastiasydorchuk.studentportal.resources.api.ResourceCategoryResponse;
 import io.github.nastiasydorchuk.studentportal.resources.domain.ResourceCategory;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +27,8 @@ public class ResourceService {
 
         ResourceCategory english = repository.findByCategoryIdAndLanguage(categoryId, "en")
                 .orElseThrow(() -> new RecordNotFoundException("Resource category not found: " + categoryId));
-        String hash = hasher.hash(english);
+        // Hash the client-visible content only, so storage fields never invalidate translations
+        String hash = hasher.hash(ResourceCategoryResponse.from(english));
 
         boolean upToDate = repository.findByCategoryIdAndLanguage(categoryId, language)
                 .map(existing -> hash.equals(existing.getSourceHash()))

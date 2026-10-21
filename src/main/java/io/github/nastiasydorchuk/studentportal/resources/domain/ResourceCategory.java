@@ -1,6 +1,5 @@
 package io.github.nastiasydorchuk.studentportal.resources.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import java.util.List;
@@ -19,7 +18,6 @@ public class ResourceCategory {
     private String categoryId; // e.g., "academic"
     private String language;
 
-    @JsonIgnore
     private String sourceHash; // hash of the English category this was translated from; null on English
 
     public String getId() { return id; }

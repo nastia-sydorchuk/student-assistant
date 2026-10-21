@@ -114,9 +114,8 @@ public class TranslationService {
                 c.event().programmeOutline() != null
                         ? c.event().programmeOutline().stream().map(p -> translateText(p, lang)).toList()
                         : null,
-                translateText(c.event().eligibility(), lang),
-                c.event().eligibilityList() != null
-                        ? c.event().eligibilityList().stream().map(e -> translateText(e, lang)).toList()
+                c.event().eligibility() != null
+                        ? c.event().eligibility().stream().map(e -> translateText(e, lang)).toList()
                         : null,
                 translateText(c.event().contactInfo(), lang),
                 reg)
