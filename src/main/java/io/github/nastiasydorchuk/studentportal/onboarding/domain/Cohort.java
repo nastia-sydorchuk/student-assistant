@@ -3,7 +3,7 @@ package io.github.nastiasydorchuk.studentportal.onboarding.domain;
 import java.util.List;
 
 public record Cohort(
-        String level,
+        CohortLevel level,
         String title,
         List<ImportantDate> importantDates,
         EventDetails event

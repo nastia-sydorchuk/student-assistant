@@ -45,7 +45,7 @@ public class OnboardingService {
         return result.steps() == null ? List.of() : result.steps();
     }
 
-    public Cohort getCohortByLevel(String level, String language) {
+    public Cohort getCohortByLevel(CohortLevel level, String language) {
         CohortDocument english = cohortRepository.findByLevelAndLanguage(level, "en")
                 .orElseThrow(() -> new RecordNotFoundException("Cohort not found for level: " + level));
 

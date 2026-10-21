@@ -122,7 +122,7 @@ public class TranslationService {
                 : null;
 
         return new CohortDocument(
-                c.level() + "_" + lang, // e.g., "undergraduate_es"
+                c.level().name() + "_" + lang, // e.g., "undergraduate_es"
                 c.level(),
                 lang,
                 translateText(c.title(), lang),

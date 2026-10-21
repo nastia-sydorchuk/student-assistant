@@ -9,7 +9,7 @@ import java.util.List;
 @Document(collection = "cohorts")
 public record CohortDocument(
         @Id String id,             // e.g., "undergraduate_es"
-        String level,              // e.g., "undergraduate"
+        CohortLevel level,
         String language,
         String title,
         List<ImportantDate> importantDates,

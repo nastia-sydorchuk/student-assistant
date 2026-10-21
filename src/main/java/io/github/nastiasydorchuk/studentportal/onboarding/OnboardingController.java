@@ -2,6 +2,7 @@ package io.github.nastiasydorchuk.studentportal.onboarding;
 
 import io.github.nastiasydorchuk.studentportal.common.language.LanguageResolver;
 import io.github.nastiasydorchuk.studentportal.onboarding.domain.Cohort;
+import io.github.nastiasydorchuk.studentportal.onboarding.domain.CohortLevel;
 import io.github.nastiasydorchuk.studentportal.onboarding.domain.InductionEvent;
 import io.github.nastiasydorchuk.studentportal.onboarding.domain.Step;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +28,7 @@ public class OnboardingController {
     }
 
     @GetMapping("/levels/{level}")
-    public ResponseEntity<Cohort> getInductionForLevel(@PathVariable String level, @RequestHeader(name = "Accept-Language", defaultValue = "en") String language) {
+    public ResponseEntity<Cohort> getInductionForLevel(@PathVariable CohortLevel level, @RequestHeader(name = "Accept-Language", defaultValue = "en") String language) {
         return ResponseEntity.ok(service.getCohortByLevel(level, languageResolver.resolve(language)));
     }
 
