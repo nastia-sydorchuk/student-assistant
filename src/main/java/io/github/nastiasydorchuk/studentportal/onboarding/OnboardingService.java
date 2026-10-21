@@ -1,5 +1,6 @@
 package io.github.nastiasydorchuk.studentportal.onboarding;
 
+import io.github.nastiasydorchuk.studentportal.translation.SourceHasher;
 import io.github.nastiasydorchuk.studentportal.translation.TranslationService;
 import io.github.nastiasydorchuk.studentportal.common.error.RecordNotFoundException;
 import io.github.nastiasydorchuk.studentportal.onboarding.domain.*;
@@ -7,46 +8,67 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+// Each section is translated on its own, so editing one doesn't re-translate the others.
+// A translation is redone when it is missing or was made from an older version of the English.
 @Service
 public class OnboardingService {
-    private final OnboardingRepository repository;
+    private final OnboardingStepsRepository stepsRepository;
+    private final CohortRepository cohortRepository;
+    private final InductionEventsRepository eventsRepository;
     private final TranslationService translationService;
+    private final SourceHasher hasher;
 
-    public OnboardingService(OnboardingRepository repository, TranslationService translationService) {
-        this.repository = repository;
+    public OnboardingService(OnboardingStepsRepository stepsRepository,
+                             CohortRepository cohortRepository,
+                             InductionEventsRepository eventsRepository,
+                             TranslationService translationService,
+                             SourceHasher hasher) {
+        this.stepsRepository = stepsRepository;
+        this.cohortRepository = cohortRepository;
+        this.eventsRepository = eventsRepository;
         this.translationService = translationService;
-    }
-
-    private void ensureTranslationExists(String language) {
-        if (repository.findByLanguage(language).isEmpty()) {
-            Onboarding english = repository.findByLanguage("en")
-                    .orElseThrow(() -> new RecordNotFoundException("English onboarding not found"));
-
-            Onboarding translated = translationService.translateOnboarding(english, language);
-            repository.save(translated);
-        }
+        this.hasher = hasher;
     }
 
     public List<Step> getStepsBySource(String language) {
-        ensureTranslationExists(language);
-        StepProjection result = repository.findStepsByLanguage(language)
+        OnboardingSteps english = stepsRepository.findByLanguage("en")
                 .orElseThrow(() -> new RecordNotFoundException("Steps not found."));
-        return result.getSteps() == null ? List.of() : result.getSteps();
+
+        OnboardingSteps result = english;
+        if (!"en".equals(language)) {
+            String hash = hasher.hash(english);
+            result = stepsRepository.findByLanguage(language)
+                    .filter(existing -> hash.equals(existing.sourceHash()))
+                    .orElseGet(() -> stepsRepository.save(translationService.translateSteps(english, language, hash)));
+        }
+        return result.steps() == null ? List.of() : result.steps();
     }
 
     public Cohort getCohortByLevel(String level, String language) {
-        ensureTranslationExists(language);
-        return repository.findByCohortLevelAndLanguage(level, language)
-                .map(CohortProjection::getCohorts)
-                .filter(cohorts -> cohorts != null && !cohorts.isEmpty())
-                .map(cohorts -> cohorts.get(0))
+        CohortDocument english = cohortRepository.findByLevelAndLanguage(level, "en")
                 .orElseThrow(() -> new RecordNotFoundException("Cohort not found for level: " + level));
+
+        CohortDocument result = english;
+        if (!"en".equals(language)) {
+            String hash = hasher.hash(english);
+            result = cohortRepository.findByLevelAndLanguage(level, language)
+                    .filter(existing -> hash.equals(existing.sourceHash()))
+                    .orElseGet(() -> cohortRepository.save(translationService.translateCohort(english, language, hash)));
+        }
+        return result.toCohort();
     }
 
     public List<InductionEvent> getInductionEvents(String language) {
-        ensureTranslationExists(language);
-        return repository.findInductionEventsByLanguage(language)
-                .map(InductionEventProjection::getInductionEvents)
+        InductionEvents english = eventsRepository.findByLanguage("en")
                 .orElseThrow(() -> new RecordNotFoundException("Induction events not found"));
+
+        InductionEvents result = english;
+        if (!"en".equals(language)) {
+            String hash = hasher.hash(english);
+            result = eventsRepository.findByLanguage(language)
+                    .filter(existing -> hash.equals(existing.sourceHash()))
+                    .orElseGet(() -> eventsRepository.save(translationService.translateInductionEvents(english, language, hash)));
+        }
+        return result.events() == null ? List.of() : result.events();
     }
 }

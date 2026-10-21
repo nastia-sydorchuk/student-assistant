@@ -1,5 +1,6 @@
 package io.github.nastiasydorchuk.studentportal.portal;
 
+import io.github.nastiasydorchuk.studentportal.translation.SourceHasher;
 import io.github.nastiasydorchuk.studentportal.translation.TranslationService;
 import io.github.nastiasydorchuk.studentportal.common.error.RecordNotFoundException;
 import io.github.nastiasydorchuk.studentportal.portal.domain.PortalCard;
@@ -11,21 +12,32 @@ import java.util.List;
 public class PortalCardService {
     private final PortalCardRepository repository;
     private final TranslationService translationService;
+    private final SourceHasher hasher;
 
-    public PortalCardService(PortalCardRepository repository, TranslationService translationService) {
+    public PortalCardService(PortalCardRepository repository, TranslationService translationService, SourceHasher hasher) {
         this.repository = repository;
         this.translationService = translationService;
+        this.hasher = hasher;
     }
 
+    // Translates when the translations are missing or were made from an older version of the English cards
     private void ensureTranslationExists(String language) {
-        if (repository.findByLanguage(language).isEmpty()) {
-            List<PortalCard> english = repository.findByLanguage("en");
-            if (english.isEmpty()) {
-                throw new RecordNotFoundException("English portal cards not found");
-            }
+        if ("en".equals(language)) return;
 
-            List<PortalCard> translated = translationService.translatePortalCards(english, language);
-            repository.saveAll(translated);
+        List<PortalCard> english = repository.findByLanguageOrderByCardIdAsc("en");
+        if (english.isEmpty()) {
+            throw new RecordNotFoundException("English portal cards not found");
+        }
+        String hash = hasher.hash(english);
+
+        List<PortalCard> existing = repository.findByLanguage(language);
+        boolean upToDate = !existing.isEmpty()
+                && existing.stream().allMatch(card -> hash.equals(card.sourceHash()));
+
+        if (!upToDate) {
+            // Delete first so cards removed from English don't linger in the translation
+            repository.deleteAll(existing);
+            repository.saveAll(translationService.translatePortalCards(english, language, hash));
         }
     }
 

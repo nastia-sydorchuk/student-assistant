@@ -1,5 +1,6 @@
 package io.github.nastiasydorchuk.studentportal.resources;
 
+import io.github.nastiasydorchuk.studentportal.translation.SourceHasher;
 import io.github.nastiasydorchuk.studentportal.translation.TranslationService;
 import io.github.nastiasydorchuk.studentportal.common.error.RecordNotFoundException;
 import io.github.nastiasydorchuk.studentportal.resources.domain.ResourceCategory;
@@ -11,19 +12,30 @@ import java.util.List;
 public class ResourceService {
     private final ResourceRepository repository;
     private final TranslationService translationService;
+    private final SourceHasher hasher;
 
-    public ResourceService(ResourceRepository repository, TranslationService translationService) {
+    public ResourceService(ResourceRepository repository, TranslationService translationService, SourceHasher hasher) {
         this.repository = repository;
         this.translationService = translationService;
+        this.hasher = hasher;
     }
 
+    // Translates when the translation is missing or was made from an older version of the English
     private void ensureTranslationExists(String categoryId, String language) {
-        if (repository.findByCategoryIdAndLanguage(categoryId, language).isEmpty()) {
-            ResourceCategory english = repository.findByCategoryIdAndLanguage(categoryId, "en")
-                    .orElseThrow(() -> new RecordNotFoundException("Resource category not found: " + categoryId));
+        if ("en".equals(language)) return;
 
+        ResourceCategory english = repository.findByCategoryIdAndLanguage(categoryId, "en")
+                .orElseThrow(() -> new RecordNotFoundException("Resource category not found: " + categoryId));
+        String hash = hasher.hash(english);
+
+        boolean upToDate = repository.findByCategoryIdAndLanguage(categoryId, language)
+                .map(existing -> hash.equals(existing.getSourceHash()))
+                .orElse(false);
+
+        if (!upToDate) {
             ResourceCategory translated = translationService.translateCategory(english, language);
-            repository.save(translated);
+            translated.setSourceHash(hash);
+            repository.save(translated); // same id as the stale copy, so it overwrites it
         }
     }
 
