@@ -3,6 +3,7 @@ package io.github.nastiasydorchuk.studentportal.onboarding;
 import io.github.nastiasydorchuk.studentportal.translation.SourceHasher;
 import io.github.nastiasydorchuk.studentportal.translation.TranslationService;
 import io.github.nastiasydorchuk.studentportal.common.error.RecordNotFoundException;
+import io.github.nastiasydorchuk.studentportal.onboarding.api.CohortResponse;
 import io.github.nastiasydorchuk.studentportal.onboarding.domain.*;
 import org.springframework.stereotype.Service;
 
@@ -31,7 +32,7 @@ public class OnboardingService {
         this.hasher = hasher;
     }
 
-    public List<Step> getStepsBySource(String language) {
+    public List<OnboardingStep> getSteps(String language) {
         OnboardingSteps english = stepsRepository.findByLanguage("en")
                 .orElseThrow(() -> new RecordNotFoundException("Steps not found."));
 
@@ -45,18 +46,18 @@ public class OnboardingService {
         return result.steps() == null ? List.of() : result.steps();
     }
 
-    public Cohort getCohortByLevel(CohortLevel level, String language) {
-        CohortDocument english = cohortRepository.findByLevelAndLanguage(level, "en")
+    public CohortResponse getCohort(CohortLevel level, String language) {
+        Cohort english = cohortRepository.findByLevelAndLanguage(level, "en")
                 .orElseThrow(() -> new RecordNotFoundException("Cohort not found for level: " + level));
 
-        CohortDocument result = english;
+        Cohort result = english;
         if (!"en".equals(language)) {
-            String hash = hasher.hash(english.toCohort());
+            String hash = hasher.hash(CohortResponse.from(english));
             result = cohortRepository.findByLevelAndLanguage(level, language)
                     .filter(existing -> hash.equals(existing.sourceHash()))
                     .orElseGet(() -> cohortRepository.save(translationService.translateCohort(english, language, hash)));
         }
-        return result.toCohort();
+        return CohortResponse.from(result);
     }
 
     public List<InductionEvent> getInductionEvents(String language) {

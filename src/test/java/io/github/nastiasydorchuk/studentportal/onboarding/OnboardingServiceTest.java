@@ -1,6 +1,7 @@
 package io.github.nastiasydorchuk.studentportal.onboarding;
 
 import io.github.nastiasydorchuk.studentportal.common.error.RecordNotFoundException;
+import io.github.nastiasydorchuk.studentportal.onboarding.api.CohortResponse;
 import io.github.nastiasydorchuk.studentportal.onboarding.domain.*;
 import io.github.nastiasydorchuk.studentportal.translation.SourceHasher;
 import io.github.nastiasydorchuk.studentportal.translation.TranslationService;
@@ -43,15 +44,15 @@ class OnboardingServiceTest {
 
     @Nested
     class Steps {
-        private final List<Step> englishSteps = List.of(new Step(1, "Enrol", "Enrol online", "Start", "https://x"));
+        private final List<OnboardingStep> englishSteps = List.of(new OnboardingStep(1, "Enrol", "Enrol online", "Start", "https://x"));
         private final OnboardingSteps english = new OnboardingSteps("steps_en", "en", englishSteps, null);
-        private final List<Step> spanishSteps = List.of(new Step(1, "Matricúlate", "En línea", "Empezar", "https://x"));
+        private final List<OnboardingStep> spanishSteps = List.of(new OnboardingStep(1, "Matricúlate", "En línea", "Empezar", "https://x"));
 
         @Test
         void returnsEnglishWithoutTranslating() {
             when(stepsRepository.findByLanguage("en")).thenReturn(Optional.of(english));
 
-            assertThat(service.getStepsBySource("en")).isEqualTo(englishSteps);
+            assertThat(service.getSteps("en")).isEqualTo(englishSteps);
             verifyNoInteractions(translationService);
         }
 
@@ -59,7 +60,7 @@ class OnboardingServiceTest {
         void throwsWhenEnglishIsMissing() {
             when(stepsRepository.findByLanguage("en")).thenReturn(Optional.empty());
 
-            assertThatThrownBy(() -> service.getStepsBySource("es"))
+            assertThatThrownBy(() -> service.getSteps("es"))
                     .isInstanceOf(RecordNotFoundException.class)
                     .hasMessage("Steps not found.");
         }
@@ -71,7 +72,7 @@ class OnboardingServiceTest {
             when(stepsRepository.findByLanguage("es"))
                     .thenReturn(Optional.of(new OnboardingSteps("steps_es", "es", spanishSteps, hash)));
 
-            assertThat(service.getStepsBySource("es")).isEqualTo(spanishSteps);
+            assertThat(service.getSteps("es")).isEqualTo(spanishSteps);
             verifyNoInteractions(translationService);
             verify(stepsRepository, never()).save(any());
         }
@@ -85,7 +86,7 @@ class OnboardingServiceTest {
             OnboardingSteps fresh = new OnboardingSteps("steps_es", "es", spanishSteps, hash);
             when(translationService.translateSteps(english, "es", hash)).thenReturn(fresh);
 
-            assertThat(service.getStepsBySource("es")).isEqualTo(spanishSteps);
+            assertThat(service.getSteps("es")).isEqualTo(spanishSteps);
             verify(stepsRepository).save(fresh);
         }
 
@@ -97,7 +98,7 @@ class OnboardingServiceTest {
             OnboardingSteps fresh = new OnboardingSteps("steps_es", "es", spanishSteps, hash);
             when(translationService.translateSteps(english, "es", hash)).thenReturn(fresh);
 
-            assertThat(service.getStepsBySource("es")).isEqualTo(spanishSteps);
+            assertThat(service.getSteps("es")).isEqualTo(spanishSteps);
             verify(stepsRepository).save(fresh);
         }
 
@@ -105,20 +106,20 @@ class OnboardingServiceTest {
         void returnsEmptyListForNullSteps() {
             when(stepsRepository.findByLanguage("en")).thenReturn(Optional.of(new OnboardingSteps("steps_en", "en", null, null)));
 
-            assertThat(service.getStepsBySource("en")).isEmpty();
+            assertThat(service.getSteps("en")).isEmpty();
         }
     }
 
     @Nested
     class Cohorts {
-        private final CohortDocument english = new CohortDocument("undergraduate_en", CohortLevel.undergraduate, "en",
+        private final Cohort english = new Cohort("undergraduate_en", CohortLevel.undergraduate, "en",
                 "Welcome", List.of(new ImportantDate("Enrol", "1 Sept", DateType.deadline)), null, null);
 
         @Test
         void returnsEnglishWithoutTranslating() {
             when(cohortRepository.findByLevelAndLanguage(CohortLevel.undergraduate, "en")).thenReturn(Optional.of(english));
 
-            assertThat(service.getCohortByLevel(CohortLevel.undergraduate, "en")).isEqualTo(english.toCohort());
+            assertThat(service.getCohort(CohortLevel.undergraduate, "en")).isEqualTo(CohortResponse.from(english));
             verifyNoInteractions(translationService);
         }
 
@@ -126,44 +127,44 @@ class OnboardingServiceTest {
         void throwsWhenEnglishIsMissing() {
             when(cohortRepository.findByLevelAndLanguage(CohortLevel.postgraduate, "en")).thenReturn(Optional.empty());
 
-            assertThatThrownBy(() -> service.getCohortByLevel(CohortLevel.postgraduate, "fr"))
+            assertThatThrownBy(() -> service.getCohort(CohortLevel.postgraduate, "fr"))
                     .isInstanceOf(RecordNotFoundException.class)
                     .hasMessage("Cohort not found for level: postgraduate");
         }
 
         @Test
         void returnsCachedTranslationWhenUpToDate() {
-            String hash = hasher.hash(english.toCohort());
-            CohortDocument spanish = new CohortDocument("undergraduate_es", CohortLevel.undergraduate, "es",
+            String hash = hasher.hash(CohortResponse.from(english));
+            Cohort spanish = new Cohort("undergraduate_es", CohortLevel.undergraduate, "es",
                     "Bienvenida", List.of(), null, hash);
             when(cohortRepository.findByLevelAndLanguage(CohortLevel.undergraduate, "en")).thenReturn(Optional.of(english));
             when(cohortRepository.findByLevelAndLanguage(CohortLevel.undergraduate, "es")).thenReturn(Optional.of(spanish));
 
-            assertThat(service.getCohortByLevel(CohortLevel.undergraduate, "es")).isEqualTo(spanish.toCohort());
+            assertThat(service.getCohort(CohortLevel.undergraduate, "es")).isEqualTo(CohortResponse.from(spanish));
             verifyNoInteractions(translationService);
         }
 
         @Test
         void retranslatesWhenTranslationIsStale() {
-            String hash = hasher.hash(english.toCohort());
-            CohortDocument stale = new CohortDocument("undergraduate_es", CohortLevel.undergraduate, "es",
+            String hash = hasher.hash(CohortResponse.from(english));
+            Cohort stale = new Cohort("undergraduate_es", CohortLevel.undergraduate, "es",
                     "Vieja", List.of(), null, "old-hash");
-            CohortDocument fresh = new CohortDocument("undergraduate_es", CohortLevel.undergraduate, "es",
+            Cohort fresh = new Cohort("undergraduate_es", CohortLevel.undergraduate, "es",
                     "Bienvenida", List.of(), null, hash);
             when(cohortRepository.findByLevelAndLanguage(CohortLevel.undergraduate, "en")).thenReturn(Optional.of(english));
             when(cohortRepository.findByLevelAndLanguage(CohortLevel.undergraduate, "es")).thenReturn(Optional.of(stale));
             when(translationService.translateCohort(english, "es", hash)).thenReturn(fresh);
 
-            assertThat(service.getCohortByLevel(CohortLevel.undergraduate, "es")).isEqualTo(fresh.toCohort());
+            assertThat(service.getCohort(CohortLevel.undergraduate, "es")).isEqualTo(CohortResponse.from(fresh));
             verify(cohortRepository).save(fresh);
         }
 
         @Test
         void storageFieldsDoNotAffectTheHash() {
-            CohortDocument sameContentDifferentStorage = new CohortDocument("other-id", CohortLevel.undergraduate, "xx",
+            Cohort sameContentDifferentStorage = new Cohort("other-id", CohortLevel.undergraduate, "xx",
                     english.title(), english.importantDates(), english.event(), "anything");
 
-            assertThat(hasher.hash(sameContentDifferentStorage.toCohort())).isEqualTo(hasher.hash(english.toCohort()));
+            assertThat(hasher.hash(CohortResponse.from(sameContentDifferentStorage))).isEqualTo(hasher.hash(CohortResponse.from(english)));
         }
     }
 

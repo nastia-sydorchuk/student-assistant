@@ -2,7 +2,7 @@ package io.github.nastiasydorchuk.studentportal.onboarding.domain;
 
 import java.util.List;
 
-public record EventDetails(
+public record InductionProgramme(
         String title,
         String description,
         List<String> programmeOutline, // The bullet points

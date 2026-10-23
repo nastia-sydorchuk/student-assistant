@@ -77,7 +77,7 @@ class TranslationRoundTripTest {
 
     @Test
     void cohortsKeepEveryNestedField() {
-        CohortDocument english = sample(CohortDocument.class, "cohort");
+        Cohort english = sample(Cohort.class, "cohort");
 
         assertPreserved(english, service.translateCohort(english, "es", "hash"), "cohort");
     }

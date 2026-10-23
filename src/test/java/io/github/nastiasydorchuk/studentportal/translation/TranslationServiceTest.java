@@ -109,12 +109,12 @@ class TranslationServiceTest {
     @Test
     void translateStepsKeepsOrderAndUrls() {
         OnboardingSteps english = new OnboardingSteps("steps_en", "en",
-                List.of(new Step(2, "Enrol", "Enrol online", "Start", "https://enrol.example.com")), null);
+                List.of(new OnboardingStep(2, "Enrol", "Enrol online", "Start", "https://enrol.example.com")), null);
 
         OnboardingSteps result = service.translateSteps(english, "es", "hash");
 
         assertThat(result).isEqualTo(new OnboardingSteps("steps_es", "es",
-                List.of(new Step(2, "es:Enrol", "es:Enrol online", "es:Start", "https://enrol.example.com")), "hash"));
+                List.of(new OnboardingStep(2, "es:Enrol", "es:Enrol online", "es:Start", "https://enrol.example.com")), "hash"));
     }
 
     @Test
@@ -127,32 +127,32 @@ class TranslationServiceTest {
 
     @Test
     void translateCohortTranslatesEverythingButLinksAndTypes() {
-        CohortDocument english = new CohortDocument("undergraduate_en", CohortLevel.undergraduate, "en", "Welcome",
+        Cohort english = new Cohort("undergraduate_en", CohortLevel.undergraduate, "en", "Welcome",
                 List.of(new ImportantDate("Enrol", "1 Sept", DateType.deadline)),
-                new EventDetails("Induction", "Meet us", List.of("Talks"), List.of("New students"), "Ask us",
+                new InductionProgramme("Induction", "Meet us", List.of("Talks"), List.of("New students"), "Ask us",
                         new RegistrationLink("Register", "https://reg.example.com")),
                 null);
 
-        CohortDocument result = service.translateCohort(english, "es", "hash");
+        Cohort result = service.translateCohort(english, "es", "hash");
 
-        assertThat(result).isEqualTo(new CohortDocument("undergraduate_es", CohortLevel.undergraduate, "es", "es:Welcome",
+        assertThat(result).isEqualTo(new Cohort("undergraduate_es", CohortLevel.undergraduate, "es", "es:Welcome",
                 List.of(new ImportantDate("es:Enrol", "es:1 Sept", DateType.deadline)),
-                new EventDetails("es:Induction", "es:Meet us", List.of("es:Talks"), List.of("es:New students"), "es:Ask us",
+                new InductionProgramme("es:Induction", "es:Meet us", List.of("es:Talks"), List.of("es:New students"), "es:Ask us",
                         new RegistrationLink("es:Register", "https://reg.example.com")),
                 "hash"));
     }
 
     @Test
     void translateCohortHandlesMissingEventParts() {
-        CohortDocument noEvent = new CohortDocument("postgraduate_en", CohortLevel.postgraduate, "en", "Welcome",
+        Cohort noEvent = new Cohort("postgraduate_en", CohortLevel.postgraduate, "en", "Welcome",
                 null, null, null);
-        CohortDocument partialEvent = new CohortDocument("postgraduate_en", CohortLevel.postgraduate, "en", "Welcome",
-                List.of(), new EventDetails("Induction", null, null, null, null, null), null);
+        Cohort partialEvent = new Cohort("postgraduate_en", CohortLevel.postgraduate, "en", "Welcome",
+                List.of(), new InductionProgramme("Induction", null, null, null, null, null), null);
 
         assertThat(service.translateCohort(noEvent, "fr", "hash").event()).isNull();
         assertThat(service.translateCohort(noEvent, "fr", "hash").importantDates()).isNull();
         assertThat(service.translateCohort(partialEvent, "fr", "hash").event())
-                .isEqualTo(new EventDetails("es:Induction", null, null, null, null, null));
+                .isEqualTo(new InductionProgramme("es:Induction", null, null, null, null, null));
     }
 
     @Test

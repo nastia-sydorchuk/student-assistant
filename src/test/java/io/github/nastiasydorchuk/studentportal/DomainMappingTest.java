@@ -1,5 +1,6 @@
 package io.github.nastiasydorchuk.studentportal;
 
+import io.github.nastiasydorchuk.studentportal.onboarding.api.CohortResponse;
 import io.github.nastiasydorchuk.studentportal.onboarding.domain.*;
 import io.github.nastiasydorchuk.studentportal.portal.api.PortalCardResponse;
 import io.github.nastiasydorchuk.studentportal.portal.domain.PortalCard;
@@ -15,19 +16,19 @@ import static org.assertj.core.api.Assertions.assertThat;
 class DomainMappingTest {
 
     @Test
-    void cohortDocumentPassesMissingDatesThroughAsNull() {
-        CohortDocument document = new CohortDocument("id", CohortLevel.undergraduate, "en", "Title", null, null, null);
+    void cohortResponsePassesMissingDatesThroughAsNull() {
+        Cohort cohort = new Cohort("id", CohortLevel.undergraduate, "en", "Title", null, null, null);
 
-        assertThat(document.toCohort().importantDates()).isNull();
+        assertThat(CohortResponse.from(cohort).importantDates()).isNull();
     }
 
     @Test
-    void cohortDocumentExposesOnlyContentAsCohort() {
-        EventDetails event = new EventDetails("Induction", "Desc", List.of(), List.of(), null, null);
+    void cohortResponseDropsStorageFields() {
+        InductionProgramme event = new InductionProgramme("Induction", "Desc", List.of(), List.of(), null, null);
         List<ImportantDate> dates = List.of(new ImportantDate("Enrol", "1 Sept", DateType.action));
-        CohortDocument document = new CohortDocument("pg_es", CohortLevel.postgraduate, "es", "Title", dates, event, "hash");
+        Cohort cohort = new Cohort("pg_es", CohortLevel.postgraduate, "es", "Title", dates, event, "hash");
 
-        assertThat(document.toCohort()).isEqualTo(new Cohort(CohortLevel.postgraduate, "Title", dates, event));
+        assertThat(CohortResponse.from(cohort)).isEqualTo(new CohortResponse(CohortLevel.postgraduate, "Title", dates, event));
     }
 
     @Test

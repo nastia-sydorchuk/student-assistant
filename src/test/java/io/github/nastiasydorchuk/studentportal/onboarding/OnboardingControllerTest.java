@@ -2,6 +2,7 @@ package io.github.nastiasydorchuk.studentportal.onboarding;
 
 import io.github.nastiasydorchuk.studentportal.common.error.RecordNotFoundException;
 import io.github.nastiasydorchuk.studentportal.common.language.LanguageResolver;
+import io.github.nastiasydorchuk.studentportal.onboarding.api.CohortResponse;
 import io.github.nastiasydorchuk.studentportal.onboarding.domain.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,8 +31,8 @@ class OnboardingControllerTest {
 
     @Test
     void getStepsDefaultsToEnglish() throws Exception {
-        when(service.getStepsBySource("en"))
-                .thenReturn(List.of(new Step(1, "Enrol", "Enrol online", "Start", "https://enrol.example.com")));
+        when(service.getSteps("en"))
+                .thenReturn(List.of(new OnboardingStep(1, "Enrol", "Enrol online", "Start", "https://enrol.example.com")));
 
         mockMvc.perform(get("/api/onboarding/steps"))
                 .andExpect(status().isOk())
@@ -42,13 +43,13 @@ class OnboardingControllerTest {
 
     @Test
     void getStepsResolvesTheAcceptLanguageHeader() throws Exception {
-        when(service.getStepsBySource("es")).thenReturn(List.of());
+        when(service.getSteps("es")).thenReturn(List.of());
 
         mockMvc.perform(get("/api/onboarding/steps").header("Accept-Language", "es-ES,es;q=0.9"))
                 .andExpect(status().isOk())
                 .andExpect(content().json("[]"));
 
-        verify(service).getStepsBySource("es");
+        verify(service).getSteps("es");
     }
 
     @Test
@@ -65,7 +66,7 @@ class OnboardingControllerTest {
 
     @Test
     void getCohortForLevel() throws Exception {
-        when(service.getCohortByLevel(CohortLevel.postgraduate, "fr")).thenReturn(new Cohort(CohortLevel.postgraduate, "Bienvenue",
+        when(service.getCohort(CohortLevel.postgraduate, "fr")).thenReturn(new CohortResponse(CohortLevel.postgraduate, "Bienvenue",
                 List.of(new ImportantDate("Inscription", "1 sept", DateType.deadline)), null));
 
         mockMvc.perform(get("/api/onboarding/levels/postgraduate").header("Accept-Language", "fr"))
@@ -83,12 +84,12 @@ class OnboardingControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message").value("Invalid value 'foo' for parameter 'level'"));
 
-        verify(service, never()).getCohortByLevel(any(), anyString());
+        verify(service, never()).getCohort(any(), anyString());
     }
 
     @Test
     void missingCohortIsNotFound() throws Exception {
-        when(service.getCohortByLevel(CohortLevel.undergraduate, "en"))
+        when(service.getCohort(CohortLevel.undergraduate, "en"))
                 .thenThrow(new RecordNotFoundException("Cohort not found for level: undergraduate"));
 
         mockMvc.perform(get("/api/onboarding/levels/undergraduate"))

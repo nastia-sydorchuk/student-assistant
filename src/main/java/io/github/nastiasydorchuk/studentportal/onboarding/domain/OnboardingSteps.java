@@ -9,6 +9,6 @@ import java.util.List;
 public record OnboardingSteps(
         @Id String id,             // e.g., "steps_es"
         String language,
-        List<Step> steps,
+        List<OnboardingStep> steps,
         String sourceHash // hash of the English document this was translated from; null on English
 ) {}

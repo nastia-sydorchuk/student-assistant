@@ -1,6 +1,6 @@
 package io.github.nastiasydorchuk.studentportal.translation;
 
-import io.github.nastiasydorchuk.studentportal.onboarding.domain.Step;
+import io.github.nastiasydorchuk.studentportal.onboarding.domain.OnboardingStep;
 import org.junit.jupiter.api.Test;
 import tools.jackson.databind.json.JsonMapper;
 
@@ -19,16 +19,16 @@ class SourceHasherTest {
 
     @Test
     void equalContentHashesTheSame() {
-        List<Step> first = List.of(new Step(1, "Summary", "Desc", "Go", "https://example.com"));
-        List<Step> second = List.of(new Step(1, "Summary", "Desc", "Go", "https://example.com"));
+        List<OnboardingStep> first = List.of(new OnboardingStep(1, "Summary", "Desc", "Go", "https://example.com"));
+        List<OnboardingStep> second = List.of(new OnboardingStep(1, "Summary", "Desc", "Go", "https://example.com"));
 
         assertThat(hasher.hash(first)).isEqualTo(hasher.hash(second));
     }
 
     @Test
     void changedContentHashesDifferently() {
-        List<Step> original = List.of(new Step(1, "Summary", "Desc", "Go", "https://example.com"));
-        List<Step> edited = List.of(new Step(1, "Summary", "Edited desc", "Go", "https://example.com"));
+        List<OnboardingStep> original = List.of(new OnboardingStep(1, "Summary", "Desc", "Go", "https://example.com"));
+        List<OnboardingStep> edited = List.of(new OnboardingStep(1, "Summary", "Edited desc", "Go", "https://example.com"));
 
         assertThat(hasher.hash(original)).isNotEqualTo(hasher.hash(edited));
     }

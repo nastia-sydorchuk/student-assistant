@@ -1,10 +1,10 @@
 package io.github.nastiasydorchuk.studentportal.onboarding;
 
 import io.github.nastiasydorchuk.studentportal.common.language.LanguageResolver;
-import io.github.nastiasydorchuk.studentportal.onboarding.domain.Cohort;
+import io.github.nastiasydorchuk.studentportal.onboarding.api.CohortResponse;
 import io.github.nastiasydorchuk.studentportal.onboarding.domain.CohortLevel;
 import io.github.nastiasydorchuk.studentportal.onboarding.domain.InductionEvent;
-import io.github.nastiasydorchuk.studentportal.onboarding.domain.Step;
+import io.github.nastiasydorchuk.studentportal.onboarding.domain.OnboardingStep;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,13 +23,13 @@ public class OnboardingController {
     }
 
     @GetMapping("/steps")
-    public ResponseEntity<List<Step>> getSteps(@RequestHeader(name = "Accept-Language", defaultValue = "en") String language) {
-        return ResponseEntity.ok(service.getStepsBySource(languageResolver.resolve(language)));
+    public ResponseEntity<List<OnboardingStep>> getSteps(@RequestHeader(name = "Accept-Language", defaultValue = "en") String language) {
+        return ResponseEntity.ok(service.getSteps(languageResolver.resolve(language)));
     }
 
     @GetMapping("/levels/{level}")
-    public ResponseEntity<Cohort> getInductionForLevel(@PathVariable CohortLevel level, @RequestHeader(name = "Accept-Language", defaultValue = "en") String language) {
-        return ResponseEntity.ok(service.getCohortByLevel(level, languageResolver.resolve(language)));
+    public ResponseEntity<CohortResponse> getCohort(@PathVariable CohortLevel level, @RequestHeader(name = "Accept-Language", defaultValue = "en") String language) {
+        return ResponseEntity.ok(service.getCohort(level, languageResolver.resolve(language)));
     }
 
     @GetMapping("/induction-events")

@@ -79,8 +79,8 @@ public class TranslationService {
     }
 
     public OnboardingSteps translateSteps(OnboardingSteps source, String lang, String sourceHash) {
-        List<Step> steps = source.steps() != null
-                ? source.steps().stream().map(s -> new Step(
+        List<OnboardingStep> steps = source.steps() != null
+                ? source.steps().stream().map(s -> new OnboardingStep(
                         s.order(),
                         translateText(s.summary(), lang),
                         translateText(s.description(), lang),
@@ -92,7 +92,7 @@ public class TranslationService {
         return new OnboardingSteps("steps_" + lang, lang, steps, sourceHash);
     }
 
-    public CohortDocument translateCohort(CohortDocument c, String lang, String sourceHash) {
+    public Cohort translateCohort(Cohort c, String lang, String sourceHash) {
         List<ImportantDate> dates = c.importantDates() != null
                 ? c.importantDates().stream().map(d -> new ImportantDate(
                 translateText(d.activity(), lang),
@@ -107,8 +107,8 @@ public class TranslationService {
                 c.event().registration().link())
                 : null;
 
-        EventDetails event = c.event() != null
-                ? new EventDetails(
+        InductionProgramme event = c.event() != null
+                ? new InductionProgramme(
                 translateText(c.event().title(), lang),
                 translateText(c.event().description(), lang),
                 c.event().programmeOutline() != null
@@ -121,7 +121,7 @@ public class TranslationService {
                 reg)
                 : null;
 
-        return new CohortDocument(
+        return new Cohort(
                 c.level().name() + "_" + lang, // e.g., "undergraduate_es"
                 c.level(),
                 lang,
