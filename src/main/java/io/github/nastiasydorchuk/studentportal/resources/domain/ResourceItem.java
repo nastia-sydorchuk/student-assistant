@@ -1,8 +1,5 @@
 package io.github.nastiasydorchuk.studentportal.resources.domain;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public record ResourceItem(
         String title,
         String icon,

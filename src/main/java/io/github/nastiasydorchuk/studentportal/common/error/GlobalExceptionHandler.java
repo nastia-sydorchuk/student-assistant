@@ -7,7 +7,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
+import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -68,11 +70,31 @@ public class GlobalExceptionHandler {
                 .body(ApiError.of(HttpStatus.SERVICE_UNAVAILABLE.value(), ex.getMessage(), request.getRequestURI()));
     }
 
+    // Unparseable or missing JSON body: the client's fault, and Jackson's message would expose internals
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ApiError> handleUnreadableBody(HttpMessageNotReadableException ex, HttpServletRequest request) {
+        logger.debug("Unreadable request body: {}", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ApiError.of(HttpStatus.BAD_REQUEST.value(), "Malformed request body", request.getRequestURI()));
+    }
+
     // Catch-all: anything not matched above is a genuine server-side failure.
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiError> handleGeneralError(Exception ex, HttpServletRequest request) {
+        // ...except Spring MVC's own exceptions (unknown URL, wrong method, unsupported media type,
+        // missing parameter...), which already carry their 4xx status and headers such as Allow
+        if (ex instanceof ErrorResponse errorResponse) {
+            return toResponse(errorResponse, request);
+        }
         logger.error("Internal Server Error occurred: ", ex);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(ApiError.of(HttpStatus.INTERNAL_SERVER_ERROR.value(), "An unexpected error occurred.", request.getRequestURI()));
+    }
+
+    private ResponseEntity<ApiError> toResponse(ErrorResponse errorResponse, HttpServletRequest request) {
+        int status = errorResponse.getStatusCode().value();
+        return ResponseEntity.status(status)
+                .headers(errorResponse.getHeaders())
+                .body(ApiError.of(status, errorResponse.getBody().getDetail(), request.getRequestURI()));
     }
 }

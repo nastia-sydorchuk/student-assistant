@@ -96,7 +96,7 @@ public class TranslationService {
         List<ImportantDate> dates = c.importantDates() != null
                 ? c.importantDates().stream().map(d -> new ImportantDate(
                 translateText(d.activity(), lang),
-                d.date(),
+                translateText(d.date(), lang),
                 d.type()
         )).toList()
                 : null;
