@@ -6,14 +6,16 @@
     </a>
 
     <div class="d-flex align-items-center ms-auto">
-      <select class="form-select form-select-sm"
-              (change)="onLanguageChange($event)"
-              [value]="currentLang"
-              [attr.aria-label]="'COMMON.LANGUAGE_SELECT_LABEL' | translate"
-              style="width: auto; cursor: pointer;">
-        <option value="en">English</option>
-        <option value="es">Español</option>
-      </select>
+      @if (languages().length) {
+        <select class="form-select form-select-sm"
+                (change)="onLanguageChange($event)"
+                [attr.aria-label]="'COMMON.LANGUAGE_SELECT_LABEL' | translate"
+                style="width: auto; cursor: pointer;">
+          @for (lang of languages(); track lang.code) {
+            <option [value]="lang.code" [selected]="lang.code === currentLang">{{ lang.name }}</option>
+          }
+        </select>
+      }
     </div>
   </div>
 </nav>

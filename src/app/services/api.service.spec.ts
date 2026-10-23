@@ -53,7 +53,7 @@ describe('ApiService', () => {
       expect(category).toEqual(mockCategory);
     });
 
-    const req = httpMock.expectOne('/api/resources/academic');
+    const req = httpMock.expectOne('/api/resource-categories/academic');
     expect(req.request.method).toBe('GET');
     req.flush(mockCategory);
   });
@@ -67,6 +67,7 @@ describe('ApiService', () => {
         title: 'et',
         description: 'ed',
         programmeOutline: [],
+        eligibility: [],
         registration: { label: 'l', link: 'link' },
       },
     };
@@ -75,7 +76,7 @@ describe('ApiService', () => {
       expect(level).toEqual(mockLevel);
     });
 
-    const req = httpMock.expectOne('/api/onboarding/postgraduate');
+    const req = httpMock.expectOne('/api/onboarding/levels/postgraduate');
     expect(req.request.method).toBe('GET');
     req.flush(mockLevel);
   });
@@ -93,7 +94,7 @@ describe('ApiService', () => {
       expect(response).toEqual(mockResponse);
     });
 
-    const req = httpMock.expectOne('/api/gemini/chat');
+    const req = httpMock.expectOne('/api/chat');
     expect(req.request.method).toBe('POST');
     expect(req.request.body).toEqual(request);
     req.flush(mockResponse);
@@ -109,5 +110,17 @@ describe('ApiService', () => {
     const req = httpMock.expectOne('/api/portal-cards');
     expect(req.request.method).toBe('GET');
     req.flush(mockCards);
+  });
+
+  it('fetches languages', () => {
+    const mockLanguages = [{ code: 'en', name: 'English' }, { code: 'es', name: 'Español' }];
+
+    service.getLanguages().subscribe((languages) => {
+      expect(languages).toEqual(mockLanguages);
+    });
+
+    const req = httpMock.expectOne('/api/languages');
+    expect(req.request.method).toBe('GET');
+    req.flush(mockLanguages);
   });
 });

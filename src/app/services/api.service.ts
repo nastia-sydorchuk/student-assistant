@@ -5,6 +5,7 @@ import { InductionEvent, LevelData, Step } from '../models/welcome.model';
 import { ResourceCategory } from '../models/resources.model';
 import { ChatRequest, ChatResponse } from '../models/chat.model';
 import { PortalCard } from '../models/portal-card.model';
+import { Language } from '../models/language.model';
 
 @Injectable({
   providedIn: 'root',
@@ -21,18 +22,22 @@ export class ApiService {
   }
 
   getResources(category: string): Observable<ResourceCategory> {
-    return this.http.get<ResourceCategory>(`/api/resources/${category}`);
+    return this.http.get<ResourceCategory>(`/api/resource-categories/${category}`);
   }
 
   getOnboardingConfigByLevel(level: string): Observable<LevelData> {
-    return this.http.get<LevelData>(`/api/onboarding/${level}`);
+    return this.http.get<LevelData>(`/api/onboarding/levels/${level}`);
   }
 
   sendMessage(request: ChatRequest): Observable<ChatResponse> {
-    return this.http.post<ChatResponse>('/api/gemini/chat', request);
+    return this.http.post<ChatResponse>('/api/chat', request);
   }
 
   getPortalCards(): Observable<PortalCard[]> {
     return this.http.get<PortalCard[]>('/api/portal-cards');
+  }
+
+  getLanguages(): Observable<Language[]> {
+    return this.http.get<Language[]>('/api/languages');
   }
 }

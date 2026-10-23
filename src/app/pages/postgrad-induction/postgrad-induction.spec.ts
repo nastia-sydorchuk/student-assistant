@@ -21,6 +21,7 @@ describe('PostgradInduction', () => {
       title: 'Welcome Event',
       description: 'd',
       programmeOutline: [],
+      eligibility: [],
       registration: { label: 'Register', link: 'https://example.com/register' },
     },
   };

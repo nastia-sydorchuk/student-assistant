@@ -90,14 +90,10 @@
                 {{ 'INDUCTION.SUBTITLE3' | translate }}
               </h4>
               
-              @if (data.event.eligibility) {
-                <p class="text-secondary mb-3 fw-semibold">{{ data.event.eligibility }}</p>
-              }
-
-              @if (data.event.eligibilityList) {
+              @if (data.event.eligibility.length) {
                 <p class="text-secondary mb-3 fw-semibold">This event is open to:</p>
                 <ul class="text-secondary">
-                  @for (criteria of data.event.eligibilityList; track criteria) {
+                  @for (criteria of data.event.eligibility; track criteria) {
                     <li class="mb-2">{{ criteria }}</li>
                   }
                 </ul>

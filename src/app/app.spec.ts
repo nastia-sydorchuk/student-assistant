@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
-import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideTranslateService } from '@ngx-translate/core';
 import { App } from './app';
 import { LanguageService } from './services/language.service';
@@ -41,6 +41,34 @@ describe('App', () => {
     const fixture = TestBed.createComponent(App);
     const app = fixture.componentInstance;
     expect(app.currentLang).toBe(languageService.getCurrentLanguage());
+  });
+
+  it('should render languages from the API', () => {
+    const httpMock = TestBed.inject(HttpTestingController);
+    const fixture = TestBed.createComponent(App);
+    fixture.detectChanges();
+
+    httpMock.expectOne('/api/languages').flush([
+      { code: 'en', name: 'English' },
+      { code: 'fr', name: 'Français' },
+    ]);
+    fixture.detectChanges();
+
+    const options = (fixture.nativeElement as HTMLElement).querySelectorAll('select option');
+    expect(Array.from(options).map((o) => o.textContent?.trim())).toEqual(['English', 'Français']);
+  });
+
+  it('should hide the language select until languages load', () => {
+    const httpMock = TestBed.inject(HttpTestingController);
+    const fixture = TestBed.createComponent(App);
+    fixture.detectChanges();
+
+    expect((fixture.nativeElement as HTMLElement).querySelector('select')).toBeNull();
+
+    httpMock.expectOne('/api/languages').flush('boom', { status: 500, statusText: 'Server Error' });
+    fixture.detectChanges();
+
+    expect((fixture.nativeElement as HTMLElement).querySelector('select')).toBeNull();
   });
 
   it('should delegate onLanguageChange to the language service', () => {

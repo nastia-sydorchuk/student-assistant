@@ -34,8 +34,7 @@ export interface EventDetails {
   description: string;
   programmeOutline: string[];
 
-  eligibility?: string;       // Used by Postgrad
-  eligibilityList?: string[]; // Used by Undergrad
+  eligibility: string[];
   contactInfo?: string;       // Used by Undergrad
   
   registration: RegistrationForm;
