@@ -27,6 +27,7 @@ export class ChatWidget implements OnInit {
   messages = signal<ChatMessage[]>([]);
 
   userInput = '';
+  readonly maxInputLength = 1000;
   private openTimer: ReturnType<typeof setTimeout> | undefined;
 
   sessionId = 'session_' + crypto.randomUUID();
@@ -147,7 +148,7 @@ export class ChatWidget implements OnInit {
     const currentMessages = this.messages();
     const currentGreeting = currentMessages.length > 0 ? currentMessages[0].text : '';
 
-    const userText = this.userInput.trim();
+    const userText = this.userInput.trim().slice(0, this.maxInputLength);
     this.messages.update(msgs => [...msgs, { text: userText, isUser: true }]);
     this.userInput = '';
 

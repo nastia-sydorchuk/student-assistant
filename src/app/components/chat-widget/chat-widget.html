@@ -51,6 +51,7 @@
                      class="form-control"
                      [placeholder]="'CHAT.PLACEHOLDER' | translate"
                      [(ngModel)]="userInput"
+                     [maxlength]="maxInputLength"
                      (keyup.enter)="sendMessage()"
                      [disabled]="isLoading()">
               <button class="btn btn-primary" (click)="sendMessage()" [disabled]="isLoading()">{{ 'CHAT.SEND' | translate }}</button>
