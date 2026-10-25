@@ -1,0 +1,62 @@
+@if (isLoading()) {
+  <div class="container mt-5 text-center">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+}
+
+@if (errorMessage()) {
+  <div class="container mt-5">
+    <div class="alert alert-danger" role="alert">
+      {{ errorMessage() }}
+    </div>
+  </div>
+}
+
+@if (resources(); as res) {
+<div>
+  <div class="bg-primary text-white p-4 p-md-5 mb-5 shadow-sm">
+    <div class="container">
+      <a routerLink="/" class="text-white-50 text-decoration-none d-inline-flex align-items-center mb-4 fw-semibold back-link">
+        <span class="material-icons me-2 fs-5">arrow_back</span> {{ 'COMMON.NAV' | translate }}
+      </a>
+      <h1 class="display-5 fw-bold mb-2">{{ res.categoryTitle }}</h1>
+      <p class="lead mb-0">{{ res.description }}</p>
+    </div>
+  </div>
+  <main class="container mb-5">
+      <h2 class="fw-bold text-dark" id="campus-map">{{ 'FACILITIES.TITLE' | translate }}</h2>
+      <p class="text-secondary mb-4">{{ 'FACILITIES.DESCRIPTION' | translate }}</p>
+      <app-map [targetLocation]="activeMapLocation"></app-map>
+
+    <h2 class="fw-bold text-dark mb-4 mt-4">{{ 'FACILITIES.SUBTITLE' | translate }}</h2>
+
+    <div class="row g-4">
+      @for (facility of res.items; track facility.title) {
+        <div class="col-lg-6">
+          <div class="card h-100 shadow-sm border-0 hover-lift overflow-hidden">
+            <div class="row g-0 h-100">
+              <div class="col-auto bg-primary text-white d-flex align-items-center justify-content-center p-4" style="width: 100px;">
+                <span class="material-icons display-5">{{ facility.icon }}</span>
+              </div>
+              <div class="col p-4 d-flex flex-column">
+                <h3 class="h5 fw-bold text-dark mb-2">{{ facility.title }}</h3>
+                <a href="#" (click)="highlightOnMap(facility.location, $event)" 
+                   class="badge bg-primary-subtle text-primary rounded-pill mb-3 align-self-start d-flex align-items-center gap-1 px-3 py-2 text-decoration-none hover-lift"
+                   title="Click to view on map above">
+                  <span class="material-icons fs-6">place</span> {{ facility.location }}
+                </a>
+                <p class="text-secondary mb-3 flex-grow-1">{{ facility.description }}</p>
+                <a [href]="facility.url" target="_blank" rel="noopener noreferrer" class="text-decoration-none fw-bold text-primary action-link d-inline-flex align-items-center">
+                  {{ facility.actionText }} <span class="material-icons ms-1 fs-6 transition-transform">arrow_forward</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  </main>
+</div>
+}

@@ -1,0 +1,23 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm sticky-top py-3">
+  <div class="container">
+    <a routerLink="/" class="navbar-brand d-flex align-items-center gap-2 fw-bold fs-4">
+      <span class="material-icons fs-2">school</span>
+      {{ 'DASHBOARD.HEADER' | translate }}
+    </a>
+
+    <div class="d-flex align-items-center ms-auto">
+      @if (languages().length) {
+        <select class="form-select form-select-sm"
+                (change)="onLanguageChange($event)"
+                [attr.aria-label]="'COMMON.LANGUAGE_SELECT_LABEL' | translate"
+                style="width: auto; cursor: pointer;">
+          @for (lang of languages(); track lang.code) {
+            <option [value]="lang.code" [selected]="lang.code === currentLang">{{ lang.name }}</option>
+          }
+        </select>
+      }
+    </div>
+  </div>
+</nav>
+<router-outlet />
+<app-chat-widget></app-chat-widget>

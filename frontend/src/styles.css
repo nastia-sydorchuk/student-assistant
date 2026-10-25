@@ -1,0 +1,66 @@
+:root {
+  /* 1. The main hex color */
+  --bs-primary: #004b87; 
+  
+  /* 2. The RGB version (REQUIRED for Bootstrap's opacity classes to work!) */
+  /* #004b87 converts to RGB: 0, 75, 135 */
+  --bs-primary-rgb: 0, 75, 135; 
+}
+
+/* Solid Primary Button States */
+.btn-primary {
+  --bs-btn-bg: #004b87;
+  --bs-btn-border-color: #004b87;
+  --bs-btn-hover-bg: #003366; /* Slightly darker for hover */
+  --bs-btn-hover-border-color: #002b5e;
+  --bs-btn-active-bg: #002b5e;
+  --bs-btn-active-border-color: #00224b;
+}
+
+/* Outlined Primary Button States (Used on Services & Cultural pages) */
+.btn-outline-primary {
+  --bs-btn-color: #004b87;
+  --bs-btn-border-color: #004b87;
+  --bs-btn-hover-bg: #004b87;
+  --bs-btn-hover-border-color: #004b87;
+  --bs-btn-hover-color: #ffffff;
+  --bs-btn-active-bg: #004b87;
+  --bs-btn-active-border-color: #004b87;
+  --bs-btn-active-color: #ffffff;
+}
+
+/* Custom Global Utility Classes */
+.hover-lift {
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 24px rgba(0,0,0,0.1) !important;
+  border-color: #004b87 !important;
+}
+
+.transition-transform {
+  transition: transform 0.2s ease;
+}
+
+.action-link:hover .transition-transform {
+  transform: translateX(4px);
+}
+
+.back-link:hover {
+  color: #ffffff !important;
+}
+
+/* For dashed border on the map/loading states */
+.border-dashed {
+  border-style: dashed !important;
+}
+
+.hover-primary {
+  transition: color 0.2s ease;
+}
+
+.hover-primary:hover {
+  color: #0d6efd !important;
+}

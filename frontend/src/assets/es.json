@@ -1,0 +1,68 @@
+{
+  "DASHBOARD": {
+    "TITLE": "Bienvenido al Portal del Estudiante",
+    "SUBTITLE": "Seleccione una categoría a continuación para acceder a recursos e información.",
+    "HEADER": "Portal del estudiante"
+  },
+  "COMMON": {
+    "LOADING": "Cargando...",
+    "ERROR": "No se pudieron cargar los recursos en este momento.",
+    "NAV": "Volver al panel de control",
+    "LANGUAGE_SELECT_LABEL": "Seleccionar idioma"
+  },
+  "WELLBEING": {
+    "TITLE": "Servicios de apoyo",
+    "SUBTITLE": "¿Eres nuevo en Edimburgo?",
+    "SUBSUBTITLE": "Se recomienda encarecidamente que se registre con un médico de cabecera del NHS (Servicio Nacional de Salud) en cuanto llegue, en lugar de esperar a enfermar. Consulte el enlace «Registrarse con un médico» que aparece a continuación para inscribirse."
+  },
+  "REGISTRATION": {
+    "TITLE": "Inscripción y comienzo de tus estudios",
+    "SUBTITLE": "¡Bienvenido/a! Completa los pasos administrativos y de configuración digital que se indican a continuación para finalizar tu inscripción.",
+    "PART1": "Parte 1: Lista de verificación administrativa",
+    "PART2": "Parte 2: Configuración digital",
+    "PART2SUBTITLE": "¿Necesitas ayuda práctica con el departamento de informática?",
+    "PART2DESCRIPTION": "El servicio de asistencia de Servicios de Información (SI) se encuentra en la Biblioteca Cameron Smail. Puede pasar con su computadora portátil o enviarles un correo electrónico a"
+  },
+  "INDUCTION": {
+    "TITLE": "Eventos de inducción y bienvenida",
+    "SUBTITLE": "Da inicio a tu trayectoria universitaria con las inducciones académicas, ferias y eventos sociales esenciales.",
+    "SUBTITLE1": "Fechas importantes",
+    "SUBTITLE2": "Esquema del programa",
+    "SUBTITLE3": "Criterios de elegibilidad"
+  },
+  "FACILITIES": {
+    "TITLE": "Mapa interactivo del campus",
+    "DESCRIPTION": "Encuentra tus clases, aparcamientos y zonas de restauración en el campus de Edimburgo.",
+    "SUBTITLE": "Instalaciones destacadas"
+  },
+  "MAP": {
+    "STARTING_LABEL": "Punto de partida",
+    "DESTINATION_LABEL": "Destino",
+    "SEARCH_LABEL": "Buscar",
+    "NAVIGATION_BUTTON": "Iniciar navegación",
+    "CANCEL_BUTTON": "Cancelar ruta",
+    "LOADING": "Cargando mapa..."
+  },
+  "GREETINGS": {
+    "HOME": "¡Bienvenido/a de nuevo a tu Portal de Estudiantes! ¿Puedo ayudarte a encontrar algún recurso en particular hoy? (¡Pregúntame en inglés o español!)",
+    "ACADEMIC": "¡Hola! ¿Necesitas ayuda para encontrar recursos en la biblioteca, espacios de estudio o apoyo para el desarrollo de habilidades académicas?",
+    "FACILITIES": "¡Hola! ¿Quieres saber más sobre nuestras instalaciones o cómo llegar hasta aquí?",
+    "SERVICES": "¡Bienvenidos! ¿Necesitan ayuda con soporte informático, bienestar estudiantil, alojamiento o sus planes de carrera?",
+    "CULTURAL": "¡Hola! ¿Quieres saber más sobre la Unión de Estudiantes, las asociaciones estudiantiles, los clubes deportivos o las oportunidades de voluntariado?",
+    "REGISTRATION": "¡Hola! ¿Tienes alguna pregunta sobre tu inscripción, la selección de cursos o el pago de la matrícula?",
+    "INDUCTION": "¡Bienvenidos! ¿Están buscando eventos de bienvenida o ferias específicas?",
+    "INDUCTION_UNDERGRADUATE": "¡Hola! ¿Listo para comenzar tu trayectoria universitaria? ¡Pregúntame lo que quieras sobre la Semana de Bienvenida o los requisitos para participar en los eventos de éxito!",
+    "INDUCTION_POSTGRADUATE": "¡Bienvenido/a a tus estudios de posgrado! ¿Necesitas ayuda para encontrar eventos de networking o tu horario académico?",
+    "DEFAULT": "¡Hola! ¿En qué puedo ayudarte hoy con tus consultas sobre Heriot-Watt?"
+  },
+  "CHAT": {
+    "TITLE": "Asistente Estudiantil HW",
+    "CLOSE_ARIA": "Cerrar chat",
+    "PLACEHOLDER": "Escribe una pregunta...",
+    "SEND": "Enviar",
+    "THINKING": "Pensando...",
+    "READ_MORE": "Más información:",
+    "CONNECTION_ERROR": "Lo sentimos, no pudimos conectar con el servidor.",
+    "EXTERNAL_LINK": "Enlace externo"
+  }
+}

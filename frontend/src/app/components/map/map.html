@@ -1,0 +1,51 @@
+<div class="position-relative w-100 shadow-sm rounded" style="min-height: 500px;">
+  <div class="position-absolute top-0 start-0 m-3 p-3 bg-white rounded shadow" style="width: 320px; max-width: calc(100vw - 2rem); z-index: 10;">
+      @if (showNavigation()) {
+        <div class="mb-3">
+          <span class="form-label small text-muted mb-1 fw-bold d-block">{{ 'MAP.STARTING_LABEL' | translate }}</span>
+          <div #originContainer></div></div>
+      }
+      <div>
+        <span class="form-label small text-muted mb-1 fw-bold d-block">
+          {{ (showNavigation() ? 'MAP.DESTINATION_LABEL' : 'MAP.SEARCH_LABEL') | translate }}
+        </span>
+        <div #searchContainer></div>
+      </div>
+
+      @if (currentDestinationCoords() && !showNavigation()) {
+        <button class="btn btn-primary w-100 mt-3 shadow-sm fw-bold" (click)="startNavigation()">
+          {{ 'MAP.NAVIGATION_BUTTON' | translate }}
+        </button>
+      }
+
+      @if (showNavigation()) {
+        <button class="btn btn-light border w-100 mt-3 btn-sm text-danger" (click)="cancelNavigation()">
+          {{ 'MAP.CANCEL_BUTTON' | translate }}
+        </button>
+      }
+
+      @if (routeError()) {
+        <div class="alert alert-danger py-2 px-3 mt-3 mb-0 small">{{ routeError() }}</div>
+      }
+    </div>
+
+    @if (apiLoaded()) {
+      <google-map
+        width="100%"
+        height="500px"
+        [center]="center()"
+        [zoom]="zoom"
+        [mapId]="mapId"
+        [options]="mapOptions">
+
+        @if (directionsResults(); as results) {
+          <map-directions-renderer [directions]="results"></map-directions-renderer>
+        }
+      </google-map>
+    } @else {
+      <div class="d-flex flex-column align-items-center justify-content-center bg-light w-100" style="height: 500px;">
+        <div class="spinner-border text-primary" role="status"></div>
+        <span class="mt-2 text-muted fw-semibold">{{ 'MAP.LOADING' | translate }}</span>
+      </div>
+    }
+</div>
