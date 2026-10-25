@@ -6,7 +6,7 @@ from fastapi import Depends, FastAPI, Header, HTTPException
 from langchain_core.messages import AIMessage
 from pydantic import BaseModel, StringConstraints
 
-from .chains import build_conversational_chain
+from .chains import RagAnswer, build_conversational_chain
 from .config import configure_logging, settings
 from .data import load_contacts
 from .ingestion import load_vectorstore
@@ -19,7 +19,10 @@ app = FastAPI(title="HW Student Assistant RAG API")
 
 contacts = load_contacts()
 vectorstore = load_vectorstore()
-session_store = TTLSessionStore(ttl_seconds=settings.session_ttl_seconds)
+session_store = TTLSessionStore(
+    ttl_seconds=settings.session_ttl_seconds,
+    max_messages=settings.max_history_messages,
+)
 conversational_rag_chain = build_conversational_chain(vectorstore, contacts, session_store.get)
 
 
@@ -51,9 +54,6 @@ async def query_rag(request: QueryRequest) -> QueryResponse:
     session_id = str(request.session_id)
     history = session_store.get(session_id)
 
-    if len(history.messages) > settings.max_history_messages:
-        history.messages = history.messages[-settings.max_history_messages :]
-
     if len(history.messages) == 0 and request.bot_greeting:
         history.add_message(AIMessage(content=request.bot_greeting))
 
@@ -66,12 +66,17 @@ async def query_rag(request: QueryRequest) -> QueryResponse:
         logger.exception("RAG chain invocation failed for session %s", session_id)
         raise HTTPException(status_code=502, detail="Failed to generate an answer. Please try again.")
 
-    answer = response["answer"]
-    used_sources = "[SOURCES_USED]" in answer
-    answer = answer.replace("[SOURCES_USED]", "").replace("[NO_SOURCES]", "").strip()
+    result: RagAnswer = response["result"]
+    docs = response["context"]
 
-    sources: list[str] = []
-    if used_sources:
-        sources = list({doc.metadata["source"] for doc in response["context"] if "source" in doc.metadata})
+    # source_ids are 1-based positions in the retrieved docs; ignore any the
+    # model invented, and dedupe while keeping the model's order.
+    sources = list(
+        dict.fromkeys(
+            docs[i - 1].metadata["source"]
+            for i in result.source_ids
+            if 1 <= i <= len(docs) and "source" in docs[i - 1].metadata
+        )
+    )
 
-    return QueryResponse(answer=answer, sources=sources)
+    return QueryResponse(answer=result.answer, sources=sources)

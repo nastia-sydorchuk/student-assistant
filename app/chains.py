@@ -2,15 +2,16 @@ import json
 from typing import Callable
 
 from langchain_chroma import Chroma
-from langchain_classic.chains import create_history_aware_retriever, create_retrieval_chain
-from langchain_classic.chains.combine_documents import create_stuff_documents_chain
+from langchain_classic.chains import create_history_aware_retriever
 from langchain_classic.chains.query_constructor.base import AttributeInfo
 from langchain_classic.retrievers.self_query.base import SelfQueryRetriever
 from langchain_core.chat_history import BaseChatMessageHistory
+from langchain_core.documents import Document
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
-from langchain_core.runnables import Runnable
+from langchain_core.runnables import Runnable, RunnablePassthrough
 from langchain_core.runnables.history import RunnableWithMessageHistory
 from langchain_google_genai import ChatGoogleGenerativeAI
+from pydantic import BaseModel, Field
 
 from .config import settings
 
@@ -49,19 +50,33 @@ SYSTEM_PROMPT = (
     "You are a strict and helpful assistant for Heriot-Watt students. "
     "CRITICAL INSTRUCTIONS:\n"
     "0. CONVERSATIONAL FLOW: Read the chat history. If the user replies with an agreement (e.g., 'yes', 'please', 'list them') to your previous response, you MUST fulfill that offer using the provided Context.\n"
-    "1. SAFEGUARDING & WELLBEING (CRITICAL): If the user expresses feelings of isolation, loneliness, depression, or emotional distress, you MUST prioritize their safety. You must express brief, warm empathy, and immediately urge them to contact the Student Wellbeing team at studentwellbeing@hw.ac.uk. Do this regardless of what the Context says.\n"
+    "1. SAFEGUARDING & WELLBEING (CRITICAL): If the user expresses feelings of isolation, loneliness, depression, or emotional distress, you MUST prioritize their safety. You must express brief, warm empathy, and immediately urge them to contact the Student Wellbeing team at {wellbeing_email}. Do this regardless of what the Context says.\n"
     "2. ELABORATION: If the user asks for more details, provide NEW details from the Context that you haven't mentioned yet.\n"
     "3. You MUST answer the user's question using ONLY the information found in the Context. Do NOT use outside knowledge, guess, or make assumptions.\n"
     "4. OFF-TOPIC REJECTION (CRITICAL): If the user's question is clearly NOT about Heriot-Watt University (e.g., pancake recipes, coding help, general trivia, movies), you MUST politely decline to answer. You must NOT provide any contact emails. Do this even if there is text in the Context.\n"
     "5. MISSING INFORMATION & HANDOFF: If the question IS about the university, but the provided Context does NOT contain the answer (or the Context is completely empty), you must state exactly: 'I cannot find the exact answer to that in my current official university files.' THEN, use the Contact Directory below to provide the best matching email address.\n"
     "6. LINK FORMATTING: Format all provided URLs as clickable Markdown links.\n"
     "7. You MUST reply in the EXACT SAME LANGUAGE as the user's original question.\n"
-    "8. At the very end of your response, on a new line, output exactly one of these tags:\n"
-    "   - [SOURCES_USED] if your answer was based on the Context.\n"
-    "   - [NO_SOURCES] if you declined, handed off, or did not use the Context.\n"
+    "8. SOURCES: The Context is split into numbered sources ([Source 1], [Source 2], ...). In source_ids, list the numbers "
+    "of the sources your answer is actually based on. Leave it empty if you declined, handed off, or did not use the Context. "
+    "Never mention source numbers in the answer text itself.\n"
     "\nContact Directory: {contacts}\n"
-    "Context: {context}"
+    "Context:\n{context}"
 )
+
+
+class RagAnswer(BaseModel):
+    answer: str = Field(description="The reply shown to the user, formatted in Markdown.")
+    source_ids: list[int] = Field(
+        description=(
+            "Numbers of the Context sources the answer is based on. "
+            "Empty if you declined, handed off to a contact, or did not use the Context."
+        )
+    )
+
+
+def _format_docs(docs: list[Document]) -> str:
+    return "\n\n".join(f"[Source {i}]\n{doc.page_content}" for i, doc in enumerate(docs, start=1))
 
 
 def build_conversational_chain(
@@ -103,10 +118,21 @@ def build_conversational_chain(
             MessagesPlaceholder("chat_history"),
             ("human", "{input}"),
         ]
-    ).partial(contacts=json.dumps(contacts))
+    ).partial(contacts=json.dumps(contacts), wellbeing_email=contacts["health_wellbeing"])
 
-    question_answer_chain = create_stuff_documents_chain(llm, qa_prompt)
-    rag_chain = create_retrieval_chain(history_aware_retriever, question_answer_chain)
+    # Structured output instead of free text, so the backend never has to parse
+    # tags out of the model's reply. The retrieved docs stay in "context";
+    # only the prompt sees them as numbered text.
+    question_answer_chain = (
+        RunnablePassthrough.assign(context=lambda x: _format_docs(x["context"]))
+        | qa_prompt
+        | llm.with_structured_output(RagAnswer)
+    )
+    rag_chain = (
+        RunnablePassthrough.assign(context=history_aware_retriever)
+        .assign(result=question_answer_chain)
+        .assign(answer=lambda x: x["result"].answer)
+    )
 
     return RunnableWithMessageHistory(
         rag_chain,
