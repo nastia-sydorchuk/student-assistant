@@ -1,59 +1,36 @@
 # Frontend
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.1.0.
+Angular 21 app (server-side rendered) for the HW Student Assistant portal: content pages, the chat
+widget, language switching and the campus map. See the [root README](../README.md) for the overall
+architecture.
 
-## Development server
-
-To start a local development server, run:
-
-```bash
-ng serve
-```
-
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+## Setup
 
 ```bash
-ng generate component component-name
+npm ci
+cp src/environments/environment.example.ts src/environments/environment.ts
+npm start            # http://localhost:4200
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+`npm start` proxies `/api` to the backend on `http://localhost:8080` (see `proxy.conf.json`), so the
+backend must be running. `environment.ts` holds the optional Google Maps key and map ID; the map is
+the only feature that needs them.
 
-```bash
-ng generate --help
-```
+## Scripts
 
-## Building
+| Command | What it does |
+|---|---|
+| `npm start` | Dev server with live reload |
+| `npm test -- --watch=false` | Unit tests (Vitest) |
+| `npm run lint` | ESLint |
+| `npm run build` | Production build with SSR, output in `dist/` |
+| `npm run serve:ssr:frontend` | Serve the production SSR build |
+| `npm run translate` | Regenerate `src/assets/{es,fr,de}.json` from `en.json` with Google Translate (needs `GOOGLE_TRANSLATE_KEY`) |
 
-To build the project run:
+## Layout
 
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+- `src/app/pages/`: one folder per portal page (landing, registration, academic, wellbeing, ...)
+- `src/app/components/`: chat widget and campus map
+- `src/app/services/`: API client, language selection, logging
+- `src/app/interceptors/`: adds the selected language as `Accept-Language` to every `/api` request, and logs HTTP errors
+- `src/assets/*.json`: UI text for each language. Edit `en.json`, then run `npm run translate`.
