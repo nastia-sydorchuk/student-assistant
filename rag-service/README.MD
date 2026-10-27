@@ -61,7 +61,6 @@ replaced with fakes, so no API key, vector store, or network is needed.
   ```json
   {
     "query": "How do I connect to Eduroam?",
-    "current_url": "https://www.hw.ac.uk/students/",
     "session_id": "required UUID (e.g. crypto.randomUUID()), reused for every message in a conversation",
     "bot_greeting": "optional greeting to seed a new session's history"
   }
@@ -73,11 +72,11 @@ replaced with fakes, so no API key, vector store, or network is needed.
   `session_id` are rejected with 422.
 
   Length limits (longer values are rejected with 422): `query` 1–1000
-  characters after trimming whitespace, `bot_greeting` 500, `current_url`
-  2048.
+  characters after trimming whitespace, `bot_greeting` 500.
 
   If `API_AUTH_KEY` is set, requests must include an `X-API-Key` header with
-  that value.
+  that value. The backend sends it when its `RAG_API_KEY` env var is set to
+  the same value.
 
 ## Project layout
 

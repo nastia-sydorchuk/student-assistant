@@ -1,0 +1,68 @@
+{
+  "DASHBOARD": {
+    "TITLE": "Bienvenue sur le portail étudiant",
+    "SUBTITLE": "Sélectionnez une catégorie ci-dessous pour accéder aux ressources et aux informations.",
+    "HEADER": "Portail étudiant"
+  },
+  "COMMON": {
+    "LOADING": "Chargement...",
+    "ERROR": "Impossible de charger les ressources pour le moment.",
+    "NAV": "Retour au tableau de bord",
+    "LANGUAGE_SELECT_LABEL": "Sélectionnez la langue"
+  },
+  "WELLBEING": {
+    "TITLE": "Services de soutien",
+    "SUBTITLE": "Vous venez d'arriver à Édimbourg ?",
+    "SUBSUBTITLE": "Il est fortement recommandé de vous inscrire auprès d'un médecin généraliste du NHS dès votre arrivée, plutôt que d'attendre d'être malade. Cliquez sur le lien « S'inscrire auprès d'un médecin » ci-dessous pour vous inscrire."
+  },
+  "REGISTRATION": {
+    "TITLE": "Inscription et début des études",
+    "SUBTITLE": "Bienvenue ! Veuillez compléter les étapes administratives et de configuration numérique ci-dessous pour finaliser votre inscription.",
+    "PART1": "Partie 1 : Liste de contrôle administrative",
+    "PART2": "Partie 2 : Configuration numérique",
+    "PART2SUBTITLE": "Besoin d'aide informatique concrète ?",
+    "PART2DESCRIPTION": "Le service d'assistance informatique se trouve à la bibliothèque Cameron Smail. Vous pouvez vous y rendre avec votre ordinateur portable ou leur envoyer un courriel à l'adresse indiquée."
+  },
+  "INDUCTION": {
+    "TITLE": "Événements d'intégration et de bienvenue",
+    "SUBTITLE": "Démarrez votre parcours universitaire en beauté avec des séances d'accueil académiques incontournables, des salons et des événements sociaux.",
+    "SUBTITLE1": "Dates importantes",
+    "SUBTITLE2": "Plan du programme",
+    "SUBTITLE3": "Critères d'admissibilité"
+  },
+  "FACILITIES": {
+    "TITLE": "Carte interactive du campus",
+    "DESCRIPTION": "Trouvez vos salles de cours, les parkings et les restaurants sur le campus d'Édimbourg.",
+    "SUBTITLE": "Installations vedettes"
+  },
+  "MAP": {
+    "STARTING_LABEL": "Point de départ",
+    "DESTINATION_LABEL": "Destination",
+    "SEARCH_LABEL": "Recherche",
+    "NAVIGATION_BUTTON": "Démarrer la navigation",
+    "CANCEL_BUTTON": "Annuler l'itinéraire",
+    "LOADING": "Chargement de la carte..."
+  },
+  "GREETINGS": {
+    "HOME": "Bienvenue sur votre portail étudiant ! Puis-je vous aider à trouver des ressources spécifiques aujourd'hui ? (Posez-moi votre question en anglais ou en espagnol !)",
+    "ACADEMIC": "Bonjour ! Avez-vous besoin d'aide pour trouver des ressources en bibliothèque, des espaces d'étude ou un soutien en matière de compétences académiques ?",
+    "FACILITIES": "Bonjour ! Vous souhaitez en savoir plus sur nos installations ou sur la façon de venir nous voir ?",
+    "SERVICES": "Bienvenue ! Besoin d'aide concernant l'assistance informatique, le bien-être étudiant, le logement ou vos projets de carrière ?",
+    "CULTURAL": "Salut ! Vous souhaitez en savoir plus sur l'association étudiante, les sociétés, les clubs sportifs ou les possibilités de bénévolat ?",
+    "REGISTRATION": "Bonjour ! Avez-vous des questions concernant votre inscription, le choix de vos cours ou le paiement des frais de scolarité ?",
+    "INDUCTION": "Bienvenue ! Êtes-vous à la recherche d'événements de bienvenue ou de foires spécifiques ?",
+    "INDUCTION_UNDERGRADUATE": "Salut ! Prêt(e) à commencer tes études de premier cycle ? N'hésite pas à me poser des questions sur la semaine d'accueil ou sur les conditions d'admissibilité aux événements de réussite !",
+    "INDUCTION_POSTGRADUATE": "Bienvenue dans vos études supérieures ! Besoin d'aide pour trouver vos événements de réseautage ou votre emploi du temps académique ?",
+    "DEFAULT": "Bonjour ! Comment puis-je vous aider aujourd'hui concernant vos questions sur Heriot-Watt ?"
+  },
+  "CHAT": {
+    "TITLE": "Assistant étudiant HW",
+    "CLOSE_ARIA": "Fermer la conversation",
+    "PLACEHOLDER": "Saisissez une question...",
+    "SEND": "Envoyer",
+    "THINKING": "Pensée...",
+    "READ_MORE": "En savoir plus:",
+    "CONNECTION_ERROR": "Désolé, je n'ai pas pu me connecter au serveur.",
+    "EXTERNAL_LINK": "Lien externe"
+  }
+}

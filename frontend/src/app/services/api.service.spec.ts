@@ -84,7 +84,6 @@ describe('ApiService', () => {
   it('posts a chat message', () => {
     const request: ChatRequest = {
       query: 'hello',
-      current_url: 'http://localhost/',
       session_id: '7f3c2a9e-4b1d-4e8a-9c6f-2d5b8e1a0f43',
       bot_greeting: 'hi',
     };

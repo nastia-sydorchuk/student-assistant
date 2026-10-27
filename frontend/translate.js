@@ -10,7 +10,7 @@ const translate = new Translate({ key: process.env.GOOGLE_TRANSLATE_KEY });
 
 const i18nPath = './src/assets/';
 const sourceFile = 'en.json';
-const targetLanguages = ['es'];
+const targetLanguages = ['es', 'fr', 'de'];
 
 async function runAutoTranslator() {
     console.log('Starting auto-translation...');

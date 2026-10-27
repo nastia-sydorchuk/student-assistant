@@ -34,7 +34,6 @@ def verify_api_key(x_api_key: str | None = Header(default=None)) -> None:
 class QueryRequest(BaseModel):
     # Every request costs several LLM calls, so cap what a client can send.
     query: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, max_length=1000)]
-    current_url: Annotated[str, StringConstraints(max_length=2048)] = "Unknown"
     session_id: UUID
     bot_greeting: Annotated[str, StringConstraints(max_length=500)] | None = None
 
@@ -59,7 +58,7 @@ async def query_rag(request: QueryRequest) -> QueryResponse:
 
     try:
         response = await conversational_rag_chain.ainvoke(
-            {"input": request.query, "current_url": request.current_url},
+            {"input": request.query},
             config={"configurable": {"session_id": session_id}},
         )
     except Exception:

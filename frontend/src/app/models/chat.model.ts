@@ -1,6 +1,5 @@
 export interface ChatRequest {
   query: string;
-  current_url: string;
   session_id: string;
   bot_greeting: string;
 }

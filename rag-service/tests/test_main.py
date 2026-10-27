@@ -71,19 +71,13 @@ def test_query_returns_answer(client, fake_chain):
 
 
 def test_query_passes_input_and_session_to_chain(client, fake_chain):
-    body = _body(query="  Where is the library?  ", current_url="https://www.hw.ac.uk/students/")
+    body = _body(query="  Where is the library?  ")
 
     client.post("/rag-query", json=body)
 
     inputs, config = fake_chain.calls[0]
-    assert inputs == {"input": "Where is the library?", "current_url": "https://www.hw.ac.uk/students/"}
+    assert inputs == {"input": "Where is the library?"}
     assert config == {"configurable": {"session_id": body["session_id"]}}
-
-
-def test_current_url_defaults_to_unknown(client, fake_chain):
-    client.post("/rag-query", json=_body())
-
-    assert fake_chain.calls[0][0]["current_url"] == "Unknown"
 
 
 def test_sources_map_ids_to_doc_urls_in_model_order_without_duplicates(client, fake_chain):
@@ -164,7 +158,6 @@ def test_chain_failure_returns_502(client, fake_chain):
         {"query": "   "},
         {"query": "x" * 1001},
         {"bot_greeting": "x" * 501},
-        {"current_url": "x" * 2049},
     ],
 )
 def test_invalid_request_is_rejected(client, fake_chain, overrides):
@@ -181,7 +174,7 @@ def test_missing_session_id_is_rejected(client):
 
 
 def test_max_length_values_are_accepted(client):
-    body = _body(query="x" * 1000, bot_greeting="x" * 500, current_url="x" * 2048)
+    body = _body(query="x" * 1000, bot_greeting="x" * 500)
 
     assert client.post("/rag-query", json=body).status_code == 200
 

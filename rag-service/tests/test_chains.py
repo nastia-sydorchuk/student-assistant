@@ -54,7 +54,7 @@ def chain_parts(monkeypatch):
 
 def _ask(chain, question, session_id="s1"):
     return chain.invoke(
-        {"input": question, "current_url": "Unknown"},
+        {"input": question},
         config={"configurable": {"session_id": session_id}},
     )
 

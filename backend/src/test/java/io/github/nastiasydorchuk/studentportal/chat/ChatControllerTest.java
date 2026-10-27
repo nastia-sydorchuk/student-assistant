@@ -2,6 +2,7 @@ package io.github.nastiasydorchuk.studentportal.chat;
 
 import io.github.nastiasydorchuk.studentportal.chat.api.ChatRequest;
 import io.github.nastiasydorchuk.studentportal.chat.api.ChatResponse;
+import io.github.nastiasydorchuk.studentportal.common.error.UpstreamUnavailableException;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +43,7 @@ class ChatControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {"query": "When is enrolment?", "session_id": "%s",
-                                 "current_url": "/onboarding", "bot_greeting": "Hi!"}
+                                 "bot_greeting": "Hi!"}
                                 """.formatted(SESSION_ID)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.answer").value("In September."))
@@ -52,7 +53,6 @@ class ChatControllerTest {
         verify(chatService).chat(captor.capture());
         assertThat(captor.getValue().getQuery()).isEqualTo("When is enrolment?");
         assertThat(captor.getValue().getSessionId()).isEqualTo(SESSION_ID);
-        assertThat(captor.getValue().getCurrentUrl()).isEqualTo("/onboarding");
         assertThat(captor.getValue().getBotGreeting()).isEqualTo("Hi!");
     }
 
@@ -104,7 +104,7 @@ class ChatControllerTest {
 
     @Test
     void overlongQueryIsRejected() throws Exception {
-        String query = "a".repeat(2001);
+        String query = "a".repeat(1001);
 
         mockMvc.perform(post("/api/chat").contentType(MediaType.APPLICATION_JSON).content("{\"query\": \"" + query + "\"}"))
                 .andExpect(status().isBadRequest())
@@ -145,7 +145,16 @@ class ChatControllerTest {
         when(chatService.chat(any())).thenReturn(new ChatResponse("ok", null));
 
         mockMvc.perform(post("/api/chat").contentType(MediaType.APPLICATION_JSON)
-                        .content(body("a".repeat(2000))))
+                        .content(body("a".repeat(1000))))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    void unavailableRagServiceIsAServiceUnavailable() throws Exception {
+        when(chatService.chat(any())).thenThrow(new UpstreamUnavailableException("The chat assistant is temporarily unavailable."));
+
+        mockMvc.perform(post("/api/chat").contentType(MediaType.APPLICATION_JSON).content(body("hi")))
+                .andExpect(status().isServiceUnavailable())
+                .andExpect(jsonPath("$.message").value("The chat assistant is temporarily unavailable."));
     }
 }

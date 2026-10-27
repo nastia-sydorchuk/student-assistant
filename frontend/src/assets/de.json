@@ -1,0 +1,68 @@
+{
+  "DASHBOARD": {
+    "TITLE": "Willkommen im Studentenportal",
+    "SUBTITLE": "Wählen Sie unten eine Kategorie aus, um auf Ressourcen und Informationen zuzugreifen.",
+    "HEADER": "Studentenportal"
+  },
+  "COMMON": {
+    "LOADING": "Laden...",
+    "ERROR": "Die Ressourcen konnten derzeit nicht geladen werden.",
+    "NAV": "Zurück zum Dashboard",
+    "LANGUAGE_SELECT_LABEL": "Sprache auswählen"
+  },
+  "WELLBEING": {
+    "TITLE": "Unterstützungsdienste",
+    "SUBTITLE": "Neu in Edinburgh?",
+    "SUBSUBTITLE": "Es wird dringend empfohlen, sich nach Ihrer Ankunft umgehend bei einem Hausarzt des staatlichen Gesundheitsdienstes (NHS) anzumelden und nicht erst im Krankheitsfall. Über den unten stehenden Link „Bei einem Arzt anmelden“ können Sie sich registrieren."
+  },
+  "REGISTRATION": {
+    "TITLE": "Anmeldung & Studienbeginn",
+    "SUBTITLE": "Herzlich willkommen! Führen Sie die folgenden administrativen und digitalen Einrichtungsschritte durch, um Ihre Einschreibung abzuschließen.",
+    "PART1": "Teil 1: Administrative Checkliste",
+    "PART2": "Teil 2: Digitales Setup",
+    "PART2SUBTITLE": "Benötigen Sie praktische IT-Hilfe?",
+    "PART2DESCRIPTION": "Der Helpdesk der Informationsdienste (IS) befindet sich in der Cameron Smail Bibliothek. Sie können mit Ihrem Laptop vorbeikommen oder eine E-Mail an [E-Mail-Adresse einfügen] senden."
+  },
+  "INDUCTION": {
+    "TITLE": "Einführungs- und Willkommensveranstaltungen",
+    "SUBTITLE": "Starte dein Universitätsleben mit wichtigen akademischen Einführungsveranstaltungen, Messen und gesellschaftlichen Events.",
+    "SUBTITLE1": "Wichtige Termine",
+    "SUBTITLE2": "Programmübersicht",
+    "SUBTITLE3": "Teilnahmevoraussetzungen"
+  },
+  "FACILITIES": {
+    "TITLE": "Interaktiver Campusplan",
+    "DESCRIPTION": "Finde deine Kurse, Parkplätze und Mensen auf dem gesamten Campus in Edinburgh.",
+    "SUBTITLE": "Ausgewählte Einrichtungen"
+  },
+  "MAP": {
+    "STARTING_LABEL": "Ausgangspunkt",
+    "DESTINATION_LABEL": "Ziel",
+    "SEARCH_LABEL": "Suchen",
+    "NAVIGATION_BUTTON": "Navigation starten",
+    "CANCEL_BUTTON": "Route abbrechen",
+    "LOADING": "Karte wird geladen..."
+  },
+  "GREETINGS": {
+    "HOME": "Willkommen zurück im Studentenportal! Kann ich Ihnen heute bei der Suche nach bestimmten Ressourcen behilflich sein? (Fragen Sie mich auf Englisch oder Spanisch!)",
+    "ACADEMIC": "Hallo! Benötigen Sie Hilfe bei der Suche nach Bibliotheksressourcen, Lernräumen oder Unterstützung bei akademischen Fähigkeiten?",
+    "FACILITIES": "Hallo! Möchten Sie mehr über unsere Einrichtungen erfahren oder wie Sie zu uns gelangen können?",
+    "SERVICES": "Herzlich willkommen! Benötigen Sie Unterstützung in den Bereichen IT-Support, studentisches Wohlbefinden, Unterkunft oder Karriereplanung?",
+    "CULTURAL": "Hallo! Möchtest du mehr über die Studentenvereinigung, studentische Vereinigungen, Sportvereine oder Möglichkeiten zum ehrenamtlichen Engagement erfahren?",
+    "REGISTRATION": "Hallo! Haben Sie Fragen zu Ihrer Einschreibung, Kursauswahl oder Studiengebühren?",
+    "INDUCTION": "Herzlich willkommen! Suchen Sie nach bestimmten Willkommensveranstaltungen oder Messen?",
+    "INDUCTION_UNDERGRADUATE": "Hallo! Bereit für den Start deines Bachelorstudiums? Frag mich alles über die Einführungswoche oder die Teilnahmevoraussetzungen für die Einführungsveranstaltungen!",
+    "INDUCTION_POSTGRADUATE": "Herzlich willkommen zu Ihrem Masterstudium! Benötigen Sie Hilfe bei der Suche nach passenden Networking-Veranstaltungen oder Ihrem akademischen Stundenplan?",
+    "DEFAULT": "Hallo! Wie kann ich Ihnen heute bei Ihren Fragen zu Heriot-Watt behilflich sein?"
+  },
+  "CHAT": {
+    "TITLE": "HW Studentische Hilfskraft",
+    "CLOSE_ARIA": "Chat schließen",
+    "PLACEHOLDER": "Geben Sie eine Frage ein...",
+    "SEND": "Schicken",
+    "THINKING": "Denken...",
+    "READ_MORE": "Mehr lesen:",
+    "CONNECTION_ERROR": "Entschuldigung, ich konnte keine Verbindung zum Server herstellen.",
+    "EXTERNAL_LINK": "Externer Link"
+  }
+}

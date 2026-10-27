@@ -158,7 +158,6 @@ export class ChatWidget implements OnInit {
 
     const requestPayload: ChatRequest = {
       query: userText,
-      current_url: window.location.href,
       session_id: this.sessionId,
       bot_greeting: currentGreeting
     };

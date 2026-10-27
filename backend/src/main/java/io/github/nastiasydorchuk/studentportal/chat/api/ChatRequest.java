@@ -9,17 +9,15 @@ import java.util.UUID;
 
 public class ChatRequest {
 
+    // Same limit as the RAG service, so an overlong query fails here with a clear 400
     @NotBlank
-    @Size(max = 2000)
+    @Size(max = 1000)
     private String query;
 
     // Typed as UUID so a malformed id is rejected here with a 400, not by the RAG service downstream
     @NotNull
     @JsonProperty("session_id")
     private UUID sessionId;
-
-    @JsonProperty("current_url")
-    private String currentUrl;
 
     @JsonProperty("bot_greeting")
     private String botGreeting;
@@ -39,9 +37,6 @@ public class ChatRequest {
     public void setSessionId(UUID sessionId) {
         this.sessionId = sessionId;
     }
-
-    public String getCurrentUrl() { return currentUrl; }
-    public void setCurrentUrl(String currentUrl) { this.currentUrl = currentUrl; }
 
     public String getBotGreeting() { return botGreeting; }
     public void setBotGreeting(String botGreeting) { this.botGreeting = botGreeting; }
