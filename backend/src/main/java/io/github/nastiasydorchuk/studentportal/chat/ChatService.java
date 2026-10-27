@@ -27,7 +27,7 @@ public class ChatService {
         try {
             Map<String, String> perfectJsonPayload = new HashMap<>();
             perfectJsonPayload.put("query", request.getQuery());
-            perfectJsonPayload.put("session_id", request.getSessionId());
+            perfectJsonPayload.put("session_id", request.getSessionId().toString());
             perfectJsonPayload.put("current_url", request.getCurrentUrl());
             perfectJsonPayload.put("bot_greeting", request.getBotGreeting());
 

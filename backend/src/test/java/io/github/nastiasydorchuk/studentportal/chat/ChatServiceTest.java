@@ -11,6 +11,7 @@ import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.web.client.RestClient;
 
 import java.io.IOException;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.*;
@@ -20,6 +21,7 @@ class ChatServiceTest {
 
     private static final String RAG_URL = "http://rag.test/rag-query";
     private static final String OFFLINE_ANSWER = "I'm sorry, my AI brain is currently offline.";
+    private static final UUID SESSION_ID = UUID.fromString("7f3c2a9e-4b1d-4e8a-9c6f-2d5b8e1a0f43");
 
     private MockRestServiceServer server;
     private ChatService service;
@@ -34,7 +36,7 @@ class ChatServiceTest {
     private static ChatRequest request() {
         ChatRequest request = new ChatRequest();
         request.setQuery("When is enrolment?");
-        request.setSessionId("session-1");
+        request.setSessionId(SESSION_ID);
         request.setCurrentUrl("/onboarding");
         request.setBotGreeting("Hi!");
         return request;
@@ -46,7 +48,7 @@ class ChatServiceTest {
                 .andExpect(method(HttpMethod.POST))
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(content().json("""
-                        {"query": "When is enrolment?", "session_id": "session-1",
+                        {"query": "When is enrolment?", "session_id": "7f3c2a9e-4b1d-4e8a-9c6f-2d5b8e1a0f43",
                          "current_url": "/onboarding", "bot_greeting": "Hi!"}
                         """, true))
                 .andRespond(withSuccess("""

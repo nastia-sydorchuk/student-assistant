@@ -11,6 +11,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -24,8 +25,14 @@ class ChatControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
+    private static final UUID SESSION_ID = UUID.fromString("7f3c2a9e-4b1d-4e8a-9c6f-2d5b8e1a0f43");
+
     @MockitoBean
     private ChatService chatService;
+
+    private static String body(String query) {
+        return "{\"query\": \"%s\", \"session_id\": \"%s\"}".formatted(query, SESSION_ID);
+    }
 
     @Test
     void forwardsTheRequestAndReturnsTheAnswer() throws Exception {
@@ -34,9 +41,9 @@ class ChatControllerTest {
         mockMvc.perform(post("/api/chat")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
-                                {"query": "When is enrolment?", "session_id": "s1",
+                                {"query": "When is enrolment?", "session_id": "%s",
                                  "current_url": "/onboarding", "bot_greeting": "Hi!"}
-                                """))
+                                """.formatted(SESSION_ID)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.answer").value("In September."))
                 .andExpect(jsonPath("$.sources[0]").value("https://hw.ac.uk/enrol"));
@@ -44,7 +51,7 @@ class ChatControllerTest {
         ArgumentCaptor<ChatRequest> captor = ArgumentCaptor.forClass(ChatRequest.class);
         verify(chatService).chat(captor.capture());
         assertThat(captor.getValue().getQuery()).isEqualTo("When is enrolment?");
-        assertThat(captor.getValue().getSessionId()).isEqualTo("s1");
+        assertThat(captor.getValue().getSessionId()).isEqualTo(SESSION_ID);
         assertThat(captor.getValue().getCurrentUrl()).isEqualTo("/onboarding");
         assertThat(captor.getValue().getBotGreeting()).isEqualTo("Hi!");
     }
@@ -53,9 +60,29 @@ class ChatControllerTest {
     void omitsNullSources() throws Exception {
         when(chatService.chat(any())).thenReturn(new ChatResponse("Offline", null));
 
-        mockMvc.perform(post("/api/chat").contentType(MediaType.APPLICATION_JSON).content("{\"query\": \"hi\"}"))
+        mockMvc.perform(post("/api/chat").contentType(MediaType.APPLICATION_JSON).content(body("hi")))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.sources").doesNotExist());
+    }
+
+    @Test
+    void missingSessionIdIsRejected() throws Exception {
+        mockMvc.perform(post("/api/chat").contentType(MediaType.APPLICATION_JSON).content("{\"query\": \"hi\"}"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errors.sessionId").exists());
+
+        verifyNoInteractions(chatService);
+    }
+
+    // The frontend once sent "session_<uuid>", which the RAG service rejected with a 422
+    @Test
+    void nonUuidSessionIdIsRejected() throws Exception {
+        mockMvc.perform(post("/api/chat").contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"query\": \"hi\", \"session_id\": \"session_" + SESSION_ID + "\"}"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("Malformed request body"));
+
+        verifyNoInteractions(chatService);
     }
 
     @Test
@@ -118,7 +145,7 @@ class ChatControllerTest {
         when(chatService.chat(any())).thenReturn(new ChatResponse("ok", null));
 
         mockMvc.perform(post("/api/chat").contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"query\": \"" + "a".repeat(2000) + "\"}"))
+                        .content(body("a".repeat(2000))))
                 .andExpect(status().isOk());
     }
 }

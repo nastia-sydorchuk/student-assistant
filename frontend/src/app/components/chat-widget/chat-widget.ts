@@ -30,7 +30,8 @@ export class ChatWidget implements OnInit {
   readonly maxInputLength = 1000;
   private openTimer: ReturnType<typeof setTimeout> | undefined;
 
-  sessionId = 'session_' + crypto.randomUUID();
+  // Must be a bare UUID: the RAG service rejects any other format.
+  sessionId = crypto.randomUUID();
 
   private pageGreetings: Record<string, string> = {
     '/': 'GREETINGS.HOME',

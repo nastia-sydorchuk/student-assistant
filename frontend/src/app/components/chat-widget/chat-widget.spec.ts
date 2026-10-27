@@ -63,6 +63,19 @@ describe('ChatWidget', () => {
     expect(component.userInput).toBe('');
   });
 
+  it('sends the same bare UUID as session_id on every message', () => {
+    apiService.sendMessage.mockReturnValue(of({ answer: 'ok', sources: [] }));
+
+    component.userInput = 'first';
+    component.sendMessage();
+    component.userInput = 'second';
+    component.sendMessage();
+
+    const [first, second] = apiService.sendMessage.mock.calls.map(([payload]) => payload.session_id);
+    expect(first).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/);
+    expect(second).toBe(first);
+  });
+
   it('shows a fallback message when the request fails', () => {
     apiService.sendMessage.mockReturnValue(throwError(() => new Error('network down')));
 

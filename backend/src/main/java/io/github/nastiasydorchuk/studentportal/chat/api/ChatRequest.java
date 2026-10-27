@@ -2,7 +2,10 @@ package io.github.nastiasydorchuk.studentportal.chat.api;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+
+import java.util.UUID;
 
 public class ChatRequest {
 
@@ -10,8 +13,10 @@ public class ChatRequest {
     @Size(max = 2000)
     private String query;
 
+    // Typed as UUID so a malformed id is rejected here with a 400, not by the RAG service downstream
+    @NotNull
     @JsonProperty("session_id")
-    private String sessionId;
+    private UUID sessionId;
 
     @JsonProperty("current_url")
     private String currentUrl;
@@ -27,11 +32,11 @@ public class ChatRequest {
         this.query = query;
     }
 
-    public String getSessionId() {
+    public UUID getSessionId() {
         return sessionId;
     }
 
-    public void setSessionId(String sessionId) {
+    public void setSessionId(UUID sessionId) {
         this.sessionId = sessionId;
     }
 
