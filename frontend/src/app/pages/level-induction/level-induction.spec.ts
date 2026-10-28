@@ -3,13 +3,13 @@ import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/route
 import { provideTranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, of, throwError } from 'rxjs';
 
-import { PostgradInduction } from './postgrad-induction';
+import { LevelInduction } from './level-induction';
 import { ApiService } from '../../services/api.service';
 import { LevelData } from '../../models/welcome.model';
 
-describe('PostgradInduction', () => {
-  let component: PostgradInduction;
-  let fixture: ComponentFixture<PostgradInduction>;
+describe('LevelInduction', () => {
+  let component: LevelInduction;
+  let fixture: ComponentFixture<LevelInduction>;
   let apiService: { getOnboardingConfigByLevel: ReturnType<typeof vi.fn> };
   let paramMap$: BehaviorSubject<ReturnType<typeof convertToParamMap>>;
 
@@ -31,7 +31,7 @@ describe('PostgradInduction', () => {
     paramMap$ = new BehaviorSubject(convertToParamMap({ level: 'postgraduate' }));
 
     await TestBed.configureTestingModule({
-      imports: [PostgradInduction],
+      imports: [LevelInduction],
       providers: [
         provideRouter([]),
         provideTranslateService(),
@@ -40,7 +40,7 @@ describe('PostgradInduction', () => {
       ],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(PostgradInduction);
+    fixture = TestBed.createComponent(LevelInduction);
     component = fixture.componentInstance;
   });
 
@@ -71,7 +71,7 @@ describe('PostgradInduction', () => {
     fixture.detectChanges();
 
     expect(component.isLoading()).toBe(false);
-    expect(component.errorMessage()).toBe('Could not load the welcome guide. Please try again later.');
+    expect(component.errorMessage()).toBe('INDUCTION.ERROR');
   });
 
   it('maps badge types to their CSS classes', () => {

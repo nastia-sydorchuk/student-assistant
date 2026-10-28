@@ -7,12 +7,12 @@ import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
-  selector: 'app-postgrad-induction',
+  selector: 'app-level-induction',
   imports: [RouterModule, CommonModule, TranslateModule],
-  templateUrl: './postgrad-induction.html',
-  styleUrl: './postgrad-induction.css',
+  templateUrl: './level-induction.html',
+  styleUrl: './level-induction.css',
 })
-export class PostgradInduction implements OnInit {
+export class LevelInduction implements OnInit {
   private route = inject(ActivatedRoute);
   private apiService = inject(ApiService);
   private destroyRef = inject(DestroyRef);
@@ -40,7 +40,7 @@ export class PostgradInduction implements OnInit {
         this.isLoading.set(false);
       },
       error: () => {
-        this.errorMessage.set('Could not load the welcome guide. Please try again later.');
+        this.errorMessage.set('INDUCTION.ERROR');
         this.isLoading.set(false);
       }
     });

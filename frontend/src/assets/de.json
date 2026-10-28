@@ -28,7 +28,14 @@
     "SUBTITLE": "Starte dein Universitätsleben mit wichtigen akademischen Einführungsveranstaltungen, Messen und gesellschaftlichen Events.",
     "SUBTITLE1": "Wichtige Termine",
     "SUBTITLE2": "Programmübersicht",
-    "SUBTITLE3": "Teilnahmevoraussetzungen"
+    "SUBTITLE3": "Teilnahmevoraussetzungen",
+    "LOADING_DETAILS": "Einführungsdetails werden geladen...",
+    "ERROR": "Der Willkommensleitfaden konnte nicht geladen werden. Bitte versuche es später erneut.",
+    "BACK": "Zurück zu den Einführungen",
+    "RETURN": "Zurück zu den Einführungen",
+    "OPEN_TO": "Diese Veranstaltung steht offen für:",
+    "BACK_TO_REGISTRATION": "Zurück zur Registrierung",
+    "EVENTS_ERROR": "Die Einführungsveranstaltungen können derzeit nicht geladen werden. Bitte versuche es später erneut."
   },
   "FACILITIES": {
     "TITLE": "Interaktiver Campusplan",
@@ -44,7 +51,7 @@
     "LOADING": "Karte wird geladen..."
   },
   "GREETINGS": {
-    "HOME": "Willkommen zurück im Studentenportal! Kann ich Ihnen heute bei der Suche nach bestimmten Ressourcen behilflich sein? (Fragen Sie mich auf Englisch oder Spanisch!)",
+    "HOME": "Willkommen zurück im Studentenportal! Kann ich Ihnen heute bei der Suche nach bestimmten Ressourcen behilflich sein?",
     "ACADEMIC": "Hallo! Benötigen Sie Hilfe bei der Suche nach Bibliotheksressourcen, Lernräumen oder Unterstützung bei akademischen Fähigkeiten?",
     "FACILITIES": "Hallo! Möchten Sie mehr über unsere Einrichtungen erfahren oder wie Sie zu uns gelangen können?",
     "SERVICES": "Herzlich willkommen! Benötigen Sie Unterstützung in den Bereichen IT-Support, studentisches Wohlbefinden, Unterkunft oder Karriereplanung?",

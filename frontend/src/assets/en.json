@@ -28,7 +28,14 @@
     "SUBTITLE": "Kickstart your university journey with essential academic inductions, fairs, and social events.",
     "SUBTITLE1": "Important Dates",
     "SUBTITLE2": "Programme Outline",
-    "SUBTITLE3": "Eligibility Criteria"
+    "SUBTITLE3": "Eligibility Criteria",
+    "LOADING_DETAILS": "Fetching induction details...",
+    "ERROR": "Could not load the welcome guide. Please try again later.",
+    "BACK": "Back to Inductions",
+    "RETURN": "Return to Inductions",
+    "OPEN_TO": "This event is open to:",
+    "BACK_TO_REGISTRATION": "Back to Registration",
+    "EVENTS_ERROR": "Unable to load induction events at this time. Please try again later."
   },
   "FACILITIES": {
     "TITLE": "Interactive Campus Map",
@@ -44,7 +51,7 @@
     "LOADING": "Loading Map..."
   },
   "GREETINGS": {
-    "HOME": "Welcome back to your Student Portal! Can I help you find any specific resources today? (Ask me in English or Spanish!)",
+    "HOME": "Welcome back to your Student Portal! Can I help you find any specific resources today?",
     "ACADEMIC": "Hello! Do you need help finding library resources, study spaces, or academic skills support?",
     "FACILITIES": "Hi there! Want to know more about our facilities or how to get here?",
     "SERVICES": "Welcome! Need assistance with IT support, student wellbeing, accommodation, or your career plans?",

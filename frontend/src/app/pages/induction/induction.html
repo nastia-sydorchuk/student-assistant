@@ -1,7 +1,7 @@
 <div class="bg-primary text-white p-4 p-md-5 mb-5 shadow-sm">
   <div class="container">
     <a routerLink="/registration" class="text-white-50 text-decoration-none d-inline-flex align-items-center mb-4 fw-semibold back-link">
-      <span class="material-icons me-2 fs-5">arrow_back</span> Back to Registration
+      <span class="material-icons me-2 fs-5">arrow_back</span> {{ 'INDUCTION.BACK_TO_REGISTRATION' | translate }}
     </a>
     
     <h1 class="display-5 fw-bold mb-2">{{ 'INDUCTION.TITLE' | translate }}</h1>
@@ -12,18 +12,17 @@
 <main class="container mb-5">
   
   @if (isLoadingEvents()) {
-    <div class="text-center p-5 bg-light rounded text-secondary my-5 border" style="border-style: dashed !important;">
-      <div class="spinner-border text-primary mb-3" role="status">
-        <span class="visually-hidden">Loading...</span>
+    <div class="mt-5 text-center">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">{{ 'COMMON.LOADING' | translate }}</span>
       </div>
-      <p class="mb-0 fs-5">Fetching latest events from the server...</p>
     </div>
-  } 
+  }
   
   @else if (eventsError()) {
     <div class="text-center p-5 bg-danger bg-opacity-10 border border-danger border-opacity-25 rounded text-danger my-5">
       <span class="material-icons display-4 mb-3">error_outline</span>
-      <p class="fs-5">{{ eventsError() }}</p>
+      <p class="fs-5">{{ eventsError() | translate }}</p>
     </div>
   }
 

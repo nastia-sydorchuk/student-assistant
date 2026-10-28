@@ -28,7 +28,14 @@
     "SUBTITLE": "Da inicio a tu trayectoria universitaria con las inducciones académicas, ferias y eventos sociales esenciales.",
     "SUBTITLE1": "Fechas importantes",
     "SUBTITLE2": "Esquema del programa",
-    "SUBTITLE3": "Criterios de elegibilidad"
+    "SUBTITLE3": "Criterios de elegibilidad",
+    "LOADING_DETAILS": "Cargando los detalles de la inducción...",
+    "ERROR": "No se pudo cargar la guía de bienvenida. Inténtalo de nuevo más tarde.",
+    "BACK": "Volver a las inducciones",
+    "RETURN": "Regresar a las inducciones",
+    "OPEN_TO": "Este evento está abierto a:",
+    "BACK_TO_REGISTRATION": "Volver a la matrícula",
+    "EVENTS_ERROR": "No se pudieron cargar los eventos de inducción en este momento. Inténtalo de nuevo más tarde."
   },
   "FACILITIES": {
     "TITLE": "Mapa interactivo del campus",
@@ -44,7 +51,7 @@
     "LOADING": "Cargando mapa..."
   },
   "GREETINGS": {
-    "HOME": "¡Bienvenido/a de nuevo a tu Portal de Estudiantes! ¿Puedo ayudarte a encontrar algún recurso en particular hoy? (¡Pregúntame en inglés o español!)",
+    "HOME": "¡Bienvenido/a de nuevo a tu Portal de Estudiantes! ¿Puedo ayudarte a encontrar algún recurso en particular hoy?",
     "ACADEMIC": "¡Hola! ¿Necesitas ayuda para encontrar recursos en la biblioteca, espacios de estudio o apoyo para el desarrollo de habilidades académicas?",
     "FACILITIES": "¡Hola! ¿Quieres saber más sobre nuestras instalaciones o cómo llegar hasta aquí?",
     "SERVICES": "¡Bienvenidos! ¿Necesitan ayuda con soporte informático, bienestar estudiantil, alojamiento o sus planes de carrera?",

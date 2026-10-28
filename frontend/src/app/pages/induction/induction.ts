@@ -40,7 +40,7 @@ export class Induction implements OnInit {
         this.isLoadingEvents.set(false);
       },
       error: () => {
-        this.eventsError.set('Unable to load induction events at this time. Please try again later.');
+        this.eventsError.set('INDUCTION.EVENTS_ERROR');
         this.isLoadingEvents.set(false);
       }
     });

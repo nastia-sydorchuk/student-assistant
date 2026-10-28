@@ -10,5 +10,5 @@ export const routes: Routes = [
     { path: 'cultural', loadComponent: () => import('./pages/cultural/cultural').then(m => m.Cultural) },
     { path: 'induction', loadComponent: () => import('./pages/induction/induction').then(m => m.Induction) },
     { path: 'wellbeing', loadComponent: () => import('./pages/wellbeing/wellbeing').then(m => m.Wellbeing) },
-    { path: 'induction/:level', loadComponent: () => import('./pages/postgrad-induction/postgrad-induction').then(m => m.PostgradInduction) },
+    { path: 'induction/:level', loadComponent: () => import('./pages/level-induction/level-induction').then(m => m.LevelInduction) },
 ];

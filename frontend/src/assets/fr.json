@@ -28,7 +28,14 @@
     "SUBTITLE": "Démarrez votre parcours universitaire en beauté avec des séances d'accueil académiques incontournables, des salons et des événements sociaux.",
     "SUBTITLE1": "Dates importantes",
     "SUBTITLE2": "Plan du programme",
-    "SUBTITLE3": "Critères d'admissibilité"
+    "SUBTITLE3": "Critères d'admissibilité",
+    "LOADING_DETAILS": "Chargement des détails de l'intégration...",
+    "ERROR": "Impossible de charger le guide de bienvenue. Veuillez réessayer plus tard.",
+    "BACK": "Retour aux intégrations",
+    "RETURN": "Retourner aux intégrations",
+    "OPEN_TO": "Cet événement est ouvert à :",
+    "BACK_TO_REGISTRATION": "Retour à l'inscription",
+    "EVENTS_ERROR": "Impossible de charger les événements d'intégration pour le moment. Veuillez réessayer plus tard."
   },
   "FACILITIES": {
     "TITLE": "Carte interactive du campus",
@@ -44,7 +51,7 @@
     "LOADING": "Chargement de la carte..."
   },
   "GREETINGS": {
-    "HOME": "Bienvenue sur votre portail étudiant ! Puis-je vous aider à trouver des ressources spécifiques aujourd'hui ? (Posez-moi votre question en anglais ou en espagnol !)",
+    "HOME": "Bienvenue sur votre portail étudiant ! Puis-je vous aider à trouver des ressources spécifiques aujourd'hui ?",
     "ACADEMIC": "Bonjour ! Avez-vous besoin d'aide pour trouver des ressources en bibliothèque, des espaces d'étude ou un soutien en matière de compétences académiques ?",
     "FACILITIES": "Bonjour ! Vous souhaitez en savoir plus sur nos installations ou sur la façon de venir nous voir ?",
     "SERVICES": "Bienvenue ! Besoin d'aide concernant l'assistance informatique, le bien-être étudiant, le logement ou vos projets de carrière ?",

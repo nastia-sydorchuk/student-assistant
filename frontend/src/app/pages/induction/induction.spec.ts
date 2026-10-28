@@ -64,7 +64,7 @@ describe('Induction', () => {
 
     expect(component.isLoadingEvents()).toBe(false);
     expect(component.eventsError()).toBe(
-      'Unable to load induction events at this time. Please try again later.',
+      'INDUCTION.EVENTS_ERROR',
     );
   });
 });

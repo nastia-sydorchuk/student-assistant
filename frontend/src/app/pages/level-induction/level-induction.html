@@ -2,9 +2,9 @@
   <div class="container mt-5 pt-5">
     <div class="text-center p-5 bg-light rounded text-secondary border" style="border-style: dashed !important;">
       <div class="spinner-border text-primary mb-3" role="status">
-        <span class="visually-hidden">Loading...</span>
+        <span class="visually-hidden">{{ 'COMMON.LOADING' | translate }}</span>
       </div>
-      <p class="mb-0 fs-5">Fetching induction details...</p>
+      <p class="mb-0 fs-5">{{ 'INDUCTION.LOADING_DETAILS' | translate }}</p>
     </div>
   </div>
 } 
@@ -13,9 +13,9 @@
   <div class="container mt-5 pt-5">
     <div class="text-center p-5 bg-danger bg-opacity-10 border border-danger border-opacity-25 rounded text-danger">
       <span class="material-icons display-4 mb-3">error_outline</span>
-      <p class="fs-5">{{ errorMessage() }}</p>
+      <p class="fs-5">{{ errorMessage() | translate }}</p>
       <div class="mt-4">
-        <a routerLink="/induction" class="text-danger fw-semibold"><span class="material-icons me-2 fs-5">arrow_back</span> Return to Inductions</a>
+        <a routerLink="/induction" class="text-danger fw-semibold"><span class="material-icons me-2 fs-5">arrow_back</span> {{ 'INDUCTION.RETURN' | translate }}</a>
       </div>
     </div>
   </div>
@@ -25,7 +25,7 @@
   <div class="bg-primary text-white p-4 p-md-5 mb-5 shadow-sm">
     <div class="container">
       <a routerLink="/induction" class="text-white-50 text-decoration-none d-inline-flex align-items-center mb-4 fw-semibold back-link">
-        <span class="material-icons me-2 fs-5">arrow_back</span> Back to Inductions
+        <span class="material-icons me-2 fs-5">arrow_back</span> {{ 'INDUCTION.BACK' | translate }}
       </a>
       
       <div class="d-flex align-items-center gap-3 mb-2">
@@ -91,7 +91,7 @@
               </h4>
               
               @if (data.event.eligibility.length) {
-                <p class="text-secondary mb-3 fw-semibold">This event is open to:</p>
+                <p class="text-secondary mb-3 fw-semibold">{{ 'INDUCTION.OPEN_TO' | translate }}</p>
                 <ul class="text-secondary">
                   @for (criteria of data.event.eligibility; track criteria) {
                     <li class="mb-2">{{ criteria }}</li>
