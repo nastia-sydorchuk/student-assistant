@@ -147,7 +147,8 @@ def fake_chroma(monkeypatch):
     """Replaces Chroma.from_documents with one that just writes a marker file."""
     built = []
 
-    def from_documents(documents, embedding, persist_directory):
+    def from_documents(documents, embedding, persist_directory, client_settings):
+        assert client_settings.anonymized_telemetry is False
         built.append(documents)
         Path(persist_directory).mkdir()
         (Path(persist_directory) / "chroma.sqlite3").write_text("new")
@@ -297,8 +298,9 @@ def test_load_vectorstore_returns_populated_store(chroma_dir, monkeypatch):
     chroma_dir.mkdir()
 
     class PopulatedChroma:
-        def __init__(self, persist_directory, embedding_function):
+        def __init__(self, persist_directory, embedding_function, client_settings):
             self.persist_directory = persist_directory
+            self.client_settings = client_settings
 
         def get(self, limit):
             return {"ids": ["1"]}
@@ -306,4 +308,7 @@ def test_load_vectorstore_returns_populated_store(chroma_dir, monkeypatch):
     monkeypatch.setattr(ingestion, "Chroma", PopulatedChroma)
     monkeypatch.setattr(ingestion, "_embeddings", lambda: None)
 
-    assert ingestion.load_vectorstore().persist_directory == str(chroma_dir)
+    store = ingestion.load_vectorstore()
+
+    assert store.persist_directory == str(chroma_dir)
+    assert store.client_settings.anonymized_telemetry is False

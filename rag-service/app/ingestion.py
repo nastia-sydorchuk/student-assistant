@@ -23,6 +23,7 @@ import html2text
 import requests
 from bs4 import BeautifulSoup
 from chromadb.api.client import SharedSystemClient
+from chromadb.config import Settings as ChromaSettings
 from langchain_chroma import Chroma
 from langchain_core.documents import Document
 from langchain_huggingface import HuggingFaceEmbeddings
@@ -35,6 +36,8 @@ logger = logging.getLogger(__name__)
 
 REQUEST_TIMEOUT_SECONDS = 30
 USER_AGENT = "HW-Student-Assistant-Ingest/1.0"
+# Chroma sends anonymous usage stats to PostHog by default
+CHROMA_SETTINGS = ChromaSettings(anonymized_telemetry=False)
 
 
 class IngestionError(RuntimeError):
@@ -166,7 +169,12 @@ def ingest(allow_partial: bool = False) -> int:
         _remove_dir(build_dir)
 
     logger.info("Building vector store from %d chunks in %s", len(splits), build_dir)
-    store = Chroma.from_documents(documents=splits, embedding=_embeddings(), persist_directory=str(build_dir))
+    store = Chroma.from_documents(
+        documents=splits,
+        embedding=_embeddings(),
+        persist_directory=str(build_dir),
+        client_settings=CHROMA_SETTINGS,
+    )
     del store
     _release_chroma_files()
 
@@ -187,7 +195,11 @@ def load_vectorstore() -> Chroma:
         raise RuntimeError(f"No vector store found at {persist_dir}. Run `python -m app.ingestion` first.")
 
     logger.info("Loading vector store from %s", persist_dir)
-    store = Chroma(persist_directory=str(persist_dir), embedding_function=_embeddings())
+    store = Chroma(
+        persist_directory=str(persist_dir),
+        embedding_function=_embeddings(),
+        client_settings=CHROMA_SETTINGS,
+    )
     if not store.get(limit=1)["ids"]:
         raise RuntimeError(f"Vector store at {persist_dir} is empty. Run `python -m app.ingestion` to rebuild it.")
     return store

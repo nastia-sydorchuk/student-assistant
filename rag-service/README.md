@@ -18,8 +18,9 @@ Fill in `GOOGLE_API_KEY` in `.env`. `API_AUTH_KEY` is optional (see
 
 ## Building the knowledge base
 
-Before the first run, and again whenever you edit `sources.json`, build the
-vector store (stop the server first):
+A prebuilt vector store is committed in `chroma_db/`, so the server runs
+straight after setup. Rebuild it whenever you edit `sources.json`, or to pick
+up changes to the university pages (stop the server first):
 
 ```
 python -m app.ingestion
