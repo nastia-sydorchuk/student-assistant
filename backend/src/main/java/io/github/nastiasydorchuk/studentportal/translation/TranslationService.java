@@ -9,30 +9,30 @@ import io.github.nastiasydorchuk.studentportal.resources.domain.ResourceCategory
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class TranslationService {
-    private final Translate translate;
+    private final Translate translate; // null when no API key is configured
 
-    public TranslationService(Translate translate) {
-        this.translate = translate;
+    public TranslationService(Optional<Translate> translate) {
+        this.translate = translate.orElse(null);
     }
 
+    // False without an API key; callers then serve English instead of translating
+    public boolean isEnabled() {
+        return translate != null;
+    }
+
+    // Only display text is translated; URLs, icons, locations and contacts are copied unchanged
     public ResourceCategory translateCategory(ResourceCategory englishCategory, String targetLanguage) {
-
-        // 1. Create a new empty category for the new language
         ResourceCategory localizedCategory = new ResourceCategory();
-
-        // 2. Set the IDs (e.g., ID becomes "academic_es")
-        localizedCategory.setId(englishCategory.getCategoryId() + "_" + targetLanguage);
+        localizedCategory.setId(englishCategory.getCategoryId() + "_" + targetLanguage); // e.g. "academic_es"
         localizedCategory.setCategoryId(englishCategory.getCategoryId());
         localizedCategory.setLanguage(targetLanguage);
-
-        // 3. Translate the main category text
         localizedCategory.setCategoryTitle(translateText(englishCategory.getCategoryTitle(), targetLanguage));
         localizedCategory.setDescription(translateText(englishCategory.getDescription(), targetLanguage));
 
-        // 4. Translate the text fields of each item; keep URLs, icons, emails etc. exactly the same
         if (englishCategory.getItems() != null) {
             localizedCategory.setItems(englishCategory.getItems().stream().map(item -> new ResourceItem(
                     translateText(item.title(), targetLanguage),
@@ -50,14 +50,16 @@ public class TranslationService {
         return localizedCategory;
     }
 
-    // Helper method to call Google API safely
+    // Null and empty strings are returned as-is, without an API call
     private String translateText(String text, String targetLanguage) {
         if (text == null || text.isEmpty()) return text;
 
+        // format("text") stops the API from HTML-escaping the result (e.g. "&" -> "&amp;")
         Translation translation = translate.translate(
                 text,
                 Translate.TranslateOption.sourceLanguage("en"),
-                Translate.TranslateOption.targetLanguage(targetLanguage)
+                Translate.TranslateOption.targetLanguage(targetLanguage),
+                Translate.TranslateOption.format("text")
         );
         return translation.getTranslatedText();
     }
@@ -65,7 +67,7 @@ public class TranslationService {
     public List<PortalCard> translatePortalCards(List<PortalCard> englishCards, String targetLanguage, String sourceHash) {
         if (englishCards == null) return List.of();
 
-        // Translate the display text; NEVER translate internal routes or icons!
+        // Routes and icons are identifiers, so only the display text is translated
         return englishCards.stream().map(card -> new PortalCard(
                 card.cardId() + "_" + targetLanguage, // e.g., "academic_es"
                 translateText(card.title(), targetLanguage),

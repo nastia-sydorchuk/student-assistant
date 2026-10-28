@@ -10,6 +10,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -26,12 +27,12 @@ class TranslationServiceTest {
     void setUp() {
         translate = mock(Translate.class);
         // Fake translation: "Hello" -> "es:Hello", so translated and untouched fields are easy to tell apart
-        when(translate.translate(anyString(), any(), any())).thenAnswer(invocation -> {
+        when(translate.translate(anyString(), any(), any(), any())).thenAnswer(invocation -> {
             Translation translation = mock(Translation.class);
             when(translation.getTranslatedText()).thenReturn("es:" + invocation.getArgument(0));
             return translation;
         });
-        service = new TranslationService(translate);
+        service = new TranslationService(Optional.of(translate));
     }
 
     @Test
@@ -41,7 +42,8 @@ class TranslationServiceTest {
 
         verify(translate).translate(eq("Title"),
                 eq(Translate.TranslateOption.sourceLanguage("en")),
-                eq(Translate.TranslateOption.targetLanguage("es")));
+                eq(Translate.TranslateOption.targetLanguage("es")),
+                eq(Translate.TranslateOption.format("text")));
     }
 
     @Test

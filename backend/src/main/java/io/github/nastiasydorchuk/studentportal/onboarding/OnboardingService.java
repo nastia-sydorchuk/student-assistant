@@ -12,6 +12,7 @@ import java.util.List;
 // Each section is translated on its own, so editing one doesn't re-translate the others.
 // A translation is redone when it is missing or was made from an older version of the English.
 // Only the client-visible content is hashed, so storage fields never invalidate translations.
+// With translation disabled (no API key), a missing or outdated translation is served in English.
 @Service
 public class OnboardingService {
     private final OnboardingStepsRepository stepsRepository;
@@ -41,7 +42,9 @@ public class OnboardingService {
             String hash = hasher.hash(english.steps());
             result = stepsRepository.findByLanguage(language)
                     .filter(existing -> hash.equals(existing.sourceHash()))
-                    .orElseGet(() -> stepsRepository.save(translationService.translateSteps(english, language, hash)));
+                    .orElseGet(() -> translationService.isEnabled()
+                            ? stepsRepository.save(translationService.translateSteps(english, language, hash))
+                            : english);
         }
         return result.steps() == null ? List.of() : result.steps();
     }
@@ -55,7 +58,9 @@ public class OnboardingService {
             String hash = hasher.hash(CohortResponse.from(english));
             result = cohortRepository.findByLevelAndLanguage(level, language)
                     .filter(existing -> hash.equals(existing.sourceHash()))
-                    .orElseGet(() -> cohortRepository.save(translationService.translateCohort(english, language, hash)));
+                    .orElseGet(() -> translationService.isEnabled()
+                            ? cohortRepository.save(translationService.translateCohort(english, language, hash))
+                            : english);
         }
         return CohortResponse.from(result);
     }
@@ -69,7 +74,9 @@ public class OnboardingService {
             String hash = hasher.hash(english.events());
             result = eventsRepository.findByLanguage(language)
                     .filter(existing -> hash.equals(existing.sourceHash()))
-                    .orElseGet(() -> eventsRepository.save(translationService.translateInductionEvents(english, language, hash)));
+                    .orElseGet(() -> translationService.isEnabled()
+                            ? eventsRepository.save(translationService.translateInductionEvents(english, language, hash))
+                            : english);
         }
         return result.events() == null ? List.of() : result.events();
     }

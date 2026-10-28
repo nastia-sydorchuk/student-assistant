@@ -15,6 +15,7 @@ import java.lang.reflect.RecordComponent;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -37,12 +38,12 @@ class TranslationRoundTripTest {
     @BeforeEach
     void setUp() {
         Translate translate = mock(Translate.class);
-        when(translate.translate(anyString(), any(), any())).thenAnswer(invocation -> {
+        when(translate.translate(anyString(), any(), any(), any())).thenAnswer(invocation -> {
             Translation translation = mock(Translation.class);
             when(translation.getTranslatedText()).thenReturn(PREFIX + invocation.getArgument(0));
             return translation;
         });
-        service = new TranslationService(translate);
+        service = new TranslationService(Optional.of(translate));
     }
 
     @Test

@@ -34,6 +34,7 @@ class OnboardingServiceTest {
         cohortRepository = mock(CohortRepository.class);
         eventsRepository = mock(InductionEventsRepository.class);
         translationService = mock(TranslationService.class);
+        when(translationService.isEnabled()).thenReturn(true);
         hasher = new SourceHasher(JsonMapper.builder().build());
         service = new OnboardingService(stepsRepository, cohortRepository, eventsRepository, translationService, hasher);
 
@@ -100,6 +101,17 @@ class OnboardingServiceTest {
 
             assertThat(service.getSteps("es")).isEqualTo(spanishSteps);
             verify(stepsRepository).save(fresh);
+        }
+
+        @Test
+        void servesEnglishWhenTranslationIsDisabled() {
+            when(translationService.isEnabled()).thenReturn(false);
+            when(stepsRepository.findByLanguage("en")).thenReturn(Optional.of(english));
+            when(stepsRepository.findByLanguage("es")).thenReturn(Optional.empty());
+
+            assertThat(service.getSteps("es")).isEqualTo(englishSteps);
+            verify(translationService, never()).translateSteps(any(), any(), any());
+            verify(stepsRepository, never()).save(any());
         }
 
         @Test

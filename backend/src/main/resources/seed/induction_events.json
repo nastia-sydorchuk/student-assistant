@@ -1,0 +1,41 @@
+[{
+  "_id": "events_en",
+  "language": "en",
+  "events": [
+    {
+      "title": "Subject & Programme Induction",
+      "icon": "menu_book",
+      "desc": "Meet your program directors, personal tutors, and classmates. Essential for understanding your course structure and academic expectations.",
+      "actionText": "View Academic Timetable",
+      "url": "https://canvas.hw.ac.uk/courses/"
+    },
+    {
+      "title": "Undergraduate Welcome Event",
+      "icon": "school",
+      "desc": "Kick off your university journey with a Welcome Event designed specifically for new UG students.",
+      "actionText": "UG Welcome Info",
+      "url": "/induction/undergraduate"
+    },
+    {
+      "title": "Postgraduate Students",
+      "icon": "workspace_premium",
+      "desc": "Dedicated Kick-Start Your Success Event tailored for PG students.",
+      "actionText": "PG Welcome Info",
+      "url": "/induction/postgraduate"
+    },
+    {
+      "title": "HWUnion Freshers' Events",
+      "icon": "celebration",
+      "desc": "Dive into student life. Explore over 80 societies, attend club nights, pub quizzes, and the big Welcome Fair hosted by the Student Union.",
+      "actionText": "Explore HWUnion Events",
+      "url": "https://www.hwunion.com/freshers/edinburgh/events/"
+    },
+    {
+      "title": "Sports Union & Oriam Try-outs",
+      "icon": "sports_soccer",
+      "desc": "Discover team sports, fitness classes, and social leagues at Scotland’s Sports Performance Centre. Attend the Sports Fair to get involved.",
+      "actionText": "Explore Sports Union Events",
+      "url": "https://www.hwunion.com/freshers/edinburgh/events/sports/"
+    }
+  ]
+}]

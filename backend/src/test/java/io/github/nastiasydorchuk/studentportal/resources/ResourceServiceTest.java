@@ -30,6 +30,7 @@ class ResourceServiceTest {
     void setUp() {
         repository = mock(ResourceRepository.class);
         translationService = mock(TranslationService.class);
+        when(translationService.isEnabled()).thenReturn(true);
         hasher = new SourceHasher(JsonMapper.builder().build());
         service = new ResourceService(repository, translationService, hasher);
         english = category("academic", "en", "Academic", null);
@@ -53,6 +54,17 @@ class ResourceServiceTest {
 
         assertThat(service.getCategory("academic", "en")).isSameAs(english);
         verifyNoInteractions(translationService);
+    }
+
+    @Test
+    void servesEnglishWhenTranslationIsDisabled() {
+        when(translationService.isEnabled()).thenReturn(false);
+        when(repository.findByCategoryIdAndLanguage("academic", "en")).thenReturn(Optional.of(english));
+        when(repository.findByCategoryIdAndLanguage("academic", "es")).thenReturn(Optional.empty());
+
+        assertThat(service.getCategory("academic", "es")).isSameAs(english);
+        verify(translationService, never()).translateCategory(any(), any());
+        verify(repository, never()).save(any());
     }
 
     @Test

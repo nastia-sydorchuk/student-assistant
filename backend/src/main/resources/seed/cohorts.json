@@ -1,0 +1,111 @@
+[{
+  "_id": "postgraduate_en",
+  "level": "postgraduate",
+  "language": "en",
+  "title": "Postgraduate Induction",
+  "importantDates": [
+    {
+      "activity": "Campus accommodation open to applications",
+      "date": "3 November 2025",
+      "type": "action"
+    },
+    {
+      "activity": "Welcome Week",
+      "date": "5-9 January 2026",
+      "type": "event"
+    },
+    {
+      "activity": "Kick-Start your Success @HWU",
+      "date": "6, 7 January 2026",
+      "type": "event"
+    },
+    {
+      "activity": "First week of timetabled classes",
+      "date": "12 January 2026",
+      "type": "event"
+    }
+  ],
+  "event": {
+    "title": "Kick-Start Your Success",
+    "description": "The welcome and introductory programme for all new Heriot-Watt students starting taught postgraduate study.",
+    "programmeOutline": [
+      "Find out the distinctive features of being a postgraduate student at Heriot-Watt University.",
+      "Develop essential academic skills for success in your degree.",
+      "Discover resources like IT, Library, and myHWU Student Portal.",
+      "Meet your fellow students.",
+      "Chat with current students about their experiences.",
+      "Get tips on wellbeing, careers, and extracurriculars."
+    ],
+    "eligibility": [
+      "Open to all students starting a Heriot-Watt taught postgraduate programme in January at Edinburgh and Scottish Borders Campuses."
+    ],
+    "registration": {
+      "label": "Register for Kick-Start Your Success 2026",
+      "link": "https://forms.office.com/example-pg-link"
+    }
+  }
+},
+{
+  "_id": "undergraduate_en",
+  "level": "undergraduate",
+  "language": "en",
+  "title": "Undergraduate Induction",
+  "importantDates": [
+    {
+      "activity": "Campus accommodation open",
+      "date": "March 2026",
+      "type": "action"
+    },
+    {
+      "activity": "Campus accommodation deadline",
+      "date": "June 2026",
+      "type": "deadline"
+    },
+    {
+      "activity": "Enrolment open",
+      "date": "August 2026",
+      "type": "action"
+    },
+    {
+      "activity": "Get Ready for Success @ HWU",
+      "date": "August 2026",
+      "type": "event"
+    },
+    {
+      "activity": "Welcome Week",
+      "date": "7 - 11 September 2026",
+      "type": "event"
+    },
+    {
+      "activity": "Classes Start",
+      "date": "14 September 2026",
+      "type": "event"
+    }
+  ],
+  "event": {
+    "title": "Get Ready for Success @ HWU",
+    "description": "Heriot-Watt University is committed to widening participation in higher education. This event offers the opportunity for university study to students from a diverse range of backgrounds who have the potential to succeed.",
+    "programmeOutline": [
+      "Meet and talk to current students and find out from them what university is really like.",
+      "Develop and put into practice some of the academic skills that are essential for success in your degree.",
+      "Find out about resources (IT, Library, myHWU Student Portal etc.) that you will need for university.",
+      "Find out essential tips for survival: finding your way around, managing time/money, and using the Careers Service."
+    ],
+    "contactInfo": "If you are not in one of the groups above but think you might benefit, please contact studentsuccess@hw.ac.uk.",
+    "registration": {
+      "label": "Register for Get Ready For Success 2026",
+      "link": "https://forms.office.com/e/ByUbGrcqjv"
+    },
+    "eligibility": [
+      "Students from the 40% most deprived neighbourhoods in Scotland (SIMD).",
+      "Students from schools with comparatively low rates of progression to higher education.",
+      "Students joining year 2 or 3 of a degree after completing an HNC or HND.",
+      "Mature students who have completed a SWAP Access course.",
+      "Students who have formerly been looked after or in foster care.",
+      "Anyone who cares, unpaid, for a friend or family member due to illness/disability.",
+      "Anyone under 25 without family support (estranged students).",
+      "Former UK armed forces personnel, reservists, or their families.",
+      "Participants in the Transitions Event (Mon 31 Aug - Tue 1 Sept 2026)."
+    ]
+  }
+}]

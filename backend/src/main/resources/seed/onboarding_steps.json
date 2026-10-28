@@ -1,0 +1,27 @@
+[{
+  "_id": "steps_en",
+  "language": "en",
+  "steps": [
+    {
+      "order": 1,
+      "summary": "Online Enrolment",
+      "description": "Log in to Student Self Service to confirm your personal details, programme of study, and complete official enrolment.",
+      "actionText": "Enrol online",
+      "url": "https://myhwu.hw.ac.uk/"
+    },
+    {
+      "order": 2,
+      "summary": "Registering for classes",
+      "description": "Register for your selected courses to get access to the materials and resources on Canvas.",
+      "actionText": "Register for courses",
+      "url": "https://myhwu.hw.ac.uk/"
+    },
+    {
+      "order": 3,
+      "summary": "Welcome Week Schedule",
+      "description": "Check the Welcome Guide for orientation schedules, and Freshers activities.",
+      "actionText": "View Welcome Guide",
+      "url": "/induction"
+    }
+  ]
+}]

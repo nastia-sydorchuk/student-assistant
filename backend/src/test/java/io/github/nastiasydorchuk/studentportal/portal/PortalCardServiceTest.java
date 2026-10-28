@@ -32,9 +32,22 @@ class PortalCardServiceTest {
     void setUp() {
         repository = mock(PortalCardRepository.class);
         translationService = mock(TranslationService.class);
+        when(translationService.isEnabled()).thenReturn(true);
         hasher = new SourceHasher(JsonMapper.builder().build());
         service = new PortalCardService(repository, translationService, hasher);
         englishHash = hasher.hash(english.stream().map(PortalCardResponse::from).toList());
+    }
+
+    @Test
+    void servesEnglishWhenTranslationIsDisabled() {
+        when(translationService.isEnabled()).thenReturn(false);
+        when(repository.findByLanguageOrderByCardIdAsc("en")).thenReturn(english);
+        when(repository.findByLanguage("es")).thenReturn(List.of());
+        when(repository.findByLanguage("en")).thenReturn(english);
+
+        assertThat(service.getAllCards("es")).isEqualTo(english);
+        verify(translationService, never()).translatePortalCards(any(), any(), any());
+        verify(repository, never()).saveAll(any());
     }
 
     private PortalCard spanish(PortalCard card, String hash) {

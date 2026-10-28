@@ -1,0 +1,367 @@
+[{
+  "_id": "services",
+  "categoryTitle": "University Services",
+  "description": "Administrative support for housing, fees, IT help, and career development.",
+  "items": [
+    {
+      "title": "AskHWU Student Support",
+      "icon": "support_agent",
+      "description": "The primary contact for student ID cards, enrollment letters, council tax exemptions, and general inquiries.",
+      "contact": "askhwu@hw.ac.uk",
+      "url": "https://myhwu.hw.ac.uk/",
+      "actionText": "Visit AskHWU Portal"
+    },
+    {
+      "title": "Student Wellbeing",
+      "icon": "health_and_safety",
+      "description": "Access counseling, disability support, and mental health resources to help you thrive during your studies.",
+      "contact": "studentwellbeing@hw.ac.uk",
+      "url": "/wellbeing",
+      "actionText": "View Wellbeing Services"
+    },
+    {
+      "title": "Information Services (IT Help)",
+      "icon": "computer",
+      "description": "Support for eduroam Wi-Fi, Office 365, password resets, and accessing university software.",
+      "contact": "ithelp@hw.ac.uk",
+      "url": "https://www.hw.ac.uk/it-help",
+      "actionText": "Access IT Support"
+    },
+    {
+      "title": "Careers & Graduate Futures",
+      "icon": "work",
+      "description": "Get CV advice, practice interviews, and discover graduate roles and part-time jobs through the Careers portal.",
+      "contact": "careers@hw.ac.uk",
+      "url": "https://www.hw.ac.uk/careers",
+      "actionText": "Browse Careers Portal"
+    },
+    {
+      "title": "Accommodation Services",
+      "icon": "apartment",
+      "description": "Manage your on-campus housing, report maintenance issues, and find off-campus renting advice.",
+      "contact": "reslife@hw.ac.uk",
+      "url": "https://www.hw.ac.uk/accommodation",
+      "actionText": "Manage Housing"
+    },
+    {
+      "title": "Student Funding & Fees",
+      "icon": "account_balance",
+      "description": "Information regarding tuition fees, scholarships, bursaries, and hardship funds.",
+      "contact": "studentfees@hw.ac.uk",
+      "url": "https://www.hw.ac.uk/fees",
+      "actionText": "View Financial Support"
+    }
+  ],
+  "categoryId": "services",
+  "language": "en"
+},
+{
+  "_id": "tech",
+  "categoryTitle": "IT & Digital Setup",
+  "description": "Guides for connecting to campus Wi-Fi, securing your accounts, and downloading essential software.",
+  "items": [
+    {
+      "title": "Connect to eduroam Wi-Fi",
+      "icon": "wifi",
+      "description": "Set up the secure eduroam network on your phone and laptop for free, seamless internet access across all campuses.",
+      "actionText": "Wi-Fi Setup Guide",
+      "url": "https://www.hw.ac.uk/wifi",
+      "label": "Connectivity",
+      "badgeClass": "text-bg-success"
+    },
+    {
+      "title": "Multi-Factor Authentication (MFA)",
+      "icon": "phonelink_lock",
+      "description": "Secure your university account. Download the Microsoft Authenticator app to set up mandatory two-step verification.",
+      "actionText": "Set up MFA",
+      "url": "https://www.hw.ac.uk/mfa",
+      "label": "Security",
+      "badgeClass": "text-bg-danger"
+    },
+    {
+      "title": "Student Email (Office 365)",
+      "icon": "mail",
+      "description": "Access your official Heriot-Watt email. All university communications, timetable updates, and announcements are sent here.",
+      "actionText": "Access Email",
+      "url": "https://outlook.office.com/mail/",
+      "label": "Communication",
+      "badgeClass": "text-bg-primary"
+    },
+    {
+      "title": "Free Software & Useful Apps",
+      "icon": "apps",
+      "description": "Download Microsoft Office 365 for free, or find other useful available apps.",
+      "actionText": "Get Software",
+      "url": "https://www.hw.ac.uk/software",
+      "label": "Software",
+      "badgeClass": "text-bg-info"
+    }
+  ],
+  "categoryId": "tech",
+  "language": "en"
+},
+{
+  "_id": "facilities",
+  "categoryTitle": "Campus Facilities",
+  "description": "Explore physical campus locations including libraries, sports complexes, and dining hubs.",
+  "items": [
+    {
+      "icon": "fitness_center",
+      "location": "Oriam Building",
+      "actionText": "Explore Oriam",
+      "url": "https://www.oriamscotland.com/",
+      "title": "Oriam, Scotland’s Sports Performance Centre",
+      "description": "World-class gym, sports halls, squash courts, and fitness classes for students and elite athletes."
+    },
+    {
+      "icon": "restaurant",
+      "location": "Hugh Nisbet Building",
+      "actionText": "View Food & Drink",
+      "url": "https://www.hw.ac.uk/catering",
+      "title": "Hugh Nisbet Building",
+      "description": "The central hub featuring the main dining room, shops, the Student Union, and Geordies bar."
+    },
+    {
+      "icon": "lightbulb",
+      "location": "GRID Building",
+      "actionText": "Discover The GRID",
+      "url": "https://www.hw.ac.uk/grid",
+      "title": "The GRID",
+      "description": "Global Research Innovation and Discovery centre. High-tech study spaces, VR labs, and enterprise hubs."
+    },
+    {
+      "icon": "medical_services",
+      "location": "Riccarton General Practice",
+      "actionText": "Register with GP",
+      "url": "https://www.riccartongeneralpractice.co.uk/",
+      "title": "Student Health Centre",
+      "description": "Independent NHS general practice and dental surgery located right on the university campus."
+    },
+    {
+      "icon": "local_library",
+      "location": "Library Building",
+      "actionText": "Discover Library Resources",
+      "url": "https://www.hw.ac.uk/library",
+      "title": "Library",
+      "description": "Access print and electronic holdings, or book digital study studios."
+    },
+    {
+      "icon": "groups",
+      "location": "Heriot-Watt University Student Union",
+      "actionText": "Visit the Union",
+      "url": "https://www.hwunion.com/",
+      "title": "Student Union",
+      "description": "A central hub for clubs, societies, and student support."
+    }
+  ],
+  "categoryId": "facilities",
+  "language": "en"
+},
+{
+  "_id": "wellbeing",
+  "categoryTitle": "Wellbeing & Health",
+  "description": "Confidential mental health support, medical center registration, and accessibility services.",
+  "items": [
+    {
+      "title": "Register with a Doctor (GP)",
+      "icon": "local_hospital",
+      "description": "Register with the on-campus Medical Centre (Richard Verden Anderson building) or a local NHS GP to ensure you can access healthcare and prescriptions.",
+      "actionText": "Register with Medical Centre",
+      "url": "https://www.riccartongeneralpractice.co.uk/"
+    },
+    {
+      "title": "Student Wellbeing Centre",
+      "icon": "psychology_alt",
+      "description": "Professional, confidential support for mental health, emotional difficulties, and personal challenges. Includes 1-to-1 counseling.",
+      "actionText": "Book an Appointment",
+      "url": "https://www.hw.ac.uk/wellbeing"
+    },
+    {
+      "title": "Disability Service",
+      "icon": "accessible",
+      "description": "Advice and support for students with physical disabilities, specific learning difficulties (like Dyslexia), and long-term health conditions.",
+      "actionText": "Explore Support",
+      "url": "https://www.hw.ac.uk/disability"
+    },
+    {
+      "title": "Togetherall (24/7 Support)",
+      "icon": "forum",
+      "description": "A safe, online, and anonymous community to support your mental health, available 24/7 and free for all Heriot-Watt students.",
+      "actionText": "Join Togetherall",
+      "url": "https://togetherall.com/"
+    },
+    {
+      "title": "Report and Support",
+      "icon": "campaign",
+      "description": "Report incidents of bullying, harassment, sexual violence, or discrimination securely. You can report anonymously or request contact.",
+      "actionText": "Make a Report",
+      "url": "https://reportandsupport.hw.ac.uk/"
+    },
+    {
+      "title": "SafeZone App",
+      "icon": "security",
+      "description": "A free app connecting you directly to the university security team for immediate help, first aid, or emergency assistance on campus.",
+      "actionText": "Download SafeZone",
+      "url": "http://hw.ac.uk/safezone"
+    },
+    {
+      "title": "Chaplaincy",
+      "icon": "spa",
+      "description": "A welcoming space for people of all faiths and none. Drop in for a coffee, quiet reflection, mindfulness sessions, or pastoral care.",
+      "actionText": "Visit the Chaplaincy",
+      "url": "https://www.hw.ac.uk/chaplaincy"
+    }
+  ],
+  "categoryId": "wellbeing",
+  "language": "en"
+},
+{
+  "_id": "cultural",
+  "categoryTitle": "Cultural Integration",
+  "description": "Connect with the community through societies, events, volunteering, and global student support.",
+  "items": [
+    {
+      "title": "Heriot-Watt Student Union",
+      "icon": "diversity_3",
+      "description": "The heart of student life. Join over 80 societies, sports clubs, and get involved in student elections.",
+      "actionText": "Visit HWUnion",
+      "url": "https://www.hwunion.com/"
+    },
+    {
+      "title": "Global Student Office",
+      "icon": "public",
+      "description": "Visa support, immigration advice, and resources designed specifically to help international students settle in.",
+      "actionText": "View Global Support",
+      "url": "https://www.hw.ac.uk/uk/students/international.htm"
+    },
+    {
+      "title": "Chaplaincy & Faith",
+      "icon": "spa",
+      "description": "A welcoming space for people of all faiths and none. Drop in for a coffee, quiet reflection, or multi-faith worship.",
+      "actionText": "Discover Chaplaincy",
+      "url": "https://www.hw.ac.uk/chaplaincy"
+    },
+    {
+      "title": "University Events",
+      "icon": "event",
+      "description": "Keep up to date with guest lectures, career fairs, cultural festivals, and university-wide celebrations.",
+      "actionText": "View Calendar",
+      "url": "http://hw.ac.libcal.com/calendar/studentevents"
+    },
+    {
+      "title": "Volunteer Action",
+      "icon": "volunteer_activism",
+      "description": "Make a difference in the local Edinburgh community and boost your employability by volunteering through the Union.",
+      "actionText": "Find Opportunities",
+      "url": "https://www.hwunion.com/volunteer/"
+    },
+    {
+      "title": "Sports Union (Oriam)",
+      "icon": "sports_soccer",
+      "description": "Join a sports team, take fitness classes, and access Scotland’s Sports Performance Centre right on campus.",
+      "actionText": "Explore Oriam",
+      "url": "https://www.oriamscotland.com/"
+    }
+  ],
+  "categoryId": "cultural",
+  "language": "en"
+},
+{
+  "_id": "academic",
+  "categoryTitle": "Academic Resources",
+  "description": "Everything you need to excel at Heriot-Watt, from 24/7 study spaces to dedicated academic skills support.",
+  "items": [
+    {
+      "title": "Canvas (VLE)",
+      "icon": "laptop_chromebook",
+      "description": "Log into Heriot-Watt’s Virtual Learning Environment.",
+      "actionText": "Log into Canvas",
+      "url": "https://canvas.hw.ac.uk/",
+      "label": "Every Day",
+      "badgeClass": "text-bg-success"
+    },
+    {
+      "title": "Semester Dates",
+      "icon": "calendar_month",
+      "description": "View important dates, including exam periods, and holidays.",
+      "actionText": "View Semester Dates",
+      "url": "https://www.hw.ac.uk/study/how-to-apply/academic-calendar",
+      "label": "Every Day",
+      "badgeClass": "text-bg-success"
+    },
+    {
+      "title": "Timetable",
+      "icon": "calendar_month",
+      "description": "View your personal timetable and related information.",
+      "actionText": "View Timetable",
+      "url": "https://timetable.hw.ac.uk/",
+      "label": "Every Day",
+      "badgeClass": "text-bg-success"
+    },
+    {
+      "title": "The Skills Hub",
+      "icon": "psychology",
+      "description": "Develop key academic skills including academic writing, critical thinking, referencing, and time management via live workshops.",
+      "actionText": "Book a Workshop",
+      "url": "https://hw.ac.libcal.com/calendar/skillshub",
+      "label": "Skills Development",
+      "badgeClass": "text-bg-info"
+    },
+    {
+      "title": "Maths Gym",
+      "icon": "calculate",
+      "description": "Boost your mathematical and statistical confidence with free drop-in sessions, 1-to-1 appointments, and online resources.",
+      "actionText": "Find a Drop-in Session",
+      "url": "https://mathsgym.hw.ac.uk/",
+      "label": "Skills Development",
+      "badgeClass": "text-bg-info"
+    },
+    {
+      "title": "Academic Writing consultations",
+      "icon": "edit_document",
+      "description": "Get specialized assistance with essays, citations.",
+      "actionText": "Book a One-to-one Session",
+      "url": "https://outlook.office.com/",
+      "label": "Skills Development",
+      "badgeClass": "text-bg-info"
+    },
+    {
+      "title": "English Gym",
+      "icon": "spellcheck",
+      "description": "Get support with academic English literacy, including assignment and report writing, editing, and proofreading.",
+      "actionText": "Get English Support",
+      "url": "http://heriotwatt.sharepoint.com/sites/englishgym",
+      "label": "Skills Development",
+      "badgeClass": "text-bg-info"
+    },
+    {
+      "title": "LinkedIn Learning",
+      "icon": "school",
+      "description": "Access a wide range of online courses and training materials to support your academic and professional development.",
+      "actionText": "View LinkedIn Learning",
+      "url": "https://www.linkedin.com/learning/",
+      "label": "Skills Development",
+      "badgeClass": "text-bg-info"
+    },
+    {
+      "title": "Library",
+      "icon": "local_library",
+      "description": "Access print and electronic holdings, book digital study studios, or use the 24/7 Learning Commons and GRID spaces.",
+      "actionText": "See How to Borrow",
+      "url": "http://hw.ac.uk/library",
+      "label": "Every Day",
+      "badgeClass": "text-bg-success"
+    },
+    {
+      "title": "Research Databases",
+      "icon": "science",
+      "description": "Search through thousands of peer-reviewed journals, articles, and publications.",
+      "actionText": "Search Discovery",
+      "url": "https://discovery.hw.ac.uk/",
+      "label": "Research",
+      "badgeClass": "text-bg-secondary"
+    }
+  ],
+  "categoryId": "academic",
+  "language": "en"
+}]

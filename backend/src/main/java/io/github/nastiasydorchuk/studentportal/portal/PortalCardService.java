@@ -21,9 +21,10 @@ public class PortalCardService {
         this.hasher = hasher;
     }
 
-    // Translates when the translations are missing or were made from an older version of the English cards
-    private void ensureTranslationExists(String language) {
-        if ("en".equals(language)) return;
+    // Translates when the translations are missing or were made from an older version of the English cards.
+    // Returns the language to serve: English if a translation is needed but translation is disabled.
+    private String languageToServe(String language) {
+        if ("en".equals(language)) return language;
 
         List<PortalCard> english = repository.findByLanguageOrderByCardIdAsc("en");
         if (english.isEmpty()) {
@@ -37,15 +38,16 @@ public class PortalCardService {
                 && existing.stream().allMatch(card -> hash.equals(card.sourceHash()));
 
         if (!upToDate) {
+            if (!translationService.isEnabled()) return "en";
             // Delete first so cards removed from English don't linger in the translation
             repository.deleteAll(existing);
             repository.saveAll(translationService.translatePortalCards(english, language, hash));
         }
+        return language;
     }
 
     public List<PortalCard> getAllCards(String language) {
-        ensureTranslationExists(language);
-        List<PortalCard> cards = repository.findByLanguage(language);
+        List<PortalCard> cards = repository.findByLanguage(languageToServe(language));
         if (cards.isEmpty()) {
             throw new RecordNotFoundException("Portal cards not found");
         }

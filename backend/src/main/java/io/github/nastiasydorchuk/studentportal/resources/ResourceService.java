@@ -21,9 +21,10 @@ public class ResourceService {
         this.hasher = hasher;
     }
 
-    // Translates when the translation is missing or was made from an older version of the English
-    private void ensureTranslationExists(String categoryId, String language) {
-        if ("en".equals(language)) return;
+    // Translates when the translation is missing or was made from an older version of the English.
+    // Returns the language to serve: English if a translation is needed but translation is disabled.
+    private String languageToServe(String categoryId, String language) {
+        if ("en".equals(language)) return language;
 
         ResourceCategory english = repository.findByCategoryIdAndLanguage(categoryId, "en")
                 .orElseThrow(() -> new RecordNotFoundException("Resource category not found: " + categoryId));
@@ -35,15 +36,16 @@ public class ResourceService {
                 .orElse(false);
 
         if (!upToDate) {
+            if (!translationService.isEnabled()) return "en";
             ResourceCategory translated = translationService.translateCategory(english, language);
             translated.setSourceHash(hash);
             repository.save(translated); // same id as the stale copy, so it overwrites it
         }
+        return language;
     }
 
     public ResourceCategory getCategory(String categoryId, String language) {
-        ensureTranslationExists(categoryId, language);
-        return repository.findByCategoryIdAndLanguage(categoryId, language)
+        return repository.findByCategoryIdAndLanguage(categoryId, languageToServe(categoryId, language))
                 .orElseThrow(() -> new RecordNotFoundException("Resource category not found: " + categoryId));
     }
 

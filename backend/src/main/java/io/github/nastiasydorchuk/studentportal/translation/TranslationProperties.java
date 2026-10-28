@@ -1,12 +1,10 @@
 package io.github.nastiasydorchuk.studentportal.translation;
 
-import jakarta.validation.constraints.NotBlank;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.validation.annotation.Validated;
 
-@Validated
+// apiKey is optional: without it, translation is disabled (see TranslateConfig)
 @ConfigurationProperties(prefix = "google.translate")
 public record TranslationProperties(
-        @NotBlank String apiKey
+        String apiKey
 ) {
 }
