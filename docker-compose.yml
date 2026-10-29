@@ -1,0 +1,46 @@
+# One-command local setup: cp .env.example .env (add a Gemini key), then docker compose up
+# Open http://localhost:4200. Only the frontend is published; the other services are internal.
+services:
+  mongo:
+    image: mongo:7
+    volumes:
+      - mongo-data:/data/db
+
+  rag:
+    build: ./rag-service
+    environment:
+      GOOGLE_API_KEY: ${GOOGLE_API_KEY:?Set GOOGLE_API_KEY in .env (see .env.example)}
+      API_AUTH_KEY: ${RAG_API_KEY:-}
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 5s
+      retries: 30
+
+  backend:
+    build: ./backend
+    environment:
+      MONGODB_URI: mongodb://mongo:27017/portal
+      RAG_SERVICE_URL: http://rag:8000/rag-query
+      RAG_API_KEY: ${RAG_API_KEY:-}
+      GOOGLE_TRANSLATE_KEY: ${GOOGLE_TRANSLATE_KEY:-}
+    depends_on:
+      mongo:
+        condition: service_started
+      rag:
+        condition: service_healthy
+
+  frontend:
+    build: ./frontend
+    environment:
+      # Same port inside and outside: server-side rendering fetches /api from the address the browser used
+      PORT: 4200
+      API_URL: http://backend:8080
+      # Angular SSR only renders for allowlisted hosts (SSRF protection); add domain when deploying
+      NG_ALLOWED_HOSTS: localhost
+    ports:
+      - "4200:4200"
+    depends_on:
+      - backend
+
+volumes:
+  mongo-data:

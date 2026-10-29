@@ -72,6 +72,8 @@ Open http://localhost:4200. The first build takes a few minutes.
 - **Knowledge base:** the vector store is prebuilt and committed, so nothing is scraped at startup.
 - **Languages:** the interface is fully translated. Page content is translated on demand if you add
   a `GOOGLE_TRANSLATE_KEY`; without one, it falls back to English.
+- **Map:** the campus map needs a Google Maps key in `frontend/src/environments/environment.ts`
+  (see [Development](#development)); without one, everything else works.
 
 ## Development
 

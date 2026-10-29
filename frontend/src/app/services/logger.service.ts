@@ -1,18 +1,17 @@
-import { Injectable } from '@angular/core';
-import { environment } from '../../environments/environment';
+import { Injectable, isDevMode } from '@angular/core';
 
 @Injectable({
   providedIn: 'root',
 })
 export class LoggerService {
   log(message: string, ...args: unknown[]): void {
-    if (!environment.production) {
+    if (isDevMode()) {
       console.log(message, ...args);
     }
   }
 
   warn(message: string, ...args: unknown[]): void {
-    if (!environment.production) {
+    if (isDevMode()) {
       console.warn(message, ...args);
     }
   }

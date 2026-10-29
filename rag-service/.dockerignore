@@ -1,0 +1,7 @@
+venv
+.venv
+.env
+__pycache__
+chroma_db_tmp
+chroma_db_old
+tests
