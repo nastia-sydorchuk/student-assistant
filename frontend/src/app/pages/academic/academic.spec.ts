@@ -59,8 +59,6 @@ describe('Academic', () => {
     fixture.detectChanges();
 
     expect(component.isLoading()).toBe(false);
-    expect(component.errorMessage()).toBe(
-      'Could not load resources at this time. Please try again later.',
-    );
+    expect(component.errorMessage()).toBe('COMMON.ERROR');
   });
 });

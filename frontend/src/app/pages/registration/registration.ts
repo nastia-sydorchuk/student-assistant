@@ -1,13 +1,12 @@
-import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Component, OnInit, inject } from '@angular/core';
 import { Step } from '../../models/welcome.model';
 import { ApiService } from '../../services/api.service';
 import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ResourceCategory } from '../../models/resources.model';
-import { LanguageService } from '../../services/language.service';
 import { TranslateModule } from '@ngx-translate/core';
 import { SmartLinkDirective } from '../../directives/smart-link.directive';
+import { LanguageAwareLoader, combinedState } from '../language-aware-loader';
 
 @Component({
   selector: 'app-registration',
@@ -17,49 +16,18 @@ import { SmartLinkDirective } from '../../directives/smart-link.directive';
 })
 export class Registration implements OnInit {
   private apiService = inject(ApiService);
-  private languageService = inject(LanguageService);
-  private destroyRef = inject(DestroyRef);
 
-  onboardingSteps = signal<Step[] | null>(null);
-  techResources = signal<ResourceCategory | null>(null);
+  private steps = new LanguageAwareLoader<Step[] | null>(null, 'REGISTRATION.STEPS_ERROR');
+  private tech = new LanguageAwareLoader<ResourceCategory | null>(null, 'COMMON.ERROR');
+  private state = combinedState(this.steps, this.tech);
 
-  isLoading = signal(true);
-  errorMessage = signal('');
+  onboardingSteps = this.steps.data;
+  techResources = this.tech.data;
+  isLoading = this.state.isLoading;
+  errorMessage = this.state.error;
 
   ngOnInit(): void {
-    this.languageService.currentLanguage$
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(() => {
-        this.loadCategory('tech');
-        this.fetchInductionSteps();
-      });
-  }
-
-  loadCategory(categoryId: string): void {
-    this.isLoading.set(true);
-
-    this.apiService.getResources(categoryId).subscribe({
-      next: (data) => {
-        this.techResources.set(data);
-        this.isLoading.set(false);
-      },
-      error: () => {
-        this.errorMessage.set('Could not load resources at this time. Please try again later.');
-        this.isLoading.set(false);
-      }
-    });
-  }
-
-  fetchInductionSteps(): void {
-    this.apiService.getOnboardingSteps().subscribe({
-      next: (data) => {
-        this.onboardingSteps.set(data);
-        this.isLoading.set(false);
-      },
-      error: () => {
-        this.errorMessage.set('Unable to load onboarding steps at this time. Please try again later.');
-        this.isLoading.set(false);
-      }
-    });
+    this.tech.load(() => this.apiService.getResources('tech'));
+    this.steps.load(() => this.apiService.getOnboardingSteps());
   }
 }

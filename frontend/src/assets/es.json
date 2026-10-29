@@ -2,11 +2,12 @@
   "DASHBOARD": {
     "TITLE": "Bienvenido al Portal del Estudiante",
     "SUBTITLE": "Seleccione una categoría a continuación para acceder a recursos e información.",
-    "HEADER": "Portal del estudiante"
+    "HEADER": "Portal del estudiante",
+    "ERROR": "No se pudo cargar el portal en este momento. Inténtalo de nuevo más tarde."
   },
   "COMMON": {
     "LOADING": "Cargando...",
-    "ERROR": "No se pudieron cargar los recursos en este momento.",
+    "ERROR": "No se pudieron cargar los recursos en este momento. Inténtalo de nuevo más tarde.",
     "NAV": "Volver al panel de control",
     "LANGUAGE_SELECT_LABEL": "Seleccionar idioma"
   },
@@ -21,7 +22,8 @@
     "PART1": "Parte 1: Lista de verificación administrativa",
     "PART2": "Parte 2: Configuración digital",
     "PART2SUBTITLE": "¿Necesitas ayuda práctica con el departamento de informática?",
-    "PART2DESCRIPTION": "El servicio de asistencia de Servicios de Información (SI) se encuentra en la Biblioteca Cameron Smail. Puede pasar con su computadora portátil o enviarles un correo electrónico a"
+    "PART2DESCRIPTION": "El servicio de asistencia de Servicios de Información (SI) se encuentra en la Biblioteca Cameron Smail. Puede pasar con su computadora portátil.",
+    "STEPS_ERROR": "No se pudieron cargar los pasos de inscripción en este momento. Inténtalo de nuevo más tarde."
   },
   "INDUCTION": {
     "TITLE": "Eventos de inducción y bienvenida",

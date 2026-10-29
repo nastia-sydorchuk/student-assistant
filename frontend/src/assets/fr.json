@@ -2,11 +2,12 @@
   "DASHBOARD": {
     "TITLE": "Bienvenue sur le portail étudiant",
     "SUBTITLE": "Sélectionnez une catégorie ci-dessous pour accéder aux ressources et aux informations.",
-    "HEADER": "Portail étudiant"
+    "HEADER": "Portail étudiant",
+    "ERROR": "Impossible de charger le portail pour le moment. Veuillez réessayer plus tard."
   },
   "COMMON": {
     "LOADING": "Chargement...",
-    "ERROR": "Impossible de charger les ressources pour le moment.",
+    "ERROR": "Impossible de charger les ressources pour le moment. Veuillez réessayer plus tard.",
     "NAV": "Retour au tableau de bord",
     "LANGUAGE_SELECT_LABEL": "Sélectionnez la langue"
   },
@@ -21,7 +22,8 @@
     "PART1": "Partie 1 : Liste de contrôle administrative",
     "PART2": "Partie 2 : Configuration numérique",
     "PART2SUBTITLE": "Besoin d'aide informatique concrète ?",
-    "PART2DESCRIPTION": "Le service d'assistance informatique se trouve à la bibliothèque Cameron Smail. Vous pouvez vous y rendre avec votre ordinateur portable ou leur envoyer un courriel à l'adresse indiquée."
+    "PART2DESCRIPTION": "Le service d'assistance informatique se trouve à la bibliothèque Cameron Smail. Vous pouvez vous y rendre avec votre ordinateur portable.",
+    "STEPS_ERROR": "Impossible de charger les étapes d'inscription pour le moment. Veuillez réessayer plus tard."
   },
   "INDUCTION": {
     "TITLE": "Événements d'intégration et de bienvenue",

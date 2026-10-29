@@ -5,6 +5,7 @@ import { BehaviorSubject, of, throwError } from 'rxjs';
 
 import { LevelInduction } from './level-induction';
 import { ApiService } from '../../services/api.service';
+import { LanguageService } from '../../services/language.service';
 import { LevelData } from '../../models/welcome.model';
 
 describe('LevelInduction', () => {
@@ -12,6 +13,7 @@ describe('LevelInduction', () => {
   let fixture: ComponentFixture<LevelInduction>;
   let apiService: { getOnboardingConfigByLevel: ReturnType<typeof vi.fn> };
   let paramMap$: BehaviorSubject<ReturnType<typeof convertToParamMap>>;
+  let currentLanguage$: BehaviorSubject<string>;
 
   const mockLevelData: LevelData = {
     title: 't',
@@ -29,6 +31,7 @@ describe('LevelInduction', () => {
   beforeEach(async () => {
     apiService = { getOnboardingConfigByLevel: vi.fn().mockReturnValue(of(mockLevelData)) };
     paramMap$ = new BehaviorSubject(convertToParamMap({ level: 'postgraduate' }));
+    currentLanguage$ = new BehaviorSubject<string>('en');
 
     await TestBed.configureTestingModule({
       imports: [LevelInduction],
@@ -37,6 +40,7 @@ describe('LevelInduction', () => {
         provideTranslateService(),
         { provide: ApiService, useValue: apiService },
         { provide: ActivatedRoute, useValue: { paramMap: paramMap$ } },
+        { provide: LanguageService, useValue: { currentLanguage$ } },
       ],
     }).compileComponents();
 
@@ -63,6 +67,15 @@ describe('LevelInduction', () => {
     paramMap$.next(convertToParamMap({ level: 'undergraduate' }));
 
     expect(apiService.getOnboardingConfigByLevel).toHaveBeenCalledWith('undergraduate');
+  });
+
+  it('reloads the same level when the language changes', () => {
+    fixture.detectChanges();
+    apiService.getOnboardingConfigByLevel.mockClear();
+
+    currentLanguage$.next('es');
+
+    expect(apiService.getOnboardingConfigByLevel).toHaveBeenCalledWith('postgraduate');
   });
 
   it('surfaces an error message when the request fails', () => {

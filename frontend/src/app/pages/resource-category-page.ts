@@ -1,39 +1,20 @@
-import { DestroyRef, Directive, OnInit, inject, signal } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Directive, OnInit, inject } from '@angular/core';
 import { ResourceCategory } from '../models/resources.model';
 import { ApiService } from '../services/api.service';
-import { LanguageService } from '../services/language.service';
+import { LanguageAwareLoader } from './language-aware-loader';
 
 @Directive()
 export abstract class ResourceCategoryPage implements OnInit {
   protected abstract categoryId: string;
 
   private apiService = inject(ApiService);
-  private languageService = inject(LanguageService);
-  private destroyRef = inject(DestroyRef);
+  private category = new LanguageAwareLoader<ResourceCategory | null>(null, 'COMMON.ERROR');
 
-  resources = signal<ResourceCategory | null>(null);
-  isLoading = signal(true);
-  errorMessage = signal('');
+  resources = this.category.data;
+  isLoading = this.category.isLoading;
+  errorMessage = this.category.error;
 
   ngOnInit(): void {
-    this.languageService.currentLanguage$
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(() => this.loadCategory());
-  }
-
-  private loadCategory(): void {
-    this.isLoading.set(true);
-
-    this.apiService.getResources(this.categoryId).subscribe({
-      next: (data) => {
-        this.resources.set(data);
-        this.isLoading.set(false);
-      },
-      error: () => {
-        this.errorMessage.set('Could not load resources at this time. Please try again later.');
-        this.isLoading.set(false);
-      }
-    });
+    this.category.load(() => this.apiService.getResources(this.categoryId));
   }
 }

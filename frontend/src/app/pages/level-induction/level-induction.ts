@@ -1,10 +1,11 @@
-import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, RouterModule } from '@angular/router';
+import { filter, map } from 'rxjs';
 import { LevelData } from '../../models/welcome.model';
 import { ApiService } from '../../services/api.service';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
+import { LanguageAwareLoader } from '../language-aware-loader';
 
 @Component({
   selector: 'app-level-induction',
@@ -15,35 +16,20 @@ import { TranslateModule } from '@ngx-translate/core';
 export class LevelInduction implements OnInit {
   private route = inject(ActivatedRoute);
   private apiService = inject(ApiService);
-  private destroyRef = inject(DestroyRef);
 
-  pageData = signal<LevelData | null>(null);
-  isLoading = signal(true);
-  errorMessage = signal('');
+  private level = new LanguageAwareLoader<LevelData | null>(null, 'INDUCTION.ERROR');
+
+  pageData = this.level.data;
+  isLoading = this.level.isLoading;
+  errorMessage = this.level.error;
 
   ngOnInit(): void {
-    this.route.paramMap
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(params => {
-        const level = params.get('level');
-        if (level) {
-          this.fetchInductionData(level);
-        }
-      });
-  }
-
-  fetchInductionData(level: string): void {
-    this.isLoading.set(true);
-    this.apiService.getOnboardingConfigByLevel(level).subscribe({
-      next: (data) => {
-        this.pageData.set(data);
-        this.isLoading.set(false);
-      },
-      error: () => {
-        this.errorMessage.set('INDUCTION.ERROR');
-        this.isLoading.set(false);
-      }
-    });
+    // Reloads when either the level in the URL or the language changes
+    const level$ = this.route.paramMap.pipe(
+      map((params) => params.get('level')),
+      filter((level): level is string => !!level),
+    );
+    this.level.load((level) => this.apiService.getOnboardingConfigByLevel(level), level$);
   }
 
   getBadgeClass(type: string): string {

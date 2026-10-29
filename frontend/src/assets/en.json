@@ -2,11 +2,12 @@
   "DASHBOARD": {
     "TITLE": "Welcome to the Student Portal",
     "SUBTITLE": "Select a category below to access resources and information.",
-    "HEADER": "Student Portal"
+    "HEADER": "Student Portal",
+    "ERROR": "Could not load the portal at this time. Please try again later."
   },
   "COMMON": {
     "LOADING": "Loading...",
-    "ERROR": "Could not load resources at this time.",
+    "ERROR": "Could not load resources at this time. Please try again later.",
     "NAV": "Back to Dashboard",
     "LANGUAGE_SELECT_LABEL": "Select language"
   },
@@ -21,7 +22,8 @@
     "PART1": "Part 1: Administrative Checklist",
     "PART2": "Part 2: Digital Setup",
     "PART2SUBTITLE": "Need hands-on IT Help?",
-    "PART2DESCRIPTION": "The Information Services (IS) Helpdesk is located in the Cameron Smail Library. You can drop in with your laptop, or email them at"
+    "PART2DESCRIPTION": "The Information Services (IS) Helpdesk is located in the Cameron Smail Library. You can drop in with your laptop.",
+    "STEPS_ERROR": "Unable to load onboarding steps at this time. Please try again later."
   },
   "INDUCTION": {
     "TITLE": "Induction & Welcome Events",

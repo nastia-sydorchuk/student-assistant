@@ -1,7 +1,7 @@
 @if (isLoading()) {
   <div class="container mt-5 text-center">
     <div class="spinner-border text-primary" role="status">
-      <span class="visually-hidden">Loading...</span>
+      <span class="visually-hidden">{{ 'COMMON.LOADING' | translate }}</span>
     </div>
   </div>
 }
@@ -9,7 +9,7 @@
 @if (errorMessage()) {
   <div class="container mt-5">
     <div class="alert alert-danger" role="alert">
-      {{ errorMessage() }}
+      {{ errorMessage() | translate }}
     </div>
   </div>
 }

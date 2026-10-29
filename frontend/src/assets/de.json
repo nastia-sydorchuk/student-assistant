@@ -2,11 +2,12 @@
   "DASHBOARD": {
     "TITLE": "Willkommen im Studentenportal",
     "SUBTITLE": "Wählen Sie unten eine Kategorie aus, um auf Ressourcen und Informationen zuzugreifen.",
-    "HEADER": "Studentenportal"
+    "HEADER": "Studentenportal",
+    "ERROR": "Das Portal konnte derzeit nicht geladen werden. Bitte versuche es später erneut."
   },
   "COMMON": {
     "LOADING": "Laden...",
-    "ERROR": "Die Ressourcen konnten derzeit nicht geladen werden.",
+    "ERROR": "Die Ressourcen konnten derzeit nicht geladen werden. Bitte versuche es später erneut.",
     "NAV": "Zurück zum Dashboard",
     "LANGUAGE_SELECT_LABEL": "Sprache auswählen"
   },
@@ -21,7 +22,8 @@
     "PART1": "Teil 1: Administrative Checkliste",
     "PART2": "Teil 2: Digitales Setup",
     "PART2SUBTITLE": "Benötigen Sie praktische IT-Hilfe?",
-    "PART2DESCRIPTION": "Der Helpdesk der Informationsdienste (IS) befindet sich in der Cameron Smail Bibliothek. Sie können mit Ihrem Laptop vorbeikommen oder eine E-Mail an [E-Mail-Adresse einfügen] senden."
+    "PART2DESCRIPTION": "Der Helpdesk der Informationsdienste (IS) befindet sich in der Cameron Smail Bibliothek. Sie können mit Ihrem Laptop vorbeikommen.",
+    "STEPS_ERROR": "Die Einschreibungsschritte konnten derzeit nicht geladen werden. Bitte versuche es später erneut."
   },
   "INDUCTION": {
     "TITLE": "Einführungs- und Willkommensveranstaltungen",

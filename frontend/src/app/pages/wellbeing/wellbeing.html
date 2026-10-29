@@ -1,7 +1,7 @@
 @if (isLoading()) {
   <div class="container mt-5 text-center">
     <div class="spinner-border text-primary" role="status">
-      <span class="visually-hidden">Loading...</span>
+      <span class="visually-hidden">{{ 'COMMON.LOADING' | translate }}</span>
     </div>
   </div>
 }
@@ -9,7 +9,7 @@
 @if (errorMessage()) {
   <div class="container mt-5">
     <div class="alert alert-danger" role="alert">
-      {{ errorMessage() }}
+      {{ errorMessage() | translate }}
     </div>
   </div>
 }
@@ -33,17 +33,6 @@
           <strong>{{ 'WELLBEING.SUBTITLE' | translate }}</strong> {{ 'WELLBEING.SUBSUBTITLE' | translate }}
       </p>
     </div>
-    <!-- <div class="alert alert-danger border-danger border-opacity-25 shadow-sm d-flex gap-3 align-items-start p-4 mb-5 rounded-4">
-      <span class="material-icons display-6 text-danger flex-shrink-0">emergency</span>
-      <div>
-        <h4 class="alert-heading fw-bold mb-2">Need help right now?</h4>
-        <p class="mb-2 text-dark">If you are in immediate danger or experiencing a severe mental health crisis, please reach out for immediate support:</p>
-        <ul class="mb-0 text-dark">
-          <li><strong>On Campus Emergency:</strong> Call Campus Security at <strong>0131 451 3500</strong> or use the SafeZone App.</li>
-          <li><strong>Off Campus Emergency:</strong> Dial <strong>999</strong> for Police or Ambulance.</li>
-        </ul>
-      </div>
-    </div> -->
   
     <h2 class="fw-bold text-dark mb-4">{{ 'WELLBEING.TITLE' | translate }}</h2>
   

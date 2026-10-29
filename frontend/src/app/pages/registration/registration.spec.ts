@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { provideTranslateService } from '@ngx-translate/core';
-import { BehaviorSubject, of, throwError } from 'rxjs';
+import { BehaviorSubject, Subject, of, throwError } from 'rxjs';
 
 import { Registration } from './registration';
 import { ApiService } from '../../services/api.service';
@@ -71,14 +71,26 @@ describe('Registration', () => {
     expect(apiService.getOnboardingSteps).toHaveBeenCalled();
   });
 
+  it('keeps loading until both requests have finished', () => {
+    const pendingSteps = new Subject<Step[]>();
+    apiService.getOnboardingSteps.mockReturnValue(pendingSteps);
+
+    fixture.detectChanges();
+
+    expect(component.techResources()).toEqual(mockResources);
+    expect(component.isLoading()).toBe(true);
+
+    pendingSteps.next(mockSteps);
+
+    expect(component.isLoading()).toBe(false);
+  });
+
   it('surfaces an error message when resources fail to load', () => {
     apiService.getResources.mockReturnValue(throwError(() => new Error('boom')));
 
     fixture.detectChanges();
 
-    expect(component.errorMessage()).toBe(
-      'Could not load resources at this time. Please try again later.',
-    );
+    expect(component.errorMessage()).toBe('COMMON.ERROR');
   });
 
   it('surfaces an error message when onboarding steps fail to load', () => {
@@ -86,8 +98,6 @@ describe('Registration', () => {
 
     fixture.detectChanges();
 
-    expect(component.errorMessage()).toBe(
-      'Unable to load onboarding steps at this time. Please try again later.',
-    );
+    expect(component.errorMessage()).toBe('REGISTRATION.STEPS_ERROR');
   });
 });

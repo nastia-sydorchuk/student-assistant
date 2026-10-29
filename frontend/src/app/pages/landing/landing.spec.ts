@@ -57,12 +57,14 @@ describe('Landing', () => {
     expect(apiService.getPortalCards).toHaveBeenCalled();
   });
 
-  it('stops loading when the request fails', () => {
+  it('shows an error and no cards when the request fails', () => {
     apiService.getPortalCards.mockReturnValue(throwError(() => new Error('boom')));
 
     fixture.detectChanges();
 
     expect(component.isLoading()).toBe(false);
     expect(component.portalCards()).toEqual([]);
+    expect(component.errorMessage()).toBe('DASHBOARD.ERROR');
+    expect(fixture.nativeElement.querySelector('[role="alert"]')).not.toBeNull();
   });
 });
