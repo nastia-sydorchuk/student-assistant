@@ -9,8 +9,7 @@ RUN npm run build
 
 FROM node:22-alpine
 WORKDIR /app
-COPY package.json package-lock.json ./
-RUN npm ci --omit=dev
+# The server bundle includes everything it imports except Node built-ins, so no node_modules are needed
 COPY --from=build /app/dist/frontend dist/frontend
 EXPOSE 4200
 CMD ["node", "dist/frontend/server/server.mjs"]

@@ -24,9 +24,10 @@ import requests
 from bs4 import BeautifulSoup
 from chromadb.api.client import SharedSystemClient
 from chromadb.config import Settings as ChromaSettings
+from chromadb.utils.embedding_functions import ONNXMiniLM_L6_V2
 from langchain_chroma import Chroma
 from langchain_core.documents import Document
-from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_core.embeddings import Embeddings
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 from .config import configure_logging, settings
@@ -44,8 +45,25 @@ class IngestionError(RuntimeError):
     pass
 
 
-def _embeddings() -> HuggingFaceEmbeddings:
-    return HuggingFaceEmbeddings(model_name=settings.embedding_model)
+class MiniLMEmbeddings(Embeddings):
+    """all-MiniLM-L6-v2 run by Chroma's bundled ONNX runtime.
+
+    Gives the same vectors as the sentence-transformers model without
+    installing PyTorch, which roughly halves the Docker image.
+    """
+
+    def __init__(self) -> None:
+        self._model = ONNXMiniLM_L6_V2()
+
+    def embed_documents(self, texts: list[str]) -> list[list[float]]:
+        return [vector.tolist() for vector in self._model(texts)]
+
+    def embed_query(self, text: str) -> list[float]:
+        return self.embed_documents([text])[0]
+
+
+def _embeddings() -> MiniLMEmbeddings:
+    return MiniLMEmbeddings()
 
 
 def _fetch_html(session: requests.Session, url: str) -> str:

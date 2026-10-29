@@ -3,6 +3,7 @@ import stat
 from pathlib import Path
 
 import html2text
+import numpy as np
 import pytest
 import requests
 from langchain_core.documents import Document
@@ -137,6 +138,21 @@ def test_fetch_html_raises_on_http_error():
 
     with pytest.raises(requests.HTTPError):
         ingestion._fetch_html(FakeSession(), "https://x")
+
+
+# --- Embeddings --------------------------------------------------------------
+
+
+def test_embeddings_return_plain_float_lists(monkeypatch):
+    class FakeModel:
+        def __call__(self, texts):
+            return [np.array([len(text), 0.5], dtype=np.float32) for text in texts]
+
+    monkeypatch.setattr(ingestion, "ONNXMiniLM_L6_V2", FakeModel)
+    embeddings = ingestion.MiniLMEmbeddings()
+
+    assert embeddings.embed_documents(["ab", "abc"]) == [[2.0, 0.5], [3.0, 0.5]]
+    assert embeddings.embed_query("abcd") == [4.0, 0.5]
 
 
 # --- ingest() ----------------------------------------------------------------

@@ -4,6 +4,10 @@ A multilingual onboarding portal for new Heriot-Watt University students, with a
 that answers questions from official university pages, **cites its sources**, and hands off to
 the right support team when it doesn't know.
 
+Built solo: all three services, the ingestion pipeline and the Docker setup.
+
+Independent project, not affiliated with or endorsed by Heriot-Watt University.
+
 <!-- Uncomment once the files exist in docs/:
 ![The portal with the chat assistant answering a question and citing sources](docs/chat.gif)
 -->
@@ -33,7 +37,7 @@ flowchart LR
 |---|---|---|
 | [`frontend/`](frontend/) | Angular 21 (SSR), Bootstrap, ngx-translate, Google Maps | Portal pages, chat widget, language switching, campus map |
 | [`backend/`](backend/) | Spring Boot 4, Java 21, MongoDB, Google Cloud Translate | Content API, on-demand translation with hash-based cache invalidation, chat proxy |
-| [`rag-service/`](rag-service/) | FastAPI, LangChain, Chroma, Gemini, sentence-transformers | Retrieval-augmented answers with citations and conversation memory |
+| [`rag-service/`](rag-service/) | FastAPI, LangChain, Chroma, Gemini, all-MiniLM-L6-v2 (ONNX) | Retrieval-augmented answers with citations and conversation memory |
 
 ## Engineering decisions
 
@@ -55,6 +59,7 @@ flowchart LR
   of silently shrinking the knowledge base.
 - **Failures are visible.** If the RAG service is down, the API returns `503` with a standard error
   body and the chat shows a translated error. It never disguises an outage as an answer.
+- **Embeddings without PyTorch.** The embedding model runs on ONNX Runtime instead of PyTorch. It cut the Docker images from about 3.9 GB to 2.0 GB.
 
 ## Quick start
 
@@ -114,13 +119,15 @@ npm start                          # http://localhost:4200, proxies /api to the 
 
 ## Tests
 
-242 automated tests: JUnit 108, pytest 56, Vitest 78. The LLM, vector store, Translate API and
+243 automated tests: JUnit 108, pytest 57, Vitest 78. The LLM, vector store, Translate API and
 network are faked, so every suite runs offline with no API keys.
 
+From the repository root:
+
 ```bash
-cd backend && ./mvnw test
-cd rag-service && pip install -r requirements-dev.txt && pytest
-cd frontend && npm test -- --watch=false && npm run lint
+(cd backend && ./mvnw test)
+(cd rag-service && pip install -r requirements-dev.txt && pytest)
+(cd frontend && npm test -- --watch=false && npm run lint)
 ```
 
 ## Known limitations

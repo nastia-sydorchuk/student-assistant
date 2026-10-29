@@ -11,7 +11,6 @@ class Settings(BaseSettings):
     api_auth_key: str | None = None
 
     llm_model: str = "gemini-3.5-flash-lite"
-    embedding_model: str = "sentence-transformers/all-MiniLM-L6-v2"
 
     chroma_persist_dir: Path = BASE_DIR / "chroma_db"
     sources_path: Path = BASE_DIR / "sources.json"
