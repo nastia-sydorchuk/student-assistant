@@ -4,6 +4,7 @@ import com.google.cloud.translate.Translate;
 import com.google.cloud.translate.Translation;
 import io.github.nastiasydorchuk.studentportal.onboarding.domain.*;
 import io.github.nastiasydorchuk.studentportal.portal.domain.PortalCard;
+import io.github.nastiasydorchuk.studentportal.portal.domain.PortalCards;
 import io.github.nastiasydorchuk.studentportal.resources.domain.ResourceCategory;
 import io.github.nastiasydorchuk.studentportal.resources.domain.ResourceItem;
 import org.junit.jupiter.api.BeforeEach;
@@ -48,64 +49,50 @@ class TranslationServiceTest {
 
     @Test
     void translateCategoryTranslatesTextAndKeepsLinksAndIcons() {
-        ResourceCategory english = new ResourceCategory();
-        english.setId("academic_en");
-        english.setCategoryId("academic");
-        english.setLanguage("en");
-        english.setCategoryTitle("Academic");
-        english.setDescription("Study help");
-        english.setSourceHash(null);
-        english.setItems(List.of(new ResourceItem("Library", "book", "Borrow books", "Visit",
-                "https://lib.example.com", "New", "badge-new", "Main campus", "lib@example.com")));
+        ResourceCategory english = new ResourceCategory("academic", "academic", "en", "Academic", "Study help",
+                List.of(new ResourceItem("Library", "book", "Borrow books", "Visit",
+                        "https://lib.example.com", "New", "badge-new", "Main campus", "lib@example.com")), null);
 
-        ResourceCategory result = service.translateCategory(english, "es");
+        ResourceCategory result = service.translateCategory(english, "es", "hash");
 
-        assertThat(result.getId()).isEqualTo("academic_es");
-        assertThat(result.getCategoryId()).isEqualTo("academic");
-        assertThat(result.getLanguage()).isEqualTo("es");
-        assertThat(result.getCategoryTitle()).isEqualTo("es:Academic");
-        assertThat(result.getDescription()).isEqualTo("es:Study help");
-        assertThat(result.getSourceHash()).isNull();
-        assertThat(result.getItems()).containsExactly(new ResourceItem("es:Library", "book", "es:Borrow books",
-                "es:Visit", "https://lib.example.com", "es:New", "badge-new", "Main campus", "lib@example.com"));
+        assertThat(result).isEqualTo(new ResourceCategory("academic_es", "academic", "es", "es:Academic", "es:Study help",
+                List.of(new ResourceItem("es:Library", "book", "es:Borrow books", "es:Visit",
+                        "https://lib.example.com", "es:New", "badge-new", "Main campus", "lib@example.com")), "hash"));
     }
 
     @Test
     void translateCategoryLeavesMissingItemsMissing() {
-        ResourceCategory english = new ResourceCategory();
-        english.setCategoryId("academic");
+        ResourceCategory english = new ResourceCategory("academic", "academic", "en", null, null, null, null);
 
-        assertThat(service.translateCategory(english, "es").getItems()).isNull();
+        assertThat(service.translateCategory(english, "es", "hash").items()).isNull();
     }
 
     @Test
     void nullAndEmptyTextIsNotSentToTheApi() {
-        ResourceCategory english = new ResourceCategory();
-        english.setCategoryId("academic");
-        english.setCategoryTitle("");
-        english.setDescription(null);
+        ResourceCategory english = new ResourceCategory("academic", "academic", "en", "", null, null, null);
 
-        ResourceCategory result = service.translateCategory(english, "es");
+        ResourceCategory result = service.translateCategory(english, "es", "hash");
 
-        assertThat(result.getCategoryTitle()).isEmpty();
-        assertThat(result.getDescription()).isNull();
+        assertThat(result.categoryTitle()).isEmpty();
+        assertThat(result.description()).isNull();
         verifyNoInteractions(translate);
     }
 
     @Test
-    void translatePortalCardsKeepsRoutesAndIcons() {
-        List<PortalCard> english = List.of(
-                new PortalCard("academic_en", "Academic", "/academic", "school", "Study help", "academic", "en", null));
+    void translatePortalCardsKeepsIdsRoutesAndIcons() {
+        PortalCards english = new PortalCards("cards_en", "en",
+                List.of(new PortalCard("academic", "Academic", "/academic", "school", "Study help")), null);
 
-        List<PortalCard> result = service.translatePortalCards(english, "es", "hash");
+        PortalCards result = service.translatePortalCards(english, "es", "hash");
 
-        assertThat(result).containsExactly(
-                new PortalCard("academic_es", "es:Academic", "/academic", "school", "es:Study help", "academic", "es", "hash"));
+        assertThat(result).isEqualTo(new PortalCards("cards_es", "es",
+                List.of(new PortalCard("academic", "es:Academic", "/academic", "school", "es:Study help")), "hash"));
     }
 
     @Test
-    void translatePortalCardsHandlesNull() {
-        assertThat(service.translatePortalCards(null, "es", "hash")).isEmpty();
+    void translatePortalCardsHandlesNullCards() {
+        assertThat(service.translatePortalCards(new PortalCards("cards_en", "en", null, null), "es", "hash").cards())
+                .isNull();
     }
 
     @Test

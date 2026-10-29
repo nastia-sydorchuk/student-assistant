@@ -27,9 +27,9 @@ class PortalCardControllerTest {
     private PortalCardService service;
 
     @Test
-    void returnsCardsWithoutStorageFields() throws Exception {
+    void returnsCardsInTheResolvedLanguage() throws Exception {
         when(service.getAllCards("es")).thenReturn(List.of(
-                new PortalCard("academic_es", "Académico", "/academic", "school", "Ayuda", "academic", "es", "hash")));
+                new PortalCard("academic", "Académico", "/academic", "school", "Ayuda")));
 
         mockMvc.perform(get("/api/portal-cards").header("Accept-Language", "es"))
                 .andExpect(status().isOk())
@@ -37,10 +37,7 @@ class PortalCardControllerTest {
                 .andExpect(jsonPath("$[0].title").value("Académico"))
                 .andExpect(jsonPath("$[0].route").value("/academic"))
                 .andExpect(jsonPath("$[0].icon").value("school"))
-                .andExpect(jsonPath("$[0].description").value("Ayuda"))
-                .andExpect(jsonPath("$[0].id").doesNotExist())
-                .andExpect(jsonPath("$[0].language").doesNotExist())
-                .andExpect(jsonPath("$[0].sourceHash").doesNotExist());
+                .andExpect(jsonPath("$[0].description").value("Ayuda"));
     }
 
     @Test

@@ -1,0 +1,41 @@
+[{
+  "_id": "cards_en",
+  "language": "en",
+  "cards": [
+    {
+      "cardId": "facilities",
+      "title": "Campus facilities",
+      "route": "/facilities",
+      "icon": "map",
+      "description": "Explore gyms, health centre, study spaces, dining halls, and campus maps."
+    },
+    {
+      "cardId": "registration",
+      "title": "Registration & Starting your studies",
+      "route": "/registration",
+      "icon": "how_to_reg",
+      "description": "Complete your university enrollment, select your modules, and set up your essential digital tools."
+    },
+    {
+      "cardId": "services",
+      "title": "University services",
+      "route": "/services",
+      "icon": "domain",
+      "description": "Student support, administration, and essential university services."
+    },
+    {
+      "cardId": "academic",
+      "title": "Academic resources",
+      "route": "/academic",
+      "icon": "local_library",
+      "description": "Access libraries, research databases, and tutoring centers."
+    },
+    {
+      "cardId": "cultural",
+      "title": "Cultural integration",
+      "route": "/cultural",
+      "icon": "public",
+      "description": "Join clubs, attend events, and build your community."
+    }
+  ]
+}]

@@ -2,8 +2,6 @@ package io.github.nastiasydorchuk.studentportal;
 
 import io.github.nastiasydorchuk.studentportal.onboarding.api.CohortResponse;
 import io.github.nastiasydorchuk.studentportal.onboarding.domain.*;
-import io.github.nastiasydorchuk.studentportal.portal.api.PortalCardResponse;
-import io.github.nastiasydorchuk.studentportal.portal.domain.PortalCard;
 import io.github.nastiasydorchuk.studentportal.resources.api.ResourceCategoryResponse;
 import io.github.nastiasydorchuk.studentportal.resources.domain.ResourceCategory;
 import io.github.nastiasydorchuk.studentportal.resources.domain.ResourceItem;
@@ -32,24 +30,9 @@ class DomainMappingTest {
     }
 
     @Test
-    void portalCardResponseDropsStorageFields() {
-        PortalCard card = new PortalCard("academic_es", "Title", "/route", "icon", "Desc", "academic", "es", "hash");
-
-        assertThat(PortalCardResponse.from(card))
-                .isEqualTo(new PortalCardResponse("academic", "Title", "/route", "icon", "Desc"));
-    }
-
-    @Test
     void resourceCategoryResponseDropsStorageFields() {
         List<ResourceItem> items = List.of(new ResourceItem("Library", "book", null, null, null, null, null, null, null));
-        ResourceCategory category = new ResourceCategory();
-        category.setId("academic_es");
-        category.setLanguage("es");
-        category.setSourceHash("hash");
-        category.setCategoryId("academic");
-        category.setCategoryTitle("Title");
-        category.setDescription("Desc");
-        category.setItems(items);
+        ResourceCategory category = new ResourceCategory("academic_es", "academic", "es", "Title", "Desc", items, "hash");
 
         assertThat(ResourceCategoryResponse.from(category))
                 .isEqualTo(new ResourceCategoryResponse("academic", "Title", "Desc", items));

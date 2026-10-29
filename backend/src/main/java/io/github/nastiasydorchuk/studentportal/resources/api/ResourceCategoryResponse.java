@@ -13,7 +13,7 @@ public record ResourceCategoryResponse(
         List<ResourceItem> items
 ) {
     public static ResourceCategoryResponse from(ResourceCategory category) {
-        return new ResourceCategoryResponse(category.getCategoryId(), category.getCategoryTitle(),
-                category.getDescription(), category.getItems());
+        return new ResourceCategoryResponse(category.categoryId(), category.categoryTitle(),
+                category.description(), category.items());
     }
 }

@@ -1,7 +1,6 @@
 package io.github.nastiasydorchuk.studentportal.config;
 
 import org.bson.Document;
-import org.bson.types.ObjectId;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -17,7 +16,7 @@ import static org.mockito.Mockito.*;
 class SeedDataLoaderTest {
 
     private static final List<String> COLLECTIONS =
-            List.of("cohorts", "induction_events", "onboarding_steps", "portal_cards", "resource_categories");
+            List.of("cohorts", "induction_events", "onboarding_steps", "portal_card_sets", "resource_categories");
 
     private final MongoTemplate mongoTemplate = mock(MongoTemplate.class);
     private final SeedDataLoader loader = new SeedDataLoader(mongoTemplate);
@@ -36,11 +35,11 @@ class SeedDataLoaderTest {
     @Test
     void neverTouchesACollectionThatHasData() throws Exception {
         when(mongoTemplate.count(any(Query.class), anyString())).thenReturn(0L);
-        when(mongoTemplate.count(any(Query.class), eq("portal_cards"))).thenReturn(5L);
+        when(mongoTemplate.count(any(Query.class), eq("portal_card_sets"))).thenReturn(1L);
 
         loader.run(null);
 
-        verify(mongoTemplate, never()).insert(anyList(), eq("portal_cards"));
+        verify(mongoTemplate, never()).insert(anyList(), eq("portal_card_sets"));
         verify(mongoTemplate).insert(anyList(), eq("cohorts"));
     }
 
@@ -52,12 +51,5 @@ class SeedDataLoaderTest {
             assertThat(documents).as(collection).isNotEmpty()
                     .allSatisfy(doc -> assertThat(doc.getString("language")).isEqualTo("en"));
         }
-    }
-
-    @Test
-    void extendedJsonIdsAreRestoredAsObjectIds() throws Exception {
-        List<Document> cards = SeedDataLoader.parse(new ClassPathResource("seed/portal_cards.json"));
-
-        assertThat(cards).allSatisfy(card -> assertThat(card.get("_id")).isInstanceOf(ObjectId.class));
     }
 }

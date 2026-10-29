@@ -3,9 +3,8 @@ package io.github.nastiasydorchuk.studentportal.translation;
 import com.google.cloud.translate.Translate;
 import com.google.cloud.translate.Translation;
 import io.github.nastiasydorchuk.studentportal.onboarding.domain.*;
-import io.github.nastiasydorchuk.studentportal.portal.domain.PortalCard;
+import io.github.nastiasydorchuk.studentportal.portal.domain.PortalCards;
 import io.github.nastiasydorchuk.studentportal.resources.domain.ResourceCategory;
-import io.github.nastiasydorchuk.studentportal.resources.domain.ResourceItem;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -47,24 +46,15 @@ class TranslationRoundTripTest {
     }
 
     @Test
-    void resourceItemsKeepEveryField() {
-        ResourceItem item = sample(ResourceItem.class, "item");
-        ResourceCategory english = new ResourceCategory();
-        english.setCategoryId("academic");
-        english.setCategoryTitle("Academic");
-        english.setDescription("Study help");
-        english.setItems(List.of(item));
+    void resourceCategoriesKeepEveryNestedField() {
+        ResourceCategory english = sample(ResourceCategory.class, "category");
 
-        ResourceCategory translated = service.translateCategory(english, "es");
-
-        assertThat(translated.getCategoryTitle()).isEqualTo(PREFIX + "Academic");
-        assertThat(translated.getDescription()).isEqualTo(PREFIX + "Study help");
-        assertPreserved(english.getItems(), translated.getItems(), "items");
+        assertPreserved(english, service.translateCategory(english, "es", "hash"), "category");
     }
 
     @Test
     void portalCardsKeepEveryField() {
-        List<PortalCard> english = List.of(sample(PortalCard.class, "card"));
+        PortalCards english = sample(PortalCards.class, "cards");
 
         assertPreserved(english, service.translatePortalCards(english, "es", "hash"), "cards");
     }

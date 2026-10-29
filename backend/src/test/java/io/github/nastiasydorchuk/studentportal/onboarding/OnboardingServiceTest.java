@@ -4,6 +4,7 @@ import io.github.nastiasydorchuk.studentportal.common.error.RecordNotFoundExcept
 import io.github.nastiasydorchuk.studentportal.onboarding.api.CohortResponse;
 import io.github.nastiasydorchuk.studentportal.onboarding.domain.*;
 import io.github.nastiasydorchuk.studentportal.translation.SourceHasher;
+import io.github.nastiasydorchuk.studentportal.translation.TranslationCache;
 import io.github.nastiasydorchuk.studentportal.translation.TranslationService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -19,6 +20,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
+// The caching rule itself is covered by TranslationCacheTest; these check each section is wired into it
 class OnboardingServiceTest {
 
     private OnboardingStepsRepository stepsRepository;
@@ -36,7 +38,8 @@ class OnboardingServiceTest {
         translationService = mock(TranslationService.class);
         when(translationService.isEnabled()).thenReturn(true);
         hasher = new SourceHasher(JsonMapper.builder().build());
-        service = new OnboardingService(stepsRepository, cohortRepository, eventsRepository, translationService, hasher);
+        service = new OnboardingService(stepsRepository, cohortRepository, eventsRepository, translationService,
+                new TranslationCache(translationService, hasher));
 
         when(stepsRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
         when(cohortRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
@@ -79,7 +82,7 @@ class OnboardingServiceTest {
         }
 
         @Test
-        void retranslatesWhenTranslationIsStale() {
+        void translatesAndSavesWhenOutdated() {
             String hash = hasher.hash(englishSteps);
             when(stepsRepository.findByLanguage("en")).thenReturn(Optional.of(english));
             when(stepsRepository.findByLanguage("es"))
@@ -89,29 +92,6 @@ class OnboardingServiceTest {
 
             assertThat(service.getSteps("es")).isEqualTo(spanishSteps);
             verify(stepsRepository).save(fresh);
-        }
-
-        @Test
-        void translatesWhenTranslationIsMissing() {
-            String hash = hasher.hash(englishSteps);
-            when(stepsRepository.findByLanguage("en")).thenReturn(Optional.of(english));
-            when(stepsRepository.findByLanguage("es")).thenReturn(Optional.empty());
-            OnboardingSteps fresh = new OnboardingSteps("steps_es", "es", spanishSteps, hash);
-            when(translationService.translateSteps(english, "es", hash)).thenReturn(fresh);
-
-            assertThat(service.getSteps("es")).isEqualTo(spanishSteps);
-            verify(stepsRepository).save(fresh);
-        }
-
-        @Test
-        void servesEnglishWhenTranslationIsDisabled() {
-            when(translationService.isEnabled()).thenReturn(false);
-            when(stepsRepository.findByLanguage("en")).thenReturn(Optional.of(english));
-            when(stepsRepository.findByLanguage("es")).thenReturn(Optional.empty());
-
-            assertThat(service.getSteps("es")).isEqualTo(englishSteps);
-            verify(translationService, never()).translateSteps(any(), any(), any());
-            verify(stepsRepository, never()).save(any());
         }
 
         @Test
@@ -157,7 +137,7 @@ class OnboardingServiceTest {
         }
 
         @Test
-        void retranslatesWhenTranslationIsStale() {
+        void translatesAndSavesWhenOutdated() {
             String hash = hasher.hash(CohortResponse.from(english));
             Cohort stale = new Cohort("undergraduate_es", CohortLevel.undergraduate, "es",
                     "Vieja", List.of(), null, "old-hash");
@@ -214,7 +194,7 @@ class OnboardingServiceTest {
         }
 
         @Test
-        void translatesWhenTranslationIsMissing() {
+        void translatesAndSavesWhenMissing() {
             String hash = hasher.hash(englishEvents);
             List<InductionEvent> german = List.of(new InductionEvent("Messe", "star", "Klubs", "Los", "https://x"));
             InductionEvents fresh = new InductionEvents("events_de", "de", german, hash);

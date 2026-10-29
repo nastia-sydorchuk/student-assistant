@@ -1,7 +1,7 @@
 package io.github.nastiasydorchuk.studentportal.portal;
 
 import io.github.nastiasydorchuk.studentportal.common.language.LanguageResolver;
-import io.github.nastiasydorchuk.studentportal.portal.api.PortalCardResponse;
+import io.github.nastiasydorchuk.studentportal.portal.domain.PortalCard;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,9 +20,7 @@ public class PortalCardController {
     }
 
     @GetMapping
-    public ResponseEntity<List<PortalCardResponse>> getAllCards(@RequestHeader(name = "Accept-Language", defaultValue = "en") String language) {
-        return ResponseEntity.ok(service.getAllCards(languageResolver.resolve(language)).stream()
-                .map(PortalCardResponse::from)
-                .toList());
+    public ResponseEntity<List<PortalCard>> getAllCards(@RequestHeader(name = "Accept-Language", defaultValue = "en") String language) {
+        return ResponseEntity.ok(service.getAllCards(languageResolver.resolve(language)));
     }
 }

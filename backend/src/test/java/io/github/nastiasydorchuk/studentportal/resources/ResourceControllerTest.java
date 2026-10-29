@@ -39,15 +39,9 @@ class ResourceControllerTest {
 
     @Test
     void returnsCategoryWithoutStorageFields() throws Exception {
-        ResourceCategory category = new ResourceCategory();
-        category.setId("academic_fr");
-        category.setCategoryId("academic");
-        category.setLanguage("fr");
-        category.setSourceHash("hash");
-        category.setCategoryTitle("Académique");
-        category.setDescription("Aide");
-        category.setItems(List.of(new ResourceItem("Bibliothèque", "book", null, null, "https://lib.example.com",
-                null, null, null, null)));
+        ResourceCategory category = new ResourceCategory("academic_fr", "academic", "fr", "Académique", "Aide",
+                List.of(new ResourceItem("Bibliothèque", "book", null, null, "https://lib.example.com",
+                        null, null, null, null)), "hash");
         when(service.getCategory("academic", "fr")).thenReturn(category);
 
         mockMvc.perform(get("/api/resource-categories/academic").header("Accept-Language", "fr-FR"))

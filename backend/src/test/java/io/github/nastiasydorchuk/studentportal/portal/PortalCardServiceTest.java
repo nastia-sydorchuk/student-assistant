@@ -1,131 +1,92 @@
 package io.github.nastiasydorchuk.studentportal.portal;
 
 import io.github.nastiasydorchuk.studentportal.common.error.RecordNotFoundException;
-import io.github.nastiasydorchuk.studentportal.portal.api.PortalCardResponse;
 import io.github.nastiasydorchuk.studentportal.portal.domain.PortalCard;
+import io.github.nastiasydorchuk.studentportal.portal.domain.PortalCards;
 import io.github.nastiasydorchuk.studentportal.translation.SourceHasher;
+import io.github.nastiasydorchuk.studentportal.translation.TranslationCache;
 import io.github.nastiasydorchuk.studentportal.translation.TranslationService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import tools.jackson.databind.json.JsonMapper;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+// The caching rule itself is covered by TranslationCacheTest; these check the portal cards are wired into it
 class PortalCardServiceTest {
 
-    private final PortalCard englishAcademic = new PortalCard("academic_en", "Academic", "/academic", "school", "Study", "academic", "en", null);
-    private final PortalCard englishWellbeing = new PortalCard("wellbeing_en", "Wellbeing", "/wellbeing", "heart", "Support", "wellbeing", "en", null);
-    private final List<PortalCard> english = List.of(englishAcademic, englishWellbeing);
+    private final List<PortalCard> englishCards = List.of(
+            new PortalCard("academic", "Academic", "/academic", "school", "Study"),
+            new PortalCard("wellbeing", "Wellbeing", "/wellbeing", "heart", "Support"));
+    private final PortalCards english = new PortalCards("cards_en", "en", englishCards, null);
+    private final List<PortalCard> spanishCards = List.of(
+            new PortalCard("academic", "Académico", "/academic", "school", "Estudio"),
+            new PortalCard("wellbeing", "Bienestar", "/wellbeing", "heart", "Apoyo"));
 
-    private PortalCardRepository repository;
+    private PortalCardsRepository repository;
     private TranslationService translationService;
-    private SourceHasher hasher;
     private PortalCardService service;
-    private String englishHash;
+    private String hash;
 
     @BeforeEach
     void setUp() {
-        repository = mock(PortalCardRepository.class);
+        repository = mock(PortalCardsRepository.class);
         translationService = mock(TranslationService.class);
         when(translationService.isEnabled()).thenReturn(true);
-        hasher = new SourceHasher(JsonMapper.builder().build());
-        service = new PortalCardService(repository, translationService, hasher);
-        englishHash = hasher.hash(english.stream().map(PortalCardResponse::from).toList());
-    }
-
-    @Test
-    void servesEnglishWhenTranslationIsDisabled() {
-        when(translationService.isEnabled()).thenReturn(false);
-        when(repository.findByLanguageOrderByCardIdAsc("en")).thenReturn(english);
-        when(repository.findByLanguage("es")).thenReturn(List.of());
-        when(repository.findByLanguage("en")).thenReturn(english);
-
-        assertThat(service.getAllCards("es")).isEqualTo(english);
-        verify(translationService, never()).translatePortalCards(any(), any(), any());
-        verify(repository, never()).saveAll(any());
-    }
-
-    private PortalCard spanish(PortalCard card, String hash) {
-        return new PortalCard(card.cardId() + "_es", "es:" + card.title(), card.route(), card.icon(),
-                "es:" + card.description(), card.cardId(), "es", hash);
+        SourceHasher hasher = new SourceHasher(JsonMapper.builder().build());
+        service = new PortalCardService(repository, translationService, new TranslationCache(translationService, hasher));
+        when(repository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+        hash = hasher.hash(englishCards);
     }
 
     @Test
     void returnsEnglishWithoutTranslating() {
-        when(repository.findByLanguage("en")).thenReturn(english);
+        when(repository.findByLanguage("en")).thenReturn(Optional.of(english));
 
-        assertThat(service.getAllCards("en")).isEqualTo(english);
-        verifyNoInteractions(translationService);
-        verify(repository, never()).findByLanguageOrderByCardIdAsc(any());
+        assertThat(service.getAllCards("en")).isEqualTo(englishCards);
+        verify(translationService, never()).translatePortalCards(any(), any(), any());
     }
 
     @Test
-    void throwsWhenEnglishCardsAreMissingForEnglish() {
-        when(repository.findByLanguage("en")).thenReturn(List.of());
+    void throwsWhenEnglishIsMissing() {
+        when(repository.findByLanguage("en")).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> service.getAllCards("en"))
+        assertThatThrownBy(() -> service.getAllCards("es"))
                 .isInstanceOf(RecordNotFoundException.class)
                 .hasMessage("Portal cards not found");
     }
 
     @Test
-    void throwsWhenEnglishSourceIsMissingForTranslation() {
-        when(repository.findByLanguageOrderByCardIdAsc("en")).thenReturn(List.of());
+    void returnsCachedTranslationWhenUpToDate() {
+        when(repository.findByLanguage("en")).thenReturn(Optional.of(english));
+        when(repository.findByLanguage("es")).thenReturn(Optional.of(new PortalCards("cards_es", "es", spanishCards, hash)));
 
-        assertThatThrownBy(() -> service.getAllCards("es"))
-                .isInstanceOf(RecordNotFoundException.class)
-                .hasMessage("English portal cards not found");
-        verifyNoInteractions(translationService);
+        assertThat(service.getAllCards("es")).isEqualTo(spanishCards);
+        verify(translationService, never()).translatePortalCards(any(), any(), any());
+        verify(repository, never()).save(any());
     }
 
     @Test
-    void returnsCachedTranslationWhenAllCardsAreUpToDate() {
-        List<PortalCard> cached = List.of(spanish(englishAcademic, englishHash), spanish(englishWellbeing, englishHash));
-        when(repository.findByLanguageOrderByCardIdAsc("en")).thenReturn(english);
-        when(repository.findByLanguage("es")).thenReturn(cached);
+    void translatesAndSavesWhenOutdated() {
+        PortalCards fresh = new PortalCards("cards_es", "es", spanishCards, hash);
+        when(repository.findByLanguage("en")).thenReturn(Optional.of(english));
+        when(repository.findByLanguage("es")).thenReturn(Optional.of(new PortalCards("cards_es", "es", List.of(), "old-hash")));
+        when(translationService.translatePortalCards(english, "es", hash)).thenReturn(fresh);
 
-        assertThat(service.getAllCards("es")).isEqualTo(cached);
-        verifyNoInteractions(translationService);
-        verify(repository, never()).deleteAll(any());
-        verify(repository, never()).saveAll(any());
+        assertThat(service.getAllCards("es")).isEqualTo(spanishCards);
+        verify(repository).save(fresh);
     }
 
     @Test
-    void replacesTranslationWhenAnyCardIsStale() {
-        List<PortalCard> stale = List.of(spanish(englishAcademic, englishHash), spanish(englishWellbeing, "old-hash"));
-        List<PortalCard> fresh = List.of(spanish(englishAcademic, englishHash), spanish(englishWellbeing, englishHash));
-        when(repository.findByLanguageOrderByCardIdAsc("en")).thenReturn(english);
-        when(repository.findByLanguage("es")).thenReturn(stale, fresh);
-        when(translationService.translatePortalCards(english, "es", englishHash)).thenReturn(fresh);
+    void returnsEmptyListForNullCards() {
+        when(repository.findByLanguage("en")).thenReturn(Optional.of(new PortalCards("cards_en", "en", null, null)));
 
-        assertThat(service.getAllCards("es")).isEqualTo(fresh);
-        var inOrder = inOrder(repository);
-        inOrder.verify(repository).deleteAll(stale);
-        inOrder.verify(repository).saveAll(fresh);
-    }
-
-    @Test
-    void translatesWhenTranslationIsMissing() {
-        List<PortalCard> fresh = List.of(spanish(englishAcademic, englishHash), spanish(englishWellbeing, englishHash));
-        when(repository.findByLanguageOrderByCardIdAsc("en")).thenReturn(english);
-        when(repository.findByLanguage("es")).thenReturn(List.of(), fresh);
-        when(translationService.translatePortalCards(english, "es", englishHash)).thenReturn(fresh);
-
-        assertThat(service.getAllCards("es")).isEqualTo(fresh);
-        verify(repository).saveAll(fresh);
-    }
-
-    @Test
-    void storageFieldsDoNotAffectTheHash() {
-        List<PortalCard> sameContent = List.of(
-                new PortalCard("other", "Academic", "/academic", "school", "Study", "academic", "xx", "h"),
-                new PortalCard("other2", "Wellbeing", "/wellbeing", "heart", "Support", "wellbeing", "xx", "h"));
-
-        assertThat(hasher.hash(sameContent.stream().map(PortalCardResponse::from).toList())).isEqualTo(englishHash);
+        assertThat(service.getAllCards("en")).isEmpty();
     }
 }

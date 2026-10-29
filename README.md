@@ -119,7 +119,7 @@ npm start                          # http://localhost:4200, proxies /api to the 
 
 ## Tests
 
-243 automated tests: JUnit 108, pytest 57, Vitest 78. The LLM, vector store, Translate API and
+247 automated tests: JUnit 112, pytest 57, Vitest 78. The LLM, vector store, Translate API and
 network are faked, so every suite runs offline with no API keys.
 
 From the repository root:

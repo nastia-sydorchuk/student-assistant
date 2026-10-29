@@ -4,6 +4,7 @@ import com.google.cloud.translate.Translate;
 import com.google.cloud.translate.Translation;
 import io.github.nastiasydorchuk.studentportal.onboarding.domain.*;
 import io.github.nastiasydorchuk.studentportal.portal.domain.PortalCard;
+import io.github.nastiasydorchuk.studentportal.portal.domain.PortalCards;
 import io.github.nastiasydorchuk.studentportal.resources.domain.ResourceItem;
 import io.github.nastiasydorchuk.studentportal.resources.domain.ResourceCategory;
 import org.springframework.stereotype.Service;
@@ -25,29 +26,29 @@ public class TranslationService {
     }
 
     // Only display text is translated; URLs, icons, locations and contacts are copied unchanged
-    public ResourceCategory translateCategory(ResourceCategory englishCategory, String targetLanguage) {
-        ResourceCategory localizedCategory = new ResourceCategory();
-        localizedCategory.setId(englishCategory.getCategoryId() + "_" + targetLanguage); // e.g. "academic_es"
-        localizedCategory.setCategoryId(englishCategory.getCategoryId());
-        localizedCategory.setLanguage(targetLanguage);
-        localizedCategory.setCategoryTitle(translateText(englishCategory.getCategoryTitle(), targetLanguage));
-        localizedCategory.setDescription(translateText(englishCategory.getDescription(), targetLanguage));
+    public ResourceCategory translateCategory(ResourceCategory source, String lang, String sourceHash) {
+        List<ResourceItem> items = source.items() != null
+                ? source.items().stream().map(item -> new ResourceItem(
+                        translateText(item.title(), lang),
+                        item.icon(),
+                        translateText(item.description(), lang),
+                        translateText(item.actionText(), lang),
+                        item.url(),
+                        translateText(item.label(), lang),
+                        item.badgeClass(),
+                        item.location(),
+                        item.contact()
+                )).toList()
+                : null;
 
-        if (englishCategory.getItems() != null) {
-            localizedCategory.setItems(englishCategory.getItems().stream().map(item -> new ResourceItem(
-                    translateText(item.title(), targetLanguage),
-                    item.icon(),
-                    translateText(item.description(), targetLanguage),
-                    translateText(item.actionText(), targetLanguage),
-                    item.url(),
-                    translateText(item.label(), targetLanguage),
-                    item.badgeClass(),
-                    item.location(),
-                    item.contact()
-            )).toList());
-        }
-
-        return localizedCategory;
+        return new ResourceCategory(
+                source.categoryId() + "_" + lang, // e.g., "academic_es"
+                source.categoryId(),
+                lang,
+                translateText(source.categoryTitle(), lang),
+                translateText(source.description(), lang),
+                items,
+                sourceHash);
     }
 
     // Null and empty strings are returned as-is, without an API call
@@ -64,20 +65,19 @@ public class TranslationService {
         return translation.getTranslatedText();
     }
 
-    public List<PortalCard> translatePortalCards(List<PortalCard> englishCards, String targetLanguage, String sourceHash) {
-        if (englishCards == null) return List.of();
+    public PortalCards translatePortalCards(PortalCards source, String lang, String sourceHash) {
+        // Card ids, routes and icons are identifiers, so only the display text is translated
+        List<PortalCard> cards = source.cards() != null
+                ? source.cards().stream().map(card -> new PortalCard(
+                        card.cardId(),
+                        translateText(card.title(), lang),
+                        card.route(),
+                        card.icon(),
+                        translateText(card.description(), lang)
+                )).toList()
+                : null;
 
-        // Routes and icons are identifiers, so only the display text is translated
-        return englishCards.stream().map(card -> new PortalCard(
-                card.cardId() + "_" + targetLanguage, // e.g., "academic_es"
-                translateText(card.title(), targetLanguage),
-                card.route(),
-                card.icon(),
-                translateText(card.description(), targetLanguage),
-                card.cardId(),
-                targetLanguage,
-                sourceHash
-        )).toList();
+        return new PortalCards("cards_" + lang, lang, cards, sourceHash);
     }
 
     public OnboardingSteps translateSteps(OnboardingSteps source, String lang, String sourceHash) {
