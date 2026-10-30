@@ -4,7 +4,7 @@ import { LoadState } from '../../components/load-state/load-state';
 import { Map } from '../../components/map/map';
 import { CommonModule, ViewportScroller } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
-import { ResourceCategoryPage } from '../resource-category-page';
+import { ResourceCategoryPage } from '../shared/resource-category-page';
 
 @Component({
   selector: 'app-facilities',

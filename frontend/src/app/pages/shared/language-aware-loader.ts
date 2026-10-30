@@ -1,7 +1,7 @@
 import { DestroyRef, Signal, WritableSignal, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { EMPTY, Observable, catchError, combineLatest, of, switchMap, tap } from 'rxjs';
-import { LanguageService } from '../services/language.service';
+import { LanguageService } from '../../services/language.service';
 
 // Loads one piece of page data and reloads it whenever the language changes (the API answers
 // in the language of the request).

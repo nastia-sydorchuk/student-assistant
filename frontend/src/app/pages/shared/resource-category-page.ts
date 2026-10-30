@@ -1,6 +1,6 @@
 import { Directive, OnInit, inject } from '@angular/core';
-import { ResourceCategory } from '../models/resources.model';
-import { ApiService } from '../services/api.service';
+import { ResourceCategory } from '../../models/resources.model';
+import { ApiService } from '../../services/api.service';
 import { LanguageAwareLoader } from './language-aware-loader';
 
 @Directive()

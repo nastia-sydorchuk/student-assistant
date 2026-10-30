@@ -4,7 +4,7 @@ import { ApiService } from '../../services/api.service';
 import { RouterLink, RouterModule } from '@angular/router';
 import { PortalCard } from '../../models/portal-card.model';
 import { TranslateModule } from '@ngx-translate/core';
-import { LanguageAwareLoader } from '../language-aware-loader';
+import { LanguageAwareLoader } from '../shared/language-aware-loader';
 
 @Component({
   selector: 'app-landing',

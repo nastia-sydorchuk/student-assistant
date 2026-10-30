@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 import { PageHeader } from '../../components/page-header/page-header';
 import { LoadState } from '../../components/load-state/load-state';
 import { TranslateModule } from '@ngx-translate/core';
-import { ResourceCategoryPage } from '../resource-category-page';
+import { ResourceCategoryPage } from '../shared/resource-category-page';
 import { SmartLinkDirective } from '../../directives/smart-link.directive';
 
 @Component({

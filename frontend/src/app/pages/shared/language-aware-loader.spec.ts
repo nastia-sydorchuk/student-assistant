@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { BehaviorSubject, Subject, of, throwError } from 'rxjs';
 
 import { LanguageAwareLoader, combinedState } from './language-aware-loader';
-import { LanguageService } from '../services/language.service';
+import { LanguageService } from '../../services/language.service';
 
 describe('LanguageAwareLoader', () => {
   let currentLanguage$: BehaviorSubject<string>;

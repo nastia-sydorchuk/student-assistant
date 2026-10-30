@@ -7,7 +7,7 @@ import { CommonModule } from '@angular/common';
 import { ResourceCategory } from '../../models/resources.model';
 import { TranslateModule } from '@ngx-translate/core';
 import { SmartLinkDirective } from '../../directives/smart-link.directive';
-import { LanguageAwareLoader, combinedState } from '../language-aware-loader';
+import { LanguageAwareLoader, combinedState } from '../shared/language-aware-loader';
 
 @Component({
   selector: 'app-registration',

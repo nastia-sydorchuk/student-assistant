@@ -5,7 +5,7 @@ import { LevelData } from '../../models/welcome.model';
 import { ApiService } from '../../services/api.service';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
-import { LanguageAwareLoader } from '../language-aware-loader';
+import { LanguageAwareLoader } from '../shared/language-aware-loader';
 import { PageHeader } from '../../components/page-header/page-header';
 
 @Component({
