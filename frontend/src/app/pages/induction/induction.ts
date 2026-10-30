@@ -1,7 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { ApiService } from '../../services/api.service';
 import { InductionEvent } from '../../models/welcome.model';
-import { RouterLink } from '@angular/router';
+import { PageHeader } from '../../components/page-header/page-header';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { SmartLinkDirective } from '../../directives/smart-link.directive';
@@ -9,7 +9,7 @@ import { LanguageAwareLoader } from '../language-aware-loader';
 
 @Component({
   selector: 'app-induction',
-  imports: [RouterLink, CommonModule, TranslateModule, SmartLinkDirective],
+  imports: [PageHeader, CommonModule, TranslateModule, SmartLinkDirective],
   templateUrl: './induction.html',
   styleUrl: './induction.css',
 })

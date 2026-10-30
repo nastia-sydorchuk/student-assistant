@@ -1,7 +1,8 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { Step } from '../../models/welcome.model';
 import { ApiService } from '../../services/api.service';
-import { RouterLink } from '@angular/router';
+import { PageHeader } from '../../components/page-header/page-header';
+import { LoadState } from '../../components/load-state/load-state';
 import { CommonModule } from '@angular/common';
 import { ResourceCategory } from '../../models/resources.model';
 import { TranslateModule } from '@ngx-translate/core';
@@ -10,7 +11,7 @@ import { LanguageAwareLoader, combinedState } from '../language-aware-loader';
 
 @Component({
   selector: 'app-registration',
-  imports: [RouterLink, CommonModule, TranslateModule, SmartLinkDirective],
+  imports: [PageHeader, LoadState, CommonModule, TranslateModule, SmartLinkDirective],
   templateUrl: './registration.html',
   styleUrl: './registration.css',
 })

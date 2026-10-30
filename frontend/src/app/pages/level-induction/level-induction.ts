@@ -6,10 +6,11 @@ import { ApiService } from '../../services/api.service';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { LanguageAwareLoader } from '../language-aware-loader';
+import { PageHeader } from '../../components/page-header/page-header';
 
 @Component({
   selector: 'app-level-induction',
-  imports: [RouterModule, CommonModule, TranslateModule],
+  imports: [PageHeader, RouterModule, CommonModule, TranslateModule],
   templateUrl: './level-induction.html',
   styleUrl: './level-induction.css',
 })

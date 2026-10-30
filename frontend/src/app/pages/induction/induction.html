@@ -1,13 +1,8 @@
-<div class="bg-primary text-white p-4 p-md-5 mb-5 shadow-sm">
-  <div class="container">
-    <a routerLink="/registration" class="text-white-50 text-decoration-none d-inline-flex align-items-center mb-4 fw-semibold back-link">
-      <span class="material-icons me-2 fs-5">arrow_back</span> {{ 'INDUCTION.BACK_TO_REGISTRATION' | translate }}
-    </a>
-    
-    <h1 class="display-5 fw-bold mb-2">{{ 'INDUCTION.TITLE' | translate }}</h1>
-    <p class="lead mb-0">{{ 'INDUCTION.SUBTITLE' | translate }}</p>
-  </div>
-</div>
+<app-page-header
+  [title]="'INDUCTION.TITLE' | translate"
+  [description]="'INDUCTION.SUBTITLE' | translate"
+  backLink="/registration"
+  backLabel="INDUCTION.BACK_TO_REGISTRATION" />
 
 <main class="container mb-5">
   

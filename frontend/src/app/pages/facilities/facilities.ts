@@ -1,5 +1,6 @@
 import { Component, inject } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { PageHeader } from '../../components/page-header/page-header';
+import { LoadState } from '../../components/load-state/load-state';
 import { Map } from '../../components/map/map';
 import { CommonModule, ViewportScroller } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
@@ -7,7 +8,7 @@ import { ResourceCategoryPage } from '../resource-category-page';
 
 @Component({
   selector: 'app-facilities',
-  imports: [RouterLink, Map, CommonModule, TranslateModule],
+  imports: [PageHeader, LoadState, Map, CommonModule, TranslateModule],
   templateUrl: './facilities.html',
   styleUrl: './facilities.css',
 })

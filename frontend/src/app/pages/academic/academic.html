@@ -1,31 +1,7 @@
-@if (isLoading()) {
-  <div class="container mt-5 text-center">
-    <div class="spinner-border text-primary" role="status">
-      <span class="visually-hidden">{{ 'COMMON.LOADING' | translate }}</span>
-    </div>
-  </div>
-}
-
-@if (errorMessage()) {
-  <div class="container mt-5">
-    <div class="alert alert-danger" role="alert">
-      {{ errorMessage() | translate }}
-    </div>
-  </div>
-}
+<app-load-state [isLoading]="isLoading()" [error]="errorMessage()" />
 
 @if (resources(); as res) {
-<div>
-
-  <div class="bg-primary text-white p-4 p-md-5 mb-5 shadow-sm">
-    <div class="container">
-      <a routerLink="/" class="text-white-50 text-decoration-none d-inline-flex align-items-center mb-4 fw-semibold back-link">
-        <span class="material-icons me-2 fs-5">arrow_back</span> {{ 'COMMON.NAV' | translate }}
-      </a>
-      <h1 class="display-5 fw-bold mb-2">{{ res.categoryTitle }}</h1>
-      <p class="lead mb-0">{{ res.description }}</p>
-    </div>
-  </div>
+  <app-page-header [title]="res.categoryTitle" [description]="res.description" />
 
   <main class="container mb-5">
     <div class="row g-4">
@@ -59,5 +35,4 @@
       }
     </div>
   </main>
-</div>
 }

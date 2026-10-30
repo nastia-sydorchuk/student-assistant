@@ -22,18 +22,11 @@
 }
 
 @else if (pageData(); as data) {
-  <div class="bg-primary text-white p-4 p-md-5 mb-5 shadow-sm">
-    <div class="container">
-      <a routerLink="/induction" class="text-white-50 text-decoration-none d-inline-flex align-items-center mb-4 fw-semibold back-link">
-        <span class="material-icons me-2 fs-5">arrow_back</span> {{ 'INDUCTION.BACK' | translate }}
-      </a>
-      
-      <div class="d-flex align-items-center gap-3 mb-2">
-        <span class="badge bg-light text-primary fs-6 text-capitalize">{{ data.level }}</span>
-      </div>
-      <h1 class="display-5 fw-bold mb-0">{{ data.title }}</h1>
+  <app-page-header [title]="data.title" backLink="/induction" backLabel="INDUCTION.BACK">
+    <div class="d-flex align-items-center gap-3 mb-2">
+      <span class="badge bg-light text-primary fs-6 text-capitalize">{{ data.level }}</span>
     </div>
-  </div>
+  </app-page-header>
 
   <main class="container mb-5">
     <div class="row g-5">
