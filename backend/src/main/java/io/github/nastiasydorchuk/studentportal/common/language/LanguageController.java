@@ -1,6 +1,5 @@
 package io.github.nastiasydorchuk.studentportal.common.language;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,10 +21,10 @@ public class LanguageController {
     }
 
     @GetMapping
-    public ResponseEntity<List<LanguageOption>> getSupportedLanguages() {
-        return ResponseEntity.ok(languageResolver.getSupportedLanguages().stream()
+    public List<LanguageOption> getSupportedLanguages() {
+        return languageResolver.getSupportedLanguages().stream()
                 .map(code -> new LanguageOption(code, nativeName(code)))
-                .toList());
+                .toList();
     }
 
     // Falls back to the code itself if the JDK has no name for it.

@@ -41,7 +41,7 @@ class GlobalExceptionHandlerTest {
 
     @Test
     void constraintViolationsAreListedPerProperty() throws Exception {
-        var violations = Validation.buildDefaultValidatorFactory().getValidator().validate(new ChatRequest());
+        var violations = Validation.buildDefaultValidatorFactory().getValidator().validate(new ChatRequest(null, null, null));
         when(service.getAllCards("en")).thenThrow(new ConstraintViolationException(violations));
 
         mockMvc.perform(get("/api/portal-cards"))

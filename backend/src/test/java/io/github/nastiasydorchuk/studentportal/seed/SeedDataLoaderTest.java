@@ -1,4 +1,4 @@
-package io.github.nastiasydorchuk.studentportal.config;
+package io.github.nastiasydorchuk.studentportal.seed;
 
 import org.bson.Document;
 import org.junit.jupiter.api.Test;

@@ -48,7 +48,7 @@ class ResourceServiceTest {
     void returnsEnglishWithoutTranslating() {
         when(repository.findByCategoryIdAndLanguage("academic", "en")).thenReturn(Optional.of(english));
 
-        assertThat(service.getCategory("academic", "en")).isSameAs(english);
+        assertThat(service.getCategory("academic", "en")).isEqualTo(ResourceCategoryResponse.from(english));
         verify(translationService, never()).translateCategory(any(), any(), any());
     }
 
@@ -68,7 +68,7 @@ class ResourceServiceTest {
         when(repository.findByCategoryIdAndLanguage("academic", "en")).thenReturn(Optional.of(english));
         when(repository.findByCategoryIdAndLanguage("academic", "es")).thenReturn(Optional.of(spanish));
 
-        assertThat(service.getCategory("academic", "es")).isSameAs(spanish);
+        assertThat(service.getCategory("academic", "es")).isEqualTo(ResourceCategoryResponse.from(spanish));
         verify(translationService, never()).translateCategory(any(), any(), any());
         verify(repository, never()).save(any());
     }
@@ -82,7 +82,7 @@ class ResourceServiceTest {
                 .thenReturn(Optional.of(category("academic", "es", "Viejo", "old-hash")));
         when(translationService.translateCategory(english, "es", hash)).thenReturn(fresh);
 
-        assertThat(service.getCategory("academic", "es")).isSameAs(fresh);
+        assertThat(service.getCategory("academic", "es")).isEqualTo(ResourceCategoryResponse.from(fresh));
         verify(repository).save(fresh);
     }
 

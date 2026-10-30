@@ -20,7 +20,7 @@ public class ChatController {
 
     @PostMapping
     public ChatResponse chat(@Valid @RequestBody ChatRequest request) {
-        logger.debug("Received chat query: {}", request.getQuery());
+        logger.debug("Received chat query: {}", request.query());
         return chatService.chat(request);
     }
 }

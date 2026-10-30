@@ -4,7 +4,6 @@ import io.github.nastiasydorchuk.studentportal.chat.api.ChatRequest;
 import io.github.nastiasydorchuk.studentportal.chat.api.ChatResponse;
 import io.github.nastiasydorchuk.studentportal.common.error.UpstreamUnavailableException;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.http.MediaType;
@@ -14,7 +13,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.List;
 import java.util.UUID;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -49,11 +47,7 @@ class ChatControllerTest {
                 .andExpect(jsonPath("$.answer").value("In September."))
                 .andExpect(jsonPath("$.sources[0]").value("https://hw.ac.uk/enrol"));
 
-        ArgumentCaptor<ChatRequest> captor = ArgumentCaptor.forClass(ChatRequest.class);
-        verify(chatService).chat(captor.capture());
-        assertThat(captor.getValue().getQuery()).isEqualTo("When is enrolment?");
-        assertThat(captor.getValue().getSessionId()).isEqualTo(SESSION_ID);
-        assertThat(captor.getValue().getBotGreeting()).isEqualTo("Hi!");
+        verify(chatService).chat(new ChatRequest("When is enrolment?", SESSION_ID, "Hi!"));
     }
 
     @Test

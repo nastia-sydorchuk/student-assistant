@@ -1,6 +1,5 @@
 package io.github.nastiasydorchuk.studentportal.config;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
@@ -11,8 +10,8 @@ public class CorsConfig {
 
     private final String[] allowedOrigins;
 
-    public CorsConfig(@Value("${app.cors.allowed-origins}") String[] allowedOrigins) {
-        this.allowedOrigins = allowedOrigins;
+    public CorsConfig(AppProperties properties) {
+        this.allowedOrigins = properties.cors().allowedOrigins().toArray(String[]::new);
     }
 
     @Bean

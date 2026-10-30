@@ -1,16 +1,23 @@
 package io.github.nastiasydorchuk.studentportal.common.language;
 
 import io.github.nastiasydorchuk.studentportal.common.error.UnsupportedLanguageException;
+import io.github.nastiasydorchuk.studentportal.config.AppProperties;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class LanguageResolverTest {
 
-    private final LanguageResolver resolver = new LanguageResolver("en,es,fr,de");
+    private final LanguageResolver resolver = resolver("en", "es", "fr", "de");
+
+    private static LanguageResolver resolver(String... languages) {
+        return new LanguageResolver(new AppProperties(List.of(languages), null, null));
+    }
 
     @ParameterizedTest
     @CsvSource(delimiter = '|', value = {
@@ -48,7 +55,7 @@ class LanguageResolverTest {
 
     @Test
     void normalizesTheConfiguredList() {
-        LanguageResolver messy = new LanguageResolver(" en , ES ,,fr ");
+        LanguageResolver messy = resolver(" en ", " ES ", "", "fr ");
 
         assertThat(messy.getSupportedLanguages()).containsExactly("en", "es", "fr");
     }

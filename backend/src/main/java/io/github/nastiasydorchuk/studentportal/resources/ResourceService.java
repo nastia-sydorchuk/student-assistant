@@ -21,14 +21,15 @@ public class ResourceService {
         this.translations = translations;
     }
 
-    public ResourceCategory getCategory(String categoryId, String language) {
+    public ResourceCategoryResponse getCategory(String categoryId, String language) {
         ResourceCategory english = repository.findByCategoryIdAndLanguage(categoryId, "en")
                 .orElseThrow(() -> new RecordNotFoundException("Resource category not found: " + categoryId));
 
-        return translations.localize(language, english, ResourceCategoryResponse.from(english),
+        ResourceCategory result = translations.localize(language, english, ResourceCategoryResponse.from(english),
                 lang -> repository.findByCategoryIdAndLanguage(categoryId, lang), ResourceCategory::sourceHash,
                 // Same id as a stale copy, so saving overwrites it
                 (en, hash) -> repository.save(translationService.translateCategory(en, language, hash)));
+        return ResourceCategoryResponse.from(result);
     }
 
     public List<String> listCategoryIds() {

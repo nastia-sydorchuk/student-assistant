@@ -3,6 +3,7 @@ package io.github.nastiasydorchuk.studentportal.chat;
 import io.github.nastiasydorchuk.studentportal.chat.api.ChatRequest;
 import io.github.nastiasydorchuk.studentportal.chat.api.ChatResponse;
 import io.github.nastiasydorchuk.studentportal.common.error.UpstreamUnavailableException;
+import io.github.nastiasydorchuk.studentportal.config.AppProperties;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -11,6 +12,7 @@ import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.web.client.RestClient;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -28,15 +30,11 @@ class ChatServiceTest {
     private ChatService service(String apiKey) {
         RestClient.Builder builder = RestClient.builder();
         server = MockRestServiceServer.bindTo(builder).build();
-        return new ChatService(builder, RAG_URL, apiKey);
+        return new ChatService(builder, new AppProperties(null, new AppProperties.Rag(RAG_URL, apiKey), null));
     }
 
     private static ChatRequest request() {
-        ChatRequest request = new ChatRequest();
-        request.setQuery("When is enrolment?");
-        request.setSessionId(SESSION_ID);
-        request.setBotGreeting("Hi!");
-        return request;
+        return new ChatRequest("When is enrolment?", SESSION_ID, "Hi!");
     }
 
     @Test
@@ -56,8 +54,7 @@ class ChatServiceTest {
 
         ChatResponse response = service.chat(request());
 
-        assertThat(response.getAnswer()).isEqualTo("In September.");
-        assertThat(response.getSources()).containsExactly("https://hw.ac.uk/enrol");
+        assertThat(response).isEqualTo(new ChatResponse("In September.", List.of("https://hw.ac.uk/enrol")));
         server.verify();
     }
 

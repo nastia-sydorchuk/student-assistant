@@ -7,37 +7,13 @@ import jakarta.validation.constraints.Size;
 
 import java.util.UUID;
 
-public class ChatRequest {
+// Serializes to exactly the RAG service's request schema
+public record ChatRequest(
+        // Same limit as the RAG service, so an overlong query fails here with a clear 400
+        @NotBlank @Size(max = 1000) String query,
 
-    // Same limit as the RAG service, so an overlong query fails here with a clear 400
-    @NotBlank
-    @Size(max = 1000)
-    private String query;
+        // Typed as UUID so a malformed id is rejected here with a 400, not by the RAG service downstream
+        @NotNull @JsonProperty("session_id") UUID sessionId,
 
-    // Typed as UUID so a malformed id is rejected here with a 400, not by the RAG service downstream
-    @NotNull
-    @JsonProperty("session_id")
-    private UUID sessionId;
-
-    @JsonProperty("bot_greeting")
-    private String botGreeting;
-
-    public String getQuery() {
-        return query;
-    }
-
-    public void setQuery(String query) {
-        this.query = query;
-    }
-
-    public UUID getSessionId() {
-        return sessionId;
-    }
-
-    public void setSessionId(UUID sessionId) {
-        this.sessionId = sessionId;
-    }
-
-    public String getBotGreeting() { return botGreeting; }
-    public void setBotGreeting(String botGreeting) { this.botGreeting = botGreeting; }
-}
+        @JsonProperty("bot_greeting") String botGreeting
+) {}

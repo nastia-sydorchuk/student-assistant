@@ -2,7 +2,6 @@ package io.github.nastiasydorchuk.studentportal.resources;
 
 import io.github.nastiasydorchuk.studentportal.common.language.LanguageResolver;
 import io.github.nastiasydorchuk.studentportal.resources.api.ResourceCategoryResponse;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,12 +19,12 @@ public class ResourceController {
     }
 
     @GetMapping
-    public ResponseEntity<List<String>> listCategoryIds() {
-        return ResponseEntity.ok(service.listCategoryIds());
+    public List<String> listCategoryIds() {
+        return service.listCategoryIds();
     }
 
     @GetMapping("/{categoryId}")
-    public ResponseEntity<ResourceCategoryResponse> getCategory(@PathVariable String categoryId, @RequestHeader(name = "Accept-Language", defaultValue = "en") String language) {
-        return ResponseEntity.ok(ResourceCategoryResponse.from(service.getCategory(categoryId, languageResolver.resolve(language))));
+    public ResourceCategoryResponse getCategory(@PathVariable String categoryId, @RequestHeader(name = "Accept-Language", defaultValue = "en") String language) {
+        return service.getCategory(categoryId, languageResolver.resolve(language));
     }
 }

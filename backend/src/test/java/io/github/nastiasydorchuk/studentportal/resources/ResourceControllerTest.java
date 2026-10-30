@@ -2,7 +2,7 @@ package io.github.nastiasydorchuk.studentportal.resources;
 
 import io.github.nastiasydorchuk.studentportal.common.error.RecordNotFoundException;
 import io.github.nastiasydorchuk.studentportal.common.language.LanguageResolver;
-import io.github.nastiasydorchuk.studentportal.resources.domain.ResourceCategory;
+import io.github.nastiasydorchuk.studentportal.resources.api.ResourceCategoryResponse;
 import io.github.nastiasydorchuk.studentportal.resources.domain.ResourceItem;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,10 +38,10 @@ class ResourceControllerTest {
     }
 
     @Test
-    void returnsCategoryWithoutStorageFields() throws Exception {
-        ResourceCategory category = new ResourceCategory("academic_fr", "academic", "fr", "Académique", "Aide",
+    void returnsCategoryInTheResolvedLanguage() throws Exception {
+        ResourceCategoryResponse category = new ResourceCategoryResponse("academic", "Académique", "Aide",
                 List.of(new ResourceItem("Bibliothèque", "book", null, null, "https://lib.example.com",
-                        null, null, null, null)), "hash");
+                        null, null, null, null)));
         when(service.getCategory("academic", "fr")).thenReturn(category);
 
         mockMvc.perform(get("/api/resource-categories/academic").header("Accept-Language", "fr-FR"))
@@ -50,10 +50,7 @@ class ResourceControllerTest {
                 .andExpect(jsonPath("$.categoryTitle").value("Académique"))
                 .andExpect(jsonPath("$.items[0].title").value("Bibliothèque"))
                 .andExpect(jsonPath("$.items[0].url").value("https://lib.example.com"))
-                .andExpect(jsonPath("$.items[0].label").doesNotExist())
-                .andExpect(jsonPath("$.id").doesNotExist())
-                .andExpect(jsonPath("$.language").doesNotExist())
-                .andExpect(jsonPath("$.sourceHash").doesNotExist());
+                .andExpect(jsonPath("$.items[0].label").doesNotExist());
     }
 
     @Test

@@ -1,10 +1,9 @@
 package io.github.nastiasydorchuk.studentportal.common.language;
 
 import io.github.nastiasydorchuk.studentportal.common.error.UnsupportedLanguageException;
-import org.springframework.beans.factory.annotation.Value;
+import io.github.nastiasydorchuk.studentportal.config.AppProperties;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -17,8 +16,8 @@ public class LanguageResolver {
 
     private final List<String> supportedLanguages;
 
-    public LanguageResolver(@Value("${app.supported-languages}") String supportedLanguages) {
-        this.supportedLanguages = Arrays.stream(supportedLanguages.split(","))
+    public LanguageResolver(AppProperties properties) {
+        this.supportedLanguages = properties.supportedLanguages().stream()
                 .map(String::trim)
                 .map(code -> code.toLowerCase(Locale.ROOT))
                 .filter(code -> !code.isEmpty())
