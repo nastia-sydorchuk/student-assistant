@@ -1,9 +1,11 @@
 import logging
+from contextlib import asynccontextmanager
 from typing import Annotated
 from uuid import UUID
 
-from fastapi import Depends, FastAPI, Header, HTTPException
+from fastapi import Depends, FastAPI, Header, HTTPException, Request
 from langchain_core.messages import AIMessage
+from langchain_core.runnables import Runnable
 from pydantic import BaseModel, StringConstraints
 
 from .chains import RagAnswer, build_conversational_chain
@@ -15,15 +17,28 @@ from .sessions import TTLSessionStore
 configure_logging()
 logger = logging.getLogger(__name__)
 
-app = FastAPI(title="HW Student Assistant RAG API")
 
-contacts = load_contacts()
-vectorstore = load_vectorstore()
-session_store = TTLSessionStore(
-    ttl_seconds=settings.session_ttl_seconds,
-    max_messages=settings.max_history_messages,
-)
-conversational_rag_chain = build_conversational_chain(vectorstore, contacts, session_store.get)
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Runs once before the server accepts requests; a missing or empty vector store stops startup here
+    session_store = TTLSessionStore(
+        ttl_seconds=settings.session_ttl_seconds,
+        max_messages=settings.max_history_messages,
+    )
+    app.state.session_store = session_store
+    app.state.chain = build_conversational_chain(load_vectorstore(), load_contacts(), session_store.get)
+    yield
+
+
+app = FastAPI(title="HW Student Assistant RAG API", lifespan=lifespan)
+
+
+def get_chain(request: Request) -> Runnable:
+    return request.app.state.chain
+
+
+def get_session_store(request: Request) -> TTLSessionStore:
+    return request.app.state.session_store
 
 
 def verify_api_key(x_api_key: str | None = Header(default=None)) -> None:
@@ -49,7 +64,11 @@ async def health() -> dict:
 
 
 @app.post("/rag-query", response_model=QueryResponse, dependencies=[Depends(verify_api_key)])
-async def query_rag(request: QueryRequest) -> QueryResponse:
+async def query_rag(
+    request: QueryRequest,
+    chain: Annotated[Runnable, Depends(get_chain)],
+    session_store: Annotated[TTLSessionStore, Depends(get_session_store)],
+) -> QueryResponse:
     session_id = str(request.session_id)
     history = session_store.get(session_id)
 
@@ -57,7 +76,7 @@ async def query_rag(request: QueryRequest) -> QueryResponse:
         history.add_message(AIMessage(content=request.bot_greeting))
 
     try:
-        response = await conversational_rag_chain.ainvoke(
+        response = await chain.ainvoke(
             {"input": request.query},
             config={"configurable": {"session_id": session_id}},
         )

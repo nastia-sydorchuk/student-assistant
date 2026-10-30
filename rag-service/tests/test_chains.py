@@ -69,6 +69,22 @@ def test_format_docs_empty():
     assert _format_docs([]) == ""
 
 
+def test_domain_filter_allows_exactly_the_contact_domains(monkeypatch):
+    captured = {}
+
+    def from_llm(**kwargs):
+        captured.update(kwargs)
+        return FakeRetriever(docs=DOCS)
+
+    monkeypatch.setattr(chains, "ChatGoogleGenerativeAI", lambda **_: FakeLLM(responses=[]))
+    monkeypatch.setattr(chains.SelfQueryRetriever, "from_llm", from_llm)
+
+    build_conversational_chain(vectorstore=None, contacts=CONTACTS, get_session_history=lambda _: None)
+
+    description = captured["metadata_field_info"][0].description
+    assert "one of these exact strings: ['it_support', 'health_wellbeing']" in description
+
+
 def test_chain_returns_structured_result_and_raw_docs(chain_parts):
     chain, _, _ = chain_parts
 

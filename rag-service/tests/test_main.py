@@ -1,5 +1,3 @@
-import importlib
-import sys
 from uuid import uuid4
 
 import pytest
@@ -7,9 +5,10 @@ from fastapi.testclient import TestClient
 from langchain_core.documents import Document
 from langchain_core.messages import AIMessage
 
-from app import chains, ingestion
+from app import main
 from app.chains import RagAnswer
 from app.config import settings
+from app.main import app, get_chain, get_session_store
 from app.sessions import TTLSessionStore
 
 
@@ -26,30 +25,59 @@ class FakeChain:
         return self.response
 
 
-@pytest.fixture(scope="module")
-def main_module():
-    # app.main loads the vector store and builds the chain at import time, so
-    # stub both out before importing it.
-    with pytest.MonkeyPatch.context() as mp:
-        mp.setattr(ingestion, "load_vectorstore", lambda: None)
-        mp.setattr(chains, "build_conversational_chain", lambda *_: None)
-        sys.modules.pop("app.main", None)
-        yield importlib.import_module("app.main")
-    sys.modules.pop("app.main", None)
-
-
 @pytest.fixture
-def fake_chain(main_module, monkeypatch):
-    chain = FakeChain()
-    monkeypatch.setattr(main_module, "conversational_rag_chain", chain)
-    monkeypatch.setattr(main_module, "session_store", TTLSessionStore(ttl_seconds=60, max_messages=10))
+def fake_chain(monkeypatch):
     monkeypatch.setattr(settings, "api_auth_key", None)
-    return chain
+    return FakeChain()
 
 
 @pytest.fixture
-def client(main_module, fake_chain):
-    return TestClient(main_module.app)
+def session_store():
+    return TTLSessionStore(ttl_seconds=60, max_messages=10)
+
+
+@pytest.fixture
+def client(fake_chain, session_store):
+    # Without "with", TestClient skips the lifespan, so no vector store or LLM is loaded
+    app.dependency_overrides[get_chain] = lambda: fake_chain
+    app.dependency_overrides[get_session_store] = lambda: session_store
+    yield TestClient(app)
+    app.dependency_overrides.clear()
+
+
+# --- startup -----------------------------------------------------------------
+
+
+def test_startup_builds_the_chain_from_the_vector_store_and_contacts(monkeypatch):
+    built = {}
+
+    def fake_build(vectorstore, contacts, get_session_history):
+        built.update(vectorstore=vectorstore, contacts=contacts, get_session_history=get_session_history)
+        return "chain"
+
+    monkeypatch.setattr(main, "load_vectorstore", lambda: "store")
+    monkeypatch.setattr(main, "load_contacts", lambda: {"it_support": "it@example.ac.uk"})
+    monkeypatch.setattr(main, "build_conversational_chain", fake_build)
+
+    with TestClient(app):
+        assert app.state.chain == "chain"
+        assert built["vectorstore"] == "store"
+        assert built["contacts"] == {"it_support": "it@example.ac.uk"}
+        assert built["get_session_history"] == app.state.session_store.get
+
+
+def test_startup_fails_without_a_vector_store(monkeypatch):
+    def missing_store():
+        raise RuntimeError("No vector store found")
+
+    monkeypatch.setattr(main, "load_vectorstore", missing_store)
+
+    with pytest.raises(RuntimeError, match="No vector store found"):
+        with TestClient(app):
+            pass
+
+
+# --- endpoints ---------------------------------------------------------------
 
 
 def _body(**overrides):
@@ -123,21 +151,21 @@ def test_same_url_from_different_chunks_is_listed_once(client, fake_chain):
     assert response.json()["sources"] == ["https://a"]
 
 
-def test_greeting_seeds_new_session_only(client, main_module):
+def test_greeting_seeds_new_session_only(client, session_store):
     body = _body(bot_greeting="Hi! How can I help?")
 
     client.post("/rag-query", json=body)
     client.post("/rag-query", json=body)
 
-    assert main_module.session_store.get(body["session_id"]).messages == [AIMessage(content="Hi! How can I help?")]
+    assert session_store.get(body["session_id"]).messages == [AIMessage(content="Hi! How can I help?")]
 
 
-def test_no_greeting_leaves_history_empty(client, main_module):
+def test_no_greeting_leaves_history_empty(client, session_store):
     body = _body()
 
     client.post("/rag-query", json=body)
 
-    assert main_module.session_store.get(body["session_id"]).messages == []
+    assert session_store.get(body["session_id"]).messages == []
 
 
 def test_chain_failure_returns_502(client, fake_chain):

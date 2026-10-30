@@ -15,24 +15,31 @@ from pydantic import BaseModel, Field
 
 from .config import settings
 
-METADATA_FIELD_INFO = [
-    AttributeInfo(
-        name="domain",
-        description=(
-            "The specific university department this document belongs to. "
-            "You MUST restrict your output to ONLY one of these exact strings: "
-            "['it_support', 'health_wellbeing', 'international_students', 'academic_info', 'campus_info', 'new_students']. "
-            "CRITICAL ROUTING RULES: "
-            "- If the user asks about visas, CAS, or moving to the UK -> use 'international_students'. "
-            "- If the user asks about Wi-Fi, passwords, laptops, software, login issues, or Eduroam -> use 'it_support'. "
-            "- If the user asks about gp, doctors, isolation, mental health, or counseling -> use 'health_wellbeing'. "
-            "- If the user asks about library hours, studying, or assignments -> use 'academic_info'. "
-            "- If the user asks about Welcome Week, freshers, induction, fees, or events -> use 'new_students'. "
-            "If you are unsure, do NOT guess a domain. Leave the filter blank."
-        ),
-        type="string",
-    )
-]
+# Every domain named here must have an entry in contacts.json (checked by test_data_files.py)
+DOMAIN_ROUTING_RULES = (
+    "CRITICAL ROUTING RULES: "
+    "- If the user asks about visas, CAS, or moving to the UK -> use 'international_students'. "
+    "- If the user asks about Wi-Fi, passwords, laptops, software, login issues, or Eduroam -> use 'it_support'. "
+    "- If the user asks about gp, doctors, isolation, mental health, or counseling -> use 'health_wellbeing'. "
+    "- If the user asks about library hours, studying, or assignments -> use 'academic_info'. "
+    "- If the user asks about Welcome Week, freshers, induction, fees, or events -> use 'new_students'. "
+)
+
+
+def _metadata_field_info(domains: list[str]) -> list[AttributeInfo]:
+    # The allowed domains come from contacts.json, so the filter and the hand-off directory can't drift apart
+    return [
+        AttributeInfo(
+            name="domain",
+            description=(
+                "The specific university department this document belongs to. "
+                f"You MUST restrict your output to ONLY one of these exact strings: {domains}. "
+                + DOMAIN_ROUTING_RULES
+                + "If you are unsure, do NOT guess a domain. Leave the filter blank."
+            ),
+            type="string",
+        )
+    ]
 
 DOCUMENT_CONTENT_DESCRIPTION = "Official guides and resources for Heriot-Watt University students."
 
@@ -94,7 +101,7 @@ def build_conversational_chain(
         llm=llm,
         vectorstore=vectorstore,
         document_contents=DOCUMENT_CONTENT_DESCRIPTION,
-        metadata_field_info=METADATA_FIELD_INFO,
+        metadata_field_info=_metadata_field_info(list(contacts)),
         search_type="mmr",
         search_kwargs={
             "k": 4,  # final number of chunks sent to the LLM
