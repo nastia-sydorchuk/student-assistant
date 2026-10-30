@@ -22,7 +22,10 @@ describe('ChatWidget', () => {
     await TestBed.configureTestingModule({
       imports: [ChatWidget],
       providers: [
-        provideRouter([{ path: 'academic', component: BlankTestComponent }]),
+        provideRouter([
+          { path: 'academic', component: BlankTestComponent },
+          { path: 'wellbeing', component: BlankTestComponent },
+        ]),
         provideTranslateService(),
         { provide: ApiService, useValue: apiService },
       ],
@@ -42,7 +45,7 @@ describe('ChatWidget', () => {
     component.sendMessage();
 
     expect(apiService.sendMessage).not.toHaveBeenCalled();
-    expect(component.messages()).toEqual([]);
+    expect(component.messages()).toEqual([{ text: 'GREETINGS.HOME', isUser: false }]);
   });
 
   it('appends the reply and formats sources on a successful send', () => {
@@ -54,10 +57,11 @@ describe('ChatWidget', () => {
     component.sendMessage();
 
     expect(component.isLoading()).toBe(false);
+    // messages[0] is the page greeting
     const messages = component.messages();
-    expect(messages[0]).toEqual({ text: 'Where is the library?', isUser: true });
-    expect(messages[1].text).toBe('Here you go');
-    expect(messages[1].sources).toEqual([
+    expect(messages[1]).toEqual({ text: 'Where is the library?', isUser: true });
+    expect(messages[2].text).toBe('Here you go');
+    expect(messages[2].sources).toEqual([
       { url: 'https://example.com/campus/map', label: 'Campus - Map' },
     ]);
     expect(component.userInput).toBe('');
@@ -119,5 +123,19 @@ describe('ChatWidget', () => {
     } finally {
       vi.useRealTimers();
     }
+  });
+
+  it('greets the user on the page the app opened on', () => {
+    fixture.detectChanges();
+
+    expect(component.messages()).toEqual([{ text: 'GREETINGS.HOME', isUser: false }]);
+  });
+
+  it('has a greeting for the wellbeing page', async () => {
+    fixture.detectChanges();
+
+    await TestBed.inject(Router).navigateByUrl('/wellbeing');
+
+    expect(component.messages()[0]?.text).toBe('GREETINGS.WELLBEING');
   });
 });

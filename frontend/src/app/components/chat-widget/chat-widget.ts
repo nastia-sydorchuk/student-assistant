@@ -35,7 +35,9 @@ export class ChatWidget implements OnInit {
 
   private pageGreetings: Record<string, string> = {
     '/': 'GREETINGS.HOME',
+    '/home': 'GREETINGS.HOME',
     '/academic': 'GREETINGS.ACADEMIC',
+    '/wellbeing': 'GREETINGS.WELLBEING',
     '/facilities': 'GREETINGS.FACILITIES',
     '/services': 'GREETINGS.SERVICES',
     '/cultural': 'GREETINGS.CULTURAL',
@@ -47,10 +49,11 @@ export class ChatWidget implements OnInit {
   };
 
   ngOnInit(): void {
+    this.setGreetingAndOpen(this.router.url);
+
     this.router.events
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((event: RouterEvent) => {
-        this.setGreetingAndOpen(this.router.url);
         if (event instanceof NavigationStart && this.messages().length <= 1) {
           this.isOpen.set(false);
           if (this.openTimer) {

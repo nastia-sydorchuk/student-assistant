@@ -6,16 +6,11 @@ export interface Step {
   actionText: string;
 }
 
-export interface Link {
-  label: string;
-  url: string;
-}
-
 export interface LevelData {
   title: string;
   level: string;
   importantDates: ImportantDate[];
-  event: EventDetails; // Optional, because some pages might not have it
+  event: EventDetails;
 }
 
 export interface ImportantDate {
