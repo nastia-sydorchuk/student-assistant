@@ -1,0 +1,6 @@
+# Overrides for the Playwright tests in e2e/: the assistant gives a canned answer instead of calling Gemini.
+# docker compose -f docker-compose.yml -f docker-compose.e2e.yml up -d --build --wait
+services:
+  rag:
+    environment:
+      FAKE_LLM: "1"

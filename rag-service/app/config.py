@@ -11,6 +11,7 @@ class Settings(BaseSettings):
     api_auth_key: str | None = None
 
     llm_model: str = "gemini-3.5-flash-lite"
+    fake_llm: bool = False
 
     chroma_persist_dir: Path = BASE_DIR / "chroma_db"
     sources_path: Path = BASE_DIR / "sources.json"

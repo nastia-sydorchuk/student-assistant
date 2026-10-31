@@ -11,6 +11,7 @@ from pydantic import BaseModel, StringConstraints
 from .chains import RagAnswer, build_conversational_chain
 from .config import configure_logging, settings
 from .data import load_contacts
+from .fake_llm import build_fake_chain
 from .ingestion import load_vectorstore
 from .sessions import TTLSessionStore
 
@@ -26,7 +27,11 @@ async def lifespan(app: FastAPI):
         max_messages=settings.max_history_messages,
     )
     app.state.session_store = session_store
-    app.state.chain = build_conversational_chain(load_vectorstore(), load_contacts(), session_store.get)
+    if settings.fake_llm:
+        logger.warning("FAKE_LLM is on: every question gets a canned answer")
+        app.state.chain = build_fake_chain()
+    else:
+        app.state.chain = build_conversational_chain(load_vectorstore(), load_contacts(), session_store.get)
     yield
 
 

@@ -54,11 +54,29 @@ jobs:
       - run: npx ng test --watch=false
       - run: npm run build
 
-  docker:
+  e2e:
     runs-on: ubuntu-latest
+    env:
+      # Compose errors out if GOOGLE_API_KEY is unset; the fake LLM never uses it
+      GOOGLE_API_KEY: test
     steps:
       - uses: actions/checkout@v4
-      # Compose errors out if GOOGLE_API_KEY is unset, even for a build; the value is only used at runtime
-      - run: docker compose build
-        env:
-          GOOGLE_API_KEY: test
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: e2e/package-lock.json
+      - run: docker compose -f docker-compose.yml -f docker-compose.e2e.yml up -d --build --wait
+      - run: npm ci
+        working-directory: e2e
+      - run: npx playwright install --with-deps chromium
+        working-directory: e2e
+      - run: npx playwright test
+        working-directory: e2e
+      - if: failure()
+        run: docker compose logs
+      - if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: e2e/playwright-report

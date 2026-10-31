@@ -121,7 +121,7 @@ npm start                          # http://localhost:4200, proxies /api to the 
 
 ## Tests
 
-276 automated tests: JUnit 115, pytest 62, Vitest 99. The LLM, vector store, Translate API and
+277 automated tests: JUnit 115, pytest 63, Vitest 99. The LLM, vector store, Translate API and
 network are faked, so every suite runs offline with no API keys.
 
 From the repository root:
@@ -130,6 +130,15 @@ From the repository root:
 (cd backend && ./mvnw test)
 (cd rag-service && pip install -r requirements-dev.txt && pytest)
 (cd frontend && npm test -- --watch=false && npm run lint)
+```
+
+A Playwright test also runs the chat through the real stack, with `FAKE_LLM=1` giving a canned answer
+instead of calling Gemini. `GOOGLE_API_KEY` only has to be set, so any value works:
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.e2e.yml up -d --build --wait
+(cd e2e && npm ci && npx playwright install chromium && npx playwright test)
+docker compose down
 ```
 
 ## Known limitations

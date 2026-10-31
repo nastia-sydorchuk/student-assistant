@@ -8,6 +8,7 @@ from langchain_core.messages import AIMessage
 from app import main
 from app.chains import RagAnswer
 from app.config import settings
+from app.fake_llm import CANNED_ANSWER, CANNED_SOURCE
 from app.main import app, get_chain, get_session_store
 from app.sessions import TTLSessionStore
 
@@ -75,6 +76,21 @@ def test_startup_fails_without_a_vector_store(monkeypatch):
     with pytest.raises(RuntimeError, match="No vector store found"):
         with TestClient(app):
             pass
+
+
+def test_fake_llm_answers_with_a_source_and_needs_no_vector_store(monkeypatch):
+    def fail():
+        raise AssertionError("fake LLM mode must not load the vector store")
+
+    monkeypatch.setattr(settings, "fake_llm", True)
+    monkeypatch.setattr(settings, "api_auth_key", None)
+    monkeypatch.setattr(main, "load_vectorstore", fail)
+
+    with TestClient(app) as client:
+        response = client.post("/rag-query", json={"query": "Hi", "session_id": str(uuid4())})
+
+    assert response.status_code == 200
+    assert response.json() == {"answer": CANNED_ANSWER, "sources": [CANNED_SOURCE]}
 
 
 # --- endpoints ---------------------------------------------------------------
