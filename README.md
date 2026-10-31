@@ -1,4 +1,6 @@
-﻿# HW Student Assistant
+﻿[![CI](https://github.com/nastia-sydorchuk/student-assistant/actions/workflows/ci.yml/badge.svg)](https://github.com/nastia-sydorchuk/student-assistant/actions/workflows/ci.yml)
+
+# HW Student Assistant
 
 A multilingual onboarding portal for new Heriot-Watt University students, with an AI assistant
 that answers questions from official university pages, **cites its sources**, and hands off to
