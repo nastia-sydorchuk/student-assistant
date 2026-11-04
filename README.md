@@ -12,32 +12,43 @@ Independent project, not affiliated with or endorsed by Heriot-Watt University.
 
 ![The chat assistant answering a Wi-Fi question and a follow-up about phones, citing its source](docs/chat.gif)
 
-## Screenshots
+## Use cases
+
+### 1. Browsing the portal in your own language
+
+The whole portal switches language, here from English to French.
 
 ![Switching the portal from English to French and browsing the translated pages](docs/fr.gif)
 
-<table>
-  <tr>
-    <td width="50%"><img src="docs/handoff.png" alt="The assistant saying it can't find how to hire a graduation gown and giving the Student Services email"></td>
-    <td width="50%"><img src="docs/chat-es.png" alt="A question in Spanish about registering with a GP, answered in Spanish"></td>
-  </tr>
-  <tr>
-    <td align="center">Not in the official pages: handed off to the right team</td>
-    <td align="center">Asked in Spanish, answered in Spanish</td>
-  </tr>
-  <tr>
-    <td width="50%"><img src="docs/off-topic.png" alt="The assistant declining a question about the football World Cup"></td>
-    <td width="50%"><img src="docs/wellbeing.png" alt="The assistant responding to a student who feels lonely and pointing them to the wellbeing team"></td>
-  </tr>
-  <tr>
-    <td align="center">Off-topic questions are declined</td>
-    <td align="center">Distress is escalated to wellbeing</td>
-  </tr>
-</table>
+### 2. Asking in your own language
+
+A question asked in Spanish is answered in Spanish.
+
+![A question in Spanish about registering with a GP, answered in Spanish](docs/chat-es.png)
+
+### 3. Handing off when the answer isn't in the official pages
+
+Instead of guessing, the assistant says it doesn't know and points to the right team.
+
+![The assistant saying it can't find how to hire a graduation gown and giving the Student Services email](docs/handoff.png)
+
+### 4. Escalating distress to wellbeing
+
+A student who says they feel lonely is pointed to the wellbeing team.
+
+![The assistant responding to a student who feels lonely and pointing them to the wellbeing team](docs/wellbeing.png)
+
+### 5. Declining off-topic questions
+
+Questions unrelated to university life are politely declined.
+
+![The assistant declining a question about the football World Cup](docs/off-topic.png)
+
+### 6. Finding your way on campus
+
+The campus map shows a walking route from the student's location to a building.
 
 ![The campus map showing a walking route from the student's location to the GRID building](docs/map.png)
-
-![The registration page with the administrative checklist and digital setup steps](docs/registration.png)
 
 ## Why
 
