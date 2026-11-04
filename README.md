@@ -10,9 +10,34 @@ Built solo: all three services, the ingestion pipeline and the Docker setup.
 
 Independent project, not affiliated with or endorsed by Heriot-Watt University.
 
-<!-- Uncomment once the files exist in docs/:
-![The portal with the chat assistant answering a question and citing sources](docs/chat.gif)
--->
+![The chat assistant answering a Wi-Fi question and a follow-up about phones, citing its source](docs/chat.gif)
+
+## Screenshots
+
+![Switching the portal from English to French and browsing the translated pages](docs/fr.gif)
+
+<table>
+  <tr>
+    <td width="50%"><img src="docs/handoff.png" alt="The assistant saying it can't find how to hire a graduation gown and giving the Student Services email"></td>
+    <td width="50%"><img src="docs/chat-es.png" alt="A question in Spanish about registering with a GP, answered in Spanish"></td>
+  </tr>
+  <tr>
+    <td align="center">Not in the official pages: handed off to the right team</td>
+    <td align="center">Asked in Spanish, answered in Spanish</td>
+  </tr>
+  <tr>
+    <td width="50%"><img src="docs/off-topic.png" alt="The assistant declining a question about the football World Cup"></td>
+    <td width="50%"><img src="docs/wellbeing.png" alt="The assistant responding to a student who feels lonely and pointing them to the wellbeing team"></td>
+  </tr>
+  <tr>
+    <td align="center">Off-topic questions are declined</td>
+    <td align="center">Distress is escalated to wellbeing</td>
+  </tr>
+</table>
+
+![The campus map showing a walking route from the student's location to the GRID building](docs/map.png)
+
+![The registration page with the administrative checklist and digital setup steps](docs/registration.png)
 
 ## Why
 
@@ -49,10 +74,11 @@ flowchart LR
 - **Grounded or handed off.** The assistant answers only from retrieved context. When the answer
   isn't there, it says so and routes the student to the right team's contact. Off-topic questions
   are declined, and messages showing emotional distress are escalated to the wellbeing team first.
-- **Retrieval tuned for a small, departmental corpus.** A self-query retriever routes each question
-  to a department (IT, wellbeing, international, ...) through metadata filters, and MMR keeps the
-  four chunks diverse. Follow-ups such as "what about on my phone?" are rewritten into standalone
-  queries, and translated to English, before retrieval.
+- **Retrieval tuned for a small, departmental corpus.** One structured-output call turns each
+  question into a standalone English search query and picks a department (IT, wellbeing,
+  international, ...) to filter on, so follow-ups such as "what about on my phone?" and questions in
+  other languages still find the right pages. The department is an enum built from the contact
+  directory, so the model can't invent one. MMR keeps the four chunks diverse.
 - **Translations cached by content hash.** Content is written once in English. The first request in
   another language translates it and stores the result with a hash of the English source. Editing
   one section re-translates only that section; unchanged content is never re-translated.
@@ -111,7 +137,6 @@ if that is set), `CORS_ALLOWED_ORIGINS`.
 
 **3. Frontend** ([details](frontend/README.md))
 
-
 ```bash
 cd frontend
 npm ci
@@ -121,7 +146,7 @@ npm start                          # http://localhost:4200, proxies /api to the 
 
 ## Tests
 
-277 automated tests: JUnit 115, pytest 63, Vitest 99. The LLM, vector store, Translate API and
+279 automated tests: JUnit 115, pytest 65, Vitest 99. The LLM, vector store, Translate API and
 network are faked, so every suite runs offline with no API keys.
 
 From the repository root:
@@ -141,16 +166,25 @@ docker compose -f docker-compose.yml -f docker-compose.e2e.yml up -d --build --w
 docker compose down
 ```
 
-## Known limitations
+## Trade-offs and what I'd change
 
-- Chat history is held in memory by a single RAG instance and lost on restart. Redis would be
-  needed to scale horizontally.
-- No rate limiting on the RAG endpoint yet; it should sit behind a gateway that enforces one.
-
-## Roadmap
-
-- [x] One-command setup with Docker Compose and seed data
-- [ ] CI on every push (GitHub Actions)
-- [ ] Evaluation harness: golden question set, retrieval hit rate, citation precision, handoff accuracy
-- [ ] Hosted demo
-- [ ] Streaming responses
+- **Response time is set by the LLM.** Each question makes two sequential Gemini calls: one to plan
+  the search, one to answer. Embedding and search take under a second, so almost all the wait is
+  Gemini, and on a free-tier key that varies a lot from minute to minute. Merging the query rewrite
+  and the department choice into one call cut a question from three calls to two. On a 7-question
+  check, all seven answers stayed the same in substance and five retrieved exactly the same chunks.
+  Next step: stream the answer, so the student sees it as it's written.
+- **No evaluation set yet.** Answer quality has been checked by hand, not measured. A set of
+  questions with the pages that should answer them would give retrieval hit rate, citation precision
+  and handoff accuracy, and would show whether changes help. The first thing it would settle is the
+  department filter: it fits a small corpus split by department, but nothing yet shows it beats plain
+  vector search.
+- **Chat history lives in memory.** It is simple and fast, but it limits the RAG service to one
+  instance and is lost on restart. Redis would fix both.
+- **No rate limiting.** Every question costs two LLM calls, so a public deployment would need a
+  per-client limit, at the backend or a gateway.
+- **Translation happens on first view.** The first visitor in each language waits for the Translate
+  API. Translating whenever the English content changes would remove that wait.
+- **The vector store is committed to git.** That makes setup a single command with no scraping, at
+  the cost of binary files in the repository. Beyond a demo, it would be built in CI and stored
+  outside the repository.
