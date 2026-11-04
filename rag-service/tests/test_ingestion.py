@@ -86,6 +86,54 @@ def test_images_are_dropped(md_converter):
     assert "logo" not in markdown
 
 
+def _page_with_data(body: str, data: str) -> str:
+    return f"<html><body>{body}<script> window.__USE_HYDRATE__ = true; window.REDUX_DATA = {data}</script></body></html>"
+
+
+PHONE_SECTION = (
+    '{"title": "Connecting a SmartPhone\\u002Fmobile device", "copy": ['
+    '{"type": "_paragraph", "value": "Install the app first."},'
+    '{"type": "_heading", "value": "Android", "properties": {"level": 3}},'
+    '{"type": "_list", "value": [{"type": "_listItem", "value": ['
+    '{"type": "_fragment", "value": "Open the "},'
+    '{"type": "_link", "value": "Play Store", "properties": {"link": {"sys": {"uri": "https://www.geteduroam.app/"}}}},'
+    '{"type": "_fragment", "value": " and search for geteduroam", "properties": {"decorators": ["strong"]}}'
+    "]}]}]}"
+)
+
+
+def test_collapsed_section_content_is_placed_under_its_heading(md_converter):
+    body = (
+        "<main><h3><button><span>Connecting a SmartPhone/mobile device</span></button></h3>"
+        "<div hidden></div><h3>Independent Distance Learners</h3></main>"
+    )
+    data = '{"resolver": undefined, "content": [{"accordionItem": [' + PHONE_SECTION + "]}]}"
+
+    markdown = ingestion._html_to_markdown(_page_with_data(body, data), "https://x", md_converter)
+
+    heading = markdown.index("Connecting a SmartPhone/mobile device")
+    content = markdown.index("Install the app first.")
+    assert heading < content < markdown.index("Independent Distance Learners")
+    assert "### Android" in markdown
+    assert "[Play Store](https://www.geteduroam.app/)" in markdown
+    assert "**and search for geteduroam**" in markdown
+
+
+def test_collapsed_section_without_a_heading_on_the_page_is_kept(md_converter):
+    markdown = ingestion._html_to_markdown(
+        _page_with_data("<main><p>Intro</p></main>", '{"items": [' + PHONE_SECTION + "]}"), "https://x", md_converter
+    )
+
+    assert "### Connecting a SmartPhone/mobile device" in markdown
+    assert "Install the app first." in markdown
+
+
+def test_unreadable_page_data_is_ignored(md_converter):
+    markdown = ingestion._html_to_markdown(_page_with_data("<main><p>Intro</p></main>", "{not json"), "https://x", md_converter)
+
+    assert "Intro" in markdown
+
+
 # --- Loading pages -----------------------------------------------------------
 
 

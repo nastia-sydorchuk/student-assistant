@@ -11,8 +11,11 @@ server with a half-built store.
 
 import argparse
 import gc
+import html
+import json
 import logging
 import os
+import re
 import shutil
 import stat
 import sys
@@ -37,6 +40,7 @@ logger = logging.getLogger(__name__)
 
 REQUEST_TIMEOUT_SECONDS = 30
 USER_AGENT = "HW-Student-Assistant-Ingest/1.0"
+PAGE_DATA_MARKER = "window.REDUX_DATA = "
 # Chroma sends anonymous usage stats to PostHog by default
 CHROMA_SETTINGS = ChromaSettings(anonymized_telemetry=False)
 
@@ -72,13 +76,98 @@ def _fetch_html(session: requests.Session, url: str) -> str:
     return response.text
 
 
-def _html_to_markdown(html: str, url: str, md_converter: html2text.HTML2Text) -> str:
-    soup = BeautifulSoup(html, "html.parser")
+def _rich_text_to_html(node) -> str:
+    """Renders the CMS's rich-text blocks ({"type": "_paragraph", "value": ...}) as HTML."""
+    if isinstance(node, str):
+        return html.escape(node)
+    if isinstance(node, list):
+        return "".join(_rich_text_to_html(child) for child in node)
+    if not isinstance(node, dict):
+        return ""
+
+    inner = _rich_text_to_html(node.get("value"))
+    props = node.get("properties") or {}
+    match node.get("type"):
+        case "_paragraph":
+            return f"<p>{inner}</p>"
+        case "_heading":
+            level = props.get("level", 3)
+            return f"<h{level}>{inner}</h{level}>"
+        case "_list":
+            tag = "ol" if props.get("listType") == "ordered" else "ul"
+            return f"<{tag}>{inner}</{tag}>"
+        case "_listItem":
+            return f"<li>{inner}</li>"
+        case "_link":
+            uri = ((props.get("link") or {}).get("sys") or {}).get("uri")
+            return f'<a href="{html.escape(uri)}">{inner}</a>' if uri else inner
+        case "_fragment":
+            decorators = props.get("decorators") or []
+            if "strong" in decorators:
+                inner = f"<strong>{inner}</strong>"
+            if "emphasis" in decorators:
+                inner = f"<em>{inner}</em>"
+            return inner
+        case _:
+            return inner
+
+
+def _collapsed_sections(page_html: str) -> dict[str, str]:
+    """Returns {title: content HTML} for the page's collapsible sections.
+
+    The site leaves a closed section's panel empty and fills it from the window.REDUX_DATA
+    script when it's opened, so without this every section would be scraped as a bare heading.
+    """
+    start = page_html.find(PAGE_DATA_MARKER)
+    if start == -1:
+        return {}
+    start += len(PAGE_DATA_MARKER)
+    end = page_html.find("</script>", start)
+    # The data is a JavaScript object literal: valid JSON apart from `undefined` values
+    data_text = re.sub(r"([:\[,]\s*)undefined\b", r"\1null", page_html[start:end])
+    try:
+        data, _ = json.JSONDecoder().raw_decode(data_text)
+    except json.JSONDecodeError as exc:
+        logger.warning("Could not parse the page data, so collapsible sections are skipped: %s", exc)
+        return {}
+
+    sections: dict[str, str] = {}
+
+    def collect(node) -> None:
+        if isinstance(node, dict):
+            if isinstance(node.get("title"), str) and isinstance(node.get("copy"), list):
+                sections[node["title"].strip()] = _rich_text_to_html(node["copy"])
+            for value in node.values():
+                collect(value)
+        elif isinstance(node, list):
+            for value in node:
+                collect(value)
+
+    collect(data)
+    return sections
+
+
+def _fill_collapsed_sections(container, page_html: str) -> None:
+    for title, content in _collapsed_sections(page_html).items():
+        title_text = container.find(string=lambda s: s and " ".join(s.split()) == title)
+        heading = title_text.find_parent(re.compile(r"^h[1-6]$")) if title_text else None
+        panel = BeautifulSoup(content, "html.parser")
+        if heading is not None:
+            heading.insert_after(panel)
+        else:
+            # The section's heading isn't on the page: keep its content rather than lose it
+            container.append(BeautifulSoup(f"<h3>{html.escape(title)}</h3>", "html.parser"))
+            container.append(panel)
+
+
+def _html_to_markdown(page_html: str, url: str, md_converter: html2text.HTML2Text) -> str:
+    soup = BeautifulSoup(page_html, "html.parser")
+    main_content = soup.find(["main", "article"])
+    _fill_collapsed_sections(main_content or soup, page_html)
 
     for a_tag in soup.find_all("a", href=True):
         a_tag["href"] = urljoin(url, a_tag["href"])
 
-    main_content = soup.find(["main", "article"])
     return md_converter.handle(str(main_content) if main_content else str(soup))
 
 
