@@ -2,11 +2,11 @@ import pytest
 from langchain_core.documents import Document
 from langchain_core.language_models.fake_chat_models import FakeListChatModel
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
-from langchain_core.retrievers import BaseRetriever
 from langchain_core.runnables import RunnableLambda
+from pydantic import ValidationError
 
 from app import chains
-from app.chains import RagAnswer, _format_docs, build_conversational_chain
+from app.chains import RagAnswer, _format_docs, _search_model, build_conversational_chain
 from app.sessions import TTLSessionStore
 
 CONTACTS = {"it_support": "it@example.ac.uk", "health_wellbeing": "wellbeing@example.ac.uk"}
@@ -15,41 +15,48 @@ DOCS = [
     Document(page_content="The library is open 24/7.", metadata={"source": "https://b"}),
 ]
 
-# Messages of every prompt sent to the structured-output (answer) call.
-qa_prompts: list = []
 
+class FakeVectorStore:
+    def __init__(self):
+        self.searches = []
 
-class FakeRetriever(BaseRetriever):
-    docs: list[Document]
-    queries: list[str] = []
-
-    def _get_relevant_documents(self, query, *, run_manager):
-        self.queries.append(query)
-        return self.docs
+    def max_marginal_relevance_search(self, query, filter=None, **kwargs):
+        self.searches.append((query, filter))
+        return DOCS
 
 
 class FakeLLM(FakeListChatModel):
-    """Plain calls (the query rewriter) return the scripted responses; the
-    structured-output call records the prompt it was given and returns a
-    fixed RagAnswer."""
+    """Records the messages of every structured-output call. The search call returns `search`;
+    the answer call returns a fixed RagAnswer."""
+
+    search: dict = {"query": "eduroam Edinburgh campus", "domain": "it_support"}
+    search_prompts: list = []
+    qa_prompts: list = []
 
     def with_structured_output(self, schema, **kwargs):
         def respond(prompt_value):
-            qa_prompts.append(prompt_value.to_messages())
-            return schema(answer="Use eduroam.", source_ids=[1])
+            if schema is RagAnswer:
+                self.qa_prompts.append(prompt_value.to_messages())
+                return RagAnswer(answer="Use eduroam.", source_ids=[1])
+            self.search_prompts.append(prompt_value.to_messages())
+            return schema(**self.search)
 
         return RunnableLambda(respond)
 
 
 @pytest.fixture
-def chain_parts(monkeypatch):
-    qa_prompts.clear()
-    retriever = FakeRetriever(docs=DOCS)
-    monkeypatch.setattr(chains, "ChatGoogleGenerativeAI", lambda **_: FakeLLM(responses=["rewritten query"]))
-    monkeypatch.setattr(chains.SelfQueryRetriever, "from_llm", lambda **_: retriever)
+def llm(monkeypatch):
+    llm = FakeLLM(responses=[], search_prompts=[], qa_prompts=[])
+    monkeypatch.setattr(chains, "ChatGoogleGenerativeAI", lambda **_: llm)
+    return llm
+
+
+@pytest.fixture
+def chain_parts(llm):
+    vectorstore = FakeVectorStore()
     store = TTLSessionStore(ttl_seconds=60, max_messages=10)
-    chain = build_conversational_chain(vectorstore=None, contacts=CONTACTS, get_session_history=store.get)
-    return chain, retriever, store
+    chain = build_conversational_chain(vectorstore=vectorstore, contacts=CONTACTS, get_session_history=store.get)
+    return chain, vectorstore, store
 
 
 def _ask(chain, question, session_id="s1"):
@@ -69,20 +76,48 @@ def test_format_docs_empty():
     assert _format_docs([]) == ""
 
 
-def test_domain_filter_allows_exactly_the_contact_domains(monkeypatch):
-    captured = {}
+def test_search_domain_allows_exactly_the_contact_domains():
+    schema = _search_model(list(CONTACTS)).model_json_schema()
 
-    def from_llm(**kwargs):
-        captured.update(kwargs)
-        return FakeRetriever(docs=DOCS)
+    assert schema["properties"]["domain"]["anyOf"][0]["enum"] == ["it_support", "health_wellbeing"]
 
-    monkeypatch.setattr(chains, "ChatGoogleGenerativeAI", lambda **_: FakeLLM(responses=[]))
-    monkeypatch.setattr(chains.SelfQueryRetriever, "from_llm", from_llm)
 
-    build_conversational_chain(vectorstore=None, contacts=CONTACTS, get_session_history=lambda _: None)
+def test_search_rejects_an_unknown_domain():
+    Search = _search_model(list(CONTACTS))
 
-    description = captured["metadata_field_info"][0].description
-    assert "one of these exact strings: ['it_support', 'health_wellbeing']" in description
+    assert Search(query="q").domain is None
+    with pytest.raises(ValidationError):
+        Search(query="q", domain="visas")
+
+
+def test_search_uses_the_generated_query_and_domain_filter(chain_parts):
+    chain, vectorstore, _ = chain_parts
+
+    _ask(chain, "How do I get on Wi-Fi?")
+
+    assert vectorstore.searches == [("eduroam Edinburgh campus", {"domain": "it_support"})]
+
+
+def test_search_without_a_domain_is_unfiltered(chain_parts, llm):
+    chain, vectorstore, _ = chain_parts
+    llm.search = {"query": "student discounts Edinburgh campus", "domain": None}
+
+    _ask(chain, "Are there student discounts?")
+
+    assert vectorstore.searches == [("student discounts Edinburgh campus", None)]
+
+
+def test_search_prompt_sees_the_history_for_follow_ups(chain_parts, llm):
+    chain, _, _ = chain_parts
+
+    _ask(chain, "How do I get on Wi-Fi?")
+    _ask(chain, "what about on my phone?")
+
+    assert [m.content for m in llm.search_prompts[1][1:]] == [
+        "How do I get on Wi-Fi?",
+        "Use eduroam.",
+        "what about on my phone?",
+    ]
 
 
 def test_chain_returns_structured_result_and_raw_docs(chain_parts):
@@ -95,34 +130,17 @@ def test_chain_returns_structured_result_and_raw_docs(chain_parts):
     assert response["context"] == DOCS
 
 
-def test_prompt_contains_numbered_context_and_contacts(chain_parts):
+def test_prompt_contains_numbered_context_and_contacts(chain_parts, llm):
     chain, _, _ = chain_parts
 
     _ask(chain, "How do I get on Wi-Fi?")
 
-    system = qa_prompts[0][0]
+    system = llm.qa_prompts[0][0]
     assert isinstance(system, SystemMessage)
     assert "[Source 1]\nConnect to eduroam" in system.content
     assert "[Source 2]\nThe library is open 24/7." in system.content
     assert "it@example.ac.uk" in system.content
     assert "contact the Student Wellbeing team at wellbeing@example.ac.uk" in system.content
-
-
-def test_first_question_is_used_as_search_query_directly(chain_parts):
-    chain, retriever, _ = chain_parts
-
-    _ask(chain, "How do I get on Wi-Fi?")
-
-    assert retriever.queries == ["How do I get on Wi-Fi?"]
-
-
-def test_follow_up_question_is_rewritten_using_history(chain_parts):
-    chain, retriever, _ = chain_parts
-
-    _ask(chain, "How do I get on Wi-Fi?")
-    _ask(chain, "what about on my phone?")
-
-    assert retriever.queries == ["How do I get on Wi-Fi?", "rewritten query"]
 
 
 def test_question_and_answer_are_saved_to_session_history(chain_parts):
@@ -137,13 +155,13 @@ def test_question_and_answer_are_saved_to_session_history(chain_parts):
     assert store.get("other").messages == []
 
 
-def test_history_is_passed_to_the_answer_prompt(chain_parts):
+def test_history_is_passed_to_the_answer_prompt(chain_parts, llm):
     chain, _, _ = chain_parts
 
     _ask(chain, "How do I get on Wi-Fi?")
     _ask(chain, "what about on my phone?")
 
-    assert [m.content for m in qa_prompts[1][1:]] == [
+    assert [m.content for m in llm.qa_prompts[1][1:]] == [
         "How do I get on Wi-Fi?",
         "Use eduroam.",
         "what about on my phone?",

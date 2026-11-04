@@ -1,57 +1,59 @@
 import json
-from typing import Callable
+from typing import Callable, Literal
 
 from langchain_chroma import Chroma
-from langchain_classic.chains import create_history_aware_retriever
-from langchain_classic.chains.query_constructor.base import AttributeInfo
-from langchain_classic.retrievers.self_query.base import SelfQueryRetriever
 from langchain_core.chat_history import BaseChatMessageHistory
 from langchain_core.documents import Document
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
-from langchain_core.runnables import Runnable, RunnablePassthrough
+from langchain_core.runnables import Runnable, RunnableLambda, RunnablePassthrough
 from langchain_core.runnables.history import RunnableWithMessageHistory
 from langchain_google_genai import ChatGoogleGenerativeAI
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, create_model
 
 from .config import settings
 
 # Every domain named here must have an entry in contacts.json (checked by test_data_files.py)
 DOMAIN_ROUTING_RULES = (
-    "CRITICAL ROUTING RULES: "
-    "- If the user asks about visas, CAS, or moving to the UK -> use 'international_students'. "
-    "- If the user asks about Wi-Fi, passwords, laptops, software, login issues, or Eduroam -> use 'it_support'. "
-    "- If the user asks about gp, doctors, isolation, mental health, or counseling -> use 'health_wellbeing'. "
-    "- If the user asks about library hours, studying, or assignments -> use 'academic_info'. "
-    "- If the user asks about Welcome Week, freshers, induction, fees, or events -> use 'new_students'. "
+    "- If the user asks about visas, CAS, or moving to the UK -> use 'international_students'.\n"
+    "- If the user asks about Wi-Fi, passwords, laptops, software, login issues, or Eduroam -> use 'it_support'.\n"
+    "- If the user asks about gp, doctors, isolation, mental health, or counseling -> use 'health_wellbeing'.\n"
+    "- If the user asks about library hours, studying, or assignments -> use 'academic_info'.\n"
+    "- If the user asks about Welcome Week, freshers, induction, fees, or events -> use 'new_students'.\n"
 )
 
-
-def _metadata_field_info(domains: list[str]) -> list[AttributeInfo]:
-    # The allowed domains come from contacts.json, so the filter and the hand-off directory can't drift apart
-    return [
-        AttributeInfo(
-            name="domain",
-            description=(
-                "The specific university department this document belongs to. "
-                f"You MUST restrict your output to ONLY one of these exact strings: {domains}. "
-                + DOMAIN_ROUTING_RULES
-                + "If you are unsure, do NOT guess a domain. Leave the filter blank."
-            ),
-            type="string",
-        )
-    ]
-
-DOCUMENT_CONTENT_DESCRIPTION = "Official guides and resources for Heriot-Watt University students."
-
-CONTEXTUALIZE_Q_SYSTEM_PROMPT = (
-    "You are an expert search query generator. Your ONLY job is to output a search string. "
-    "Read the chat history and the latest user question, then follow these rules STRICTLY:\n"
-    "1. IF NEW TOPIC: If the user's latest question is about a brand new topic, IGNORE the chat history completely. Just return the user's new question as the search query.\n"
+# One call writes the search query and picks the department, instead of a rewrite call followed by a
+# self-query call: each Gemini call costs 10-20 s on the free tier.
+SEARCH_SYSTEM_PROMPT = (
+    "You turn a Heriot-Watt student's latest question into a search over the university's official pages. "
+    "Read the chat history and the latest question, then fill in both fields.\n"
+    "query:\n"
+    "1. IF NEW TOPIC: If the latest question is about a brand new topic, IGNORE the chat history completely and use the question itself.\n"
     "2. IF CONTINUATION: If the user uses pronouns (it, they, them) or asks a follow-up (e.g., 'tell me more', 'where is that?'), use the chat history to figure out what they are referring to and write a complete standalone query.\n"
-    "3. EDINBURGH DEFAULT: Always add 'Edinburgh campus' to the search query unless Dubai or Malaysia is explicitly mentioned.\n"
-    "4. TRANSLATE: If the question is not in English, translate the search query to English.\n"
-    "5. OUTPUT: Return ONLY the raw search query. No conversational text, no quotes, no explanations."
+    "3. EDINBURGH DEFAULT: Always add 'Edinburgh campus' to the query unless Dubai or Malaysia is explicitly mentioned.\n"
+    "4. TRANSLATE: If the question is not in English, write the query in English.\n"
+    "domain: the department whose pages answer the question. CRITICAL ROUTING RULES:\n"
+    + DOMAIN_ROUTING_RULES
+    + "If you are unsure, do NOT guess a domain. Leave it empty."
 )
+
+RETRIEVAL_KWARGS = {
+    "k": 4,  # final number of chunks sent to the LLM
+    "fetch_k": 40,  # initial pool of chunks fetched before filtering
+    "lambda_mult": 0.5,  # diversity vs. relevance
+}
+
+
+def _search_model(domains: list[str]) -> type[BaseModel]:
+    # The allowed domains come from contacts.json, so the filter and the hand-off directory can't drift
+    # apart, and the schema stops the model from naming a department that doesn't exist
+    return create_model(
+        "Search",
+        query=(str, Field(description="A standalone search query in English.")),
+        domain=(
+            Literal[tuple(domains)] | None,
+            Field(default=None, description="The department whose pages answer the question, or null if unsure."),
+        ),
+    )
 
 SYSTEM_PROMPT = (
     "You are a strict and helpful assistant for Heriot-Watt students. "
@@ -97,27 +99,23 @@ def build_conversational_chain(
         google_api_key=settings.google_api_key,
     )
 
-    retriever = SelfQueryRetriever.from_llm(
-        llm=llm,
-        vectorstore=vectorstore,
-        document_contents=DOCUMENT_CONTENT_DESCRIPTION,
-        metadata_field_info=_metadata_field_info(list(contacts)),
-        search_type="mmr",
-        search_kwargs={
-            "k": 4,  # final number of chunks sent to the LLM
-            "fetch_k": 40,  # initial pool of chunks fetched before filtering
-            "lambda_mult": 0.5,  # diversity vs. relevance
-        },
-    )
-
-    contextualize_q_prompt = ChatPromptTemplate.from_messages(
+    search_prompt = ChatPromptTemplate.from_messages(
         [
-            ("system", CONTEXTUALIZE_Q_SYSTEM_PROMPT),
+            ("system", SEARCH_SYSTEM_PROMPT),
             MessagesPlaceholder("chat_history"),
             ("human", "{input}"),
         ]
     )
-    history_aware_retriever = create_history_aware_retriever(llm, retriever, contextualize_q_prompt)
+
+    def search(params: BaseModel) -> list[Document]:
+        # MMR keeps the chunks diverse, so four chunks from one long page don't crowd out the rest
+        return vectorstore.max_marginal_relevance_search(
+            params.query,
+            filter={"domain": params.domain} if params.domain else None,
+            **RETRIEVAL_KWARGS,
+        )
+
+    retriever = search_prompt | llm.with_structured_output(_search_model(list(contacts))) | RunnableLambda(search)
 
     qa_prompt = ChatPromptTemplate.from_messages(
         [
@@ -136,7 +134,7 @@ def build_conversational_chain(
         | llm.with_structured_output(RagAnswer)
     )
     rag_chain = (
-        RunnablePassthrough.assign(context=history_aware_retriever)
+        RunnablePassthrough.assign(context=retriever)
         .assign(result=question_answer_chain)
         .assign(answer=lambda x: x["result"].answer)
     )
