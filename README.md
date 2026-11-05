@@ -26,25 +26,19 @@ A question asked in Spanish is answered in Spanish.
 
 ![A question in Spanish about registering with a GP, answered in Spanish](docs/chat-es.png)
 
-### 3. Handing off when the answer isn't in the official pages
+### 3. Knowing when not to answer
 
-Instead of guessing, the assistant says it doesn't know and points to the right team.
+From left to right: when the answer isn't in the official pages, the assistant says so and points to
+the right team instead of guessing; a student who says they feel lonely is pointed to the wellbeing
+team; questions unrelated to university life are politely declined.
 
-![The assistant saying it can't find how to hire a graduation gown and giving the Student Services email](docs/handoff.png)
+<p>
+  <img src="docs/handoff.png" width="32%" alt="The assistant saying it can't find how to hire a graduation gown and giving the Student Services email">
+  <img src="docs/wellbeing.png" width="32%" alt="The assistant responding to a student who feels lonely and pointing them to the wellbeing team">
+  <img src="docs/off-topic.png" width="32%" alt="The assistant declining a question about the football World Cup">
+</p>
 
-### 4. Escalating distress to wellbeing
-
-A student who says they feel lonely is pointed to the wellbeing team.
-
-![The assistant responding to a student who feels lonely and pointing them to the wellbeing team](docs/wellbeing.png)
-
-### 5. Declining off-topic questions
-
-Questions unrelated to university life are politely declined.
-
-![The assistant declining a question about the football World Cup](docs/off-topic.png)
-
-### 6. Finding your way on campus
+### 4. Finding your way on campus
 
 The campus map shows a walking route from the student's location to a building.
 
@@ -99,6 +93,27 @@ flowchart LR
 - **Failures are visible.** If the RAG service is down, the API returns `503` with a standard error
   body and the chat shows a translated error. It never disguises an outage as an answer.
 - **Embeddings without PyTorch.** The embedding model runs on ONNX Runtime instead of PyTorch. It cut the Docker images from about 3.9 GB to 2.0 GB.
+
+## Evaluation
+
+I ran a usability study with 8 new international students. Each did the same four onboarding tasks
+(Wi-Fi setup, GP registration, wellbeing support, Welcome Week events) on the official university
+website and on the portal without the chatbot, in counterbalanced order.
+
+| | Official website | Portal |
+|---|---|---|
+| Tasks completed | 23/32 (72%) | 32/32 (100%) |
+| SUS usability score (0–100) | 38.1 | 96.3 |
+
+The portal was faster and needed fewer clicks on every task. The largest gap was Welcome Week: on
+the website only one of eight participants found the event information, while on the portal the
+mean time was 22 seconds.
+
+Participants then repeated three of the tasks using the chatbot. All 23 sessions (one participant
+skipped a task) ended with a correct answer, with a mean of 1.1 to 2.7 prompts per task. Two answers were accurate but
+incomplete: one had no direct contact number and one missed some event dates. With 8
+participants, and chatbot tasks repeating ones they had already done on both systems, these results are indicative, not
+conclusive.
 
 ## Quick start
 
@@ -185,8 +200,8 @@ docker compose down
   and the department choice into one call cut a question from three calls to two. On a 7-question
   check, all seven answers stayed the same in substance and five retrieved exactly the same chunks.
   Next step: stream the answer, so the student sees it as it's written.
-- **No evaluation set yet.** Answer quality has been checked by hand, not measured. A set of
-  questions with the pages that should answer them would give retrieval hit rate, citation precision
+- **No automated evaluation set yet.** The user study showed students could get correct answers,
+  but retrieval quality isn't measured automatically. A set of questions with the pages that should answer them would give retrieval hit rate, citation precision
   and handoff accuracy, and would show whether changes help. The first thing it would settle is the
   department filter: it fits a small corpus split by department, but nothing yet shows it beats plain
   vector search.
