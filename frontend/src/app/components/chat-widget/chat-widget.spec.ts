@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
 import { provideTranslateService } from '@ngx-translate/core';
-import { of, throwError } from 'rxjs';
+import { Subject, of, throwError } from 'rxjs';
 
 import { ChatWidget } from './chat-widget';
 import { ApiService } from '../../services/api.service';
@@ -92,6 +92,39 @@ describe('ChatWidget', () => {
       text: 'CHAT.CONNECTION_ERROR',
       isUser: false,
     });
+  });
+
+  it('announces "thinking" and then the answer for screen readers', () => {
+    const reply = new Subject<{ answer: string; sources: string[] }>();
+    apiService.sendMessage.mockReturnValue(reply);
+
+    component.userInput = 'hello';
+    component.sendMessage();
+    expect(component.announcement()).toBe('CHAT.THINKING');
+
+    reply.next({ answer: 'Hi there', sources: [] });
+    reply.complete();
+    expect(component.announcement()).toBe('Hi there');
+  });
+
+  it('ignores a second send while an answer is loading', () => {
+    apiService.sendMessage.mockReturnValue(new Subject());
+
+    component.userInput = 'first';
+    component.sendMessage();
+    component.userInput = 'second';
+    component.sendMessage();
+
+    expect(apiService.sendMessage).toHaveBeenCalledTimes(1);
+    expect(component.userInput).toBe('second');
+  });
+
+  it('remembers a close from the close button or Escape', () => {
+    component.toggleChat();
+    component.closeChat();
+
+    expect(component.isOpen()).toBe(false);
+    expect(sessionStorage.getItem('chatClosedManually')).toBe('true');
   });
 
   it('toggles open state and remembers manual close via sessionStorage', () => {

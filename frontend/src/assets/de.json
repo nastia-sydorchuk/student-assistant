@@ -74,6 +74,11 @@
     "THINKING": "Denken...",
     "READ_MORE": "Mehr lesen:",
     "CONNECTION_ERROR": "Entschuldigung, ich konnte keine Verbindung zum Server herstellen.",
-    "EXTERNAL_LINK": "Externer Link"
+    "EXTERNAL_LINK": "Externer Link",
+    "INPUT_LABEL": "Stellen Sie dem Studierendenassistenten eine Frage",
+    "HISTORY_ARIA": "Unterhaltung",
+    "YOU": "Sie:",
+    "ASSISTANT": "Assistent:",
+    "NEW_TAB": "(öffnet in einem neuen Tab)"
   }
 }

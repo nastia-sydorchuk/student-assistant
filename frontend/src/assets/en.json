@@ -74,6 +74,11 @@
     "THINKING": "Thinking...",
     "READ_MORE": "Read more:",
     "CONNECTION_ERROR": "Sorry, I could not connect to the server.",
-    "EXTERNAL_LINK": "External Link"
+    "EXTERNAL_LINK": "External Link",
+    "INPUT_LABEL": "Ask the student assistant a question",
+    "HISTORY_ARIA": "Conversation",
+    "YOU": "You:",
+    "ASSISTANT": "Assistant:",
+    "NEW_TAB": "(opens in a new tab)"
   }
 }

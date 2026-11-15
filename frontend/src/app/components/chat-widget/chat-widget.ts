@@ -1,4 +1,4 @@
-import { Component, DestroyRef, OnInit, PLATFORM_ID, inject, signal } from '@angular/core';
+import { Component, DestroyRef, ElementRef, Injector, OnInit, PLATFORM_ID, afterNextRender, inject, signal, viewChild } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -14,6 +14,8 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
   imports: [CommonModule, FormsModule, MarkdownPipe, TranslateModule],
   templateUrl: './chat-widget.html',
   styleUrl: './chat-widget.css',
+  // Escape from anywhere in the widget (input, buttons, history) closes the chat
+  host: { '(keydown.escape)': 'closeChat()' },
 })
 export class ChatWidget implements OnInit {
   private apiService = inject(ApiService);
@@ -21,10 +23,16 @@ export class ChatWidget implements OnInit {
   private platformId = inject(PLATFORM_ID);
   private translateService = inject(TranslateService);
   private destroyRef = inject(DestroyRef);
+  private injector = inject(Injector);
+
+  private toggleButton = viewChild<ElementRef<HTMLButtonElement>>('toggleButton');
+  private chatInput = viewChild<ElementRef<HTMLInputElement>>('chatInput');
 
   isOpen = signal(false);
   isLoading = signal(false);
   messages = signal<ChatMessage[]>([]);
+  // Read out by the visually hidden live region in the template
+  announcement = signal('');
 
   userInput = '';
   readonly maxInputLength = 1000;
@@ -96,15 +104,32 @@ export class ChatWidget implements OnInit {
   }
 
   toggleChat() {
-    this.isOpen.update(open => !open);
-
-    if (isPlatformBrowser(this.platformId)) {
-      if (!this.isOpen()) {
-        sessionStorage.setItem('chatClosedManually', 'true');
-      } else {
-        sessionStorage.removeItem('chatClosedManually');
-      }
+    if (this.isOpen()) {
+      this.closeChat();
+      return;
     }
+
+    this.isOpen.set(true);
+    if (isPlatformBrowser(this.platformId)) {
+      sessionStorage.removeItem('chatClosedManually');
+    }
+    // Only when the user opens it: the automatic open after 2s must not take focus away from the page
+    this.focusAfterRender(() => this.chatInput());
+  }
+
+  closeChat() {
+    if (!this.isOpen()) return;
+
+    this.isOpen.set(false);
+    if (isPlatformBrowser(this.platformId)) {
+      sessionStorage.setItem('chatClosedManually', 'true');
+    }
+    // The close button or input that had focus is gone now, so hand focus back to the toggle
+    this.focusAfterRender(() => this.toggleButton());
+  }
+
+  private focusAfterRender(target: () => ElementRef<HTMLElement> | undefined) {
+    afterNextRender(() => target()?.nativeElement.focus(), { injector: this.injector });
   }
 
   // Helper to format the raw source strings into clean clickable objects
@@ -147,7 +172,8 @@ export class ChatWidget implements OnInit {
   }
 
   sendMessage() {
-    if (!this.userInput.trim()) return;
+    // The input stays enabled while loading so it keeps focus; block a second send here instead
+    if (!this.userInput.trim() || this.isLoading()) return;
 
     const currentMessages = this.messages();
     const currentGreeting = currentMessages.length > 0 ? currentMessages[0].text : '';
@@ -157,7 +183,10 @@ export class ChatWidget implements OnInit {
     this.userInput = '';
 
     this.isLoading.set(true);
+    this.announcement.set(this.translateService.instant('CHAT.THINKING'));
     this.scrollToBottom();
+    // After clicking Send, go back to the input so the next question can be typed straight away
+    this.chatInput()?.nativeElement.focus();
 
     const requestPayload: ChatRequest = {
       query: userText,
@@ -173,6 +202,7 @@ export class ChatWidget implements OnInit {
     )
     .subscribe({
       next: (response) => {
+        this.announcement.set(response.answer);
         this.messages.update(msgs => [...msgs, {
           text: response.answer,
           isUser: false,
@@ -180,8 +210,10 @@ export class ChatWidget implements OnInit {
         }]);
       },
       error: () => {
+        const errorText = this.translateService.instant('CHAT.CONNECTION_ERROR');
+        this.announcement.set(errorText);
         this.messages.update(msgs => [...msgs, {
-          text: this.translateService.instant('CHAT.CONNECTION_ERROR'),
+          text: errorText,
           isUser: false
         }]);
       }

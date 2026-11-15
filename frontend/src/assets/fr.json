@@ -74,6 +74,11 @@
     "THINKING": "Pensée...",
     "READ_MORE": "En savoir plus:",
     "CONNECTION_ERROR": "Désolé, je n'ai pas pu me connecter au serveur.",
-    "EXTERNAL_LINK": "Lien externe"
+    "EXTERNAL_LINK": "Lien externe",
+    "INPUT_LABEL": "Posez une question à l’assistant étudiant",
+    "HISTORY_ARIA": "Conversation",
+    "YOU": "Vous :",
+    "ASSISTANT": "Assistant :",
+    "NEW_TAB": "(s’ouvre dans un nouvel onglet)"
   }
 }

@@ -1,13 +1,20 @@
 <div class="position-fixed bottom-0 end-0 m-4 z-3 d-flex flex-column align-items-end">
 
+  <!-- Always in the DOM so screen readers pick up changes: reads "Thinking..." and then each new answer.
+       The visible history isn't a live region, or the greeting would be read out on every page change. -->
+  <div class="visually-hidden" aria-live="polite" [innerHTML]="announcement() | markdown"></div>
+
   @if (isOpen()) {
-  <div class="card shadow mb-3 d-flex flex-column chat-bubble" style="width: 350px; height: 500px;">
+  <section class="card shadow mb-3 d-flex flex-column chat-bubble"
+           id="chat-panel"
+           aria-labelledby="chat-title">
       <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center p-3">
-          <strong>{{ 'CHAT.TITLE' | translate }}</strong>
-          <button type="button" class="btn-close btn-close-white" [attr.aria-label]="'CHAT.CLOSE_ARIA' | translate" (click)="toggleChat()"></button>
+          <h2 class="h6 fw-bold mb-0" id="chat-title">{{ 'CHAT.TITLE' | translate }}</h2>
+          <button type="button" class="btn-close btn-close-white" [attr.aria-label]="'CHAT.CLOSE_ARIA' | translate" (click)="closeChat()"></button>
       </div>
 
-      <div class="card-body flex-grow-1 overflow-auto bg-light p-3" id="chat-history">
+      <div class="card-body flex-grow-1 overflow-auto bg-light p-3" id="chat-history" tabindex="0"
+           [attr.aria-label]="'CHAT.HISTORY_ARIA' | translate">
         @for (msg of messages(); track $index) {
         <div class="mb-2 p-2 rounded-4 small text-break"
             [ngClass]="{
@@ -20,6 +27,7 @@
             'border-bottom-left-radius': !msg.isUser ? '2px' : '15px'
             }">
 
+            <span class="visually-hidden">{{ (msg.isUser ? 'CHAT.YOU' : 'CHAT.ASSISTANT') | translate }}</span>
             <span [innerHTML]="msg.text | markdown"></span>
             @if (msg.sources && msg.sources.length > 0) {
             <div class="mt-2 pt-2 border-top border-secondary-subtle">
@@ -28,8 +36,9 @@
                             @for (src of msg.sources; track src.url) {
                             <a [href]="src.url"
                             target="_blank"
+                            rel="noopener"
                             class="badge rounded-pill text-bg-light border text-decoration-none shadow-sm text-dark">
-                            {{ src.label }}
+                            {{ src.label }}<span class="visually-hidden"> {{ 'CHAT.NEW_TAB' | translate }}</span>
                             </a>
                             }
                         </div>
@@ -46,24 +55,29 @@
       </div>
 
       <div class="card-footer bg-white p-2">
+          <label for="chat-input" class="visually-hidden">{{ 'CHAT.INPUT_LABEL' | translate }}</label>
           <div class="input-group">
+              <!-- Not disabled while loading: disabling the focused input would drop focus to the page -->
               <input type="text"
+                     #chatInput
+                     id="chat-input"
                      class="form-control"
                      [placeholder]="'CHAT.PLACEHOLDER' | translate"
                      [(ngModel)]="userInput"
                      [maxlength]="maxInputLength"
-                     (keyup.enter)="sendMessage()"
-                     [disabled]="isLoading()">
-              <button class="btn btn-primary" (click)="sendMessage()" [disabled]="isLoading()">{{ 'CHAT.SEND' | translate }}</button>
+                     (keyup.enter)="sendMessage()">
+              <button type="button" class="btn btn-primary" (click)="sendMessage()" [attr.aria-disabled]="isLoading()">{{ 'CHAT.SEND' | translate }}</button>
           </div>
       </div>
-  </div>
+  </section>
   }
 
   <button type="button"
+          #toggleButton
           class="btn btn-primary rounded-circle shadow d-flex justify-content-center align-items-center"
           [attr.aria-label]="'CHAT.TOGGLE_ARIA' | translate"
           [attr.aria-expanded]="isOpen()"
+          [attr.aria-controls]="isOpen() ? 'chat-panel' : null"
           (click)="toggleChat()"
           style="width: 60px; height: 60px; font-size: 24px;">
           <span class="material-icons" aria-hidden="true">smart_toy</span>

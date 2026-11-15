@@ -1,0 +1,5 @@
+/* Shrinks to fit narrow or short screens instead of overflowing (WCAG 1.4.10 reflow) */
+.chat-bubble {
+  width: min(350px, calc(100vw - 3rem));
+  height: min(500px, calc(100vh - 8rem));
+}

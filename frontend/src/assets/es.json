@@ -74,6 +74,11 @@
     "THINKING": "Pensando...",
     "READ_MORE": "Más información:",
     "CONNECTION_ERROR": "Lo sentimos, no pudimos conectar con el servidor.",
-    "EXTERNAL_LINK": "Enlace externo"
+    "EXTERNAL_LINK": "Enlace externo",
+    "INPUT_LABEL": "Haz una pregunta al asistente estudiantil",
+    "HISTORY_ARIA": "Conversación",
+    "YOU": "Tú:",
+    "ASSISTANT": "Asistente:",
+    "NEW_TAB": "(se abre en una pestaña nueva)"
   }
 }
