@@ -12,10 +12,10 @@
 @else if (errorMessage()) {
   <div class="container mt-5 pt-5">
     <div class="text-center p-5 bg-danger bg-opacity-10 border border-danger border-opacity-25 rounded text-danger">
-      <span class="material-icons display-4 mb-3">error_outline</span>
+      <span class="material-icons display-4 mb-3" aria-hidden="true">error_outline</span>
       <p class="fs-5">{{ errorMessage() | translate }}</p>
       <div class="mt-4">
-        <a routerLink="/induction" class="text-danger fw-semibold"><span class="material-icons me-2 fs-5">arrow_back</span> {{ 'INDUCTION.RETURN' | translate }}</a>
+        <a routerLink="/induction" class="text-danger fw-semibold"><span class="material-icons me-2 fs-5" aria-hidden="true">arrow_back</span> {{ 'INDUCTION.RETURN' | translate }}</a>
       </div>
     </div>
   </div>
@@ -33,7 +33,7 @@
       
       <div class="col-lg-4">
         <h3 class="fw-bold mb-4 d-flex align-items-center gap-2">
-          <span class="material-icons text-primary">calendar_month</span>
+          <span class="material-icons text-primary" aria-hidden="true">calendar_month</span>
           {{ 'INDUCTION.SUBTITLE1' | translate }}
         </h3>
         
@@ -59,7 +59,7 @@
           
           <div class="bg-primary bg-opacity-10 p-4 border-bottom border-primary border-opacity-25">
             <div class="d-flex align-items-center gap-3 mb-2">
-              <span class="material-icons display-5 text-primary">campaign</span>
+              <span class="material-icons display-5 text-primary" aria-hidden="true">campaign</span>
               <h2 class="fw-bold text-primary mb-0">{{ data.event.title }}</h2>
             </div>
             <p class="lead text-dark mt-3 mb-0">{{ data.event.description }}</p>
@@ -71,7 +71,7 @@
             <ul class="list-unstyled mb-5">
               @for (point of data.event.programmeOutline; track point) {
                 <li class="d-flex align-items-start mb-3">
-                  <span class="material-icons text-success me-3 mt-1 fs-5">check_circle</span>
+                  <span class="material-icons text-success me-3 mt-1 fs-5" aria-hidden="true">check_circle</span>
                   <span class="fs-6 text-secondary">{{ point }}</span>
                 </li>
               }
@@ -79,7 +79,7 @@
 
             <div class="bg-light rounded p-4 mb-5 border">
               <h4 class="fw-bold mb-3 d-flex align-items-center gap-2">
-                <span class="material-icons text-warning">verified_user</span> 
+                <span class="material-icons text-warning" aria-hidden="true">verified_user</span> 
                 {{ 'INDUCTION.SUBTITLE3' | translate }}
               </h4>
               
@@ -95,7 +95,7 @@
               @if (data.event.contactInfo) {
                 <hr class="my-4">
                 <p class="text-secondary mb-0 small">
-                  <span class="material-icons fs-6 align-text-bottom me-1">info</span>
+                  <span class="material-icons fs-6 align-text-bottom me-1" aria-hidden="true">info</span>
                   {{ data.event.contactInfo }}
                 </p>
               }
@@ -105,7 +105,7 @@
               <a [href]="data.event.registration.link" target="_blank" rel="noopener noreferrer" 
                  class="btn btn-primary btn-lg px-5 py-3 fw-bold shadow-sm d-inline-flex align-items-center gap-2 registration-btn">
                 {{ data.event.registration.label }}
-                <span class="material-icons">open_in_new</span>
+                <span class="material-icons" aria-hidden="true">open_in_new</span>
               </a>
             </div>
 

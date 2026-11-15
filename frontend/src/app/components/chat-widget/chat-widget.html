@@ -60,9 +60,12 @@
   </div>
   }
 
-  <button class="btn btn-primary rounded-circle shadow d-flex justify-content-center align-items-center"
-          (click)="toggleChat()" 
+  <button type="button"
+          class="btn btn-primary rounded-circle shadow d-flex justify-content-center align-items-center"
+          [attr.aria-label]="'CHAT.TOGGLE_ARIA' | translate"
+          [attr.aria-expanded]="isOpen()"
+          (click)="toggleChat()"
           style="width: 60px; height: 60px; font-size: 24px;">
-          <span class="material-icons">smart_toy</span>
+          <span class="material-icons" aria-hidden="true">smart_toy</span>
   </button>
 </div>

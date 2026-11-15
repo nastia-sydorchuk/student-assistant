@@ -13,7 +13,7 @@
               <div class="d-flex justify-content-between align-items-start mb-4">
                 
                 <div class="bg-primary-subtle text-primary rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 60px; height: 60px;">
-                  <span class="material-icons fs-2">{{ resource.icon }}</span>
+                  <span class="material-icons fs-2" aria-hidden="true">{{ resource.icon }}</span>
                 </div>
                 
                 <span class="badge {{ resource.badgeClass }} rounded-pill px-3 py-2 shadow-sm fw-semibold mt-1">
@@ -27,7 +27,7 @@
               
               <a [href]="resource.url" target="_blank" rel="noopener noreferrer" class="text-decoration-none fw-bold text-primary action-link d-inline-flex align-items-center">
                 {{ resource.actionText }}
-                <span class="material-icons ms-1 fs-6 transition-transform">arrow_forward</span>
+                <span class="material-icons ms-1 fs-6 transition-transform" aria-hidden="true">arrow_forward</span>
               </a>
             </div>
           </div>

@@ -68,6 +68,7 @@
   "CHAT": {
     "TITLE": "HW Student Assistant",
     "CLOSE_ARIA": "Close chat",
+    "TOGGLE_ARIA": "Student assistant chat",
     "PLACEHOLDER": "Type a question...",
     "SEND": "Send",
     "THINKING": "Thinking...",

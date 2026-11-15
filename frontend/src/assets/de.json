@@ -68,6 +68,7 @@
   "CHAT": {
     "TITLE": "HW Studentische Hilfskraft",
     "CLOSE_ARIA": "Chat schließen",
+    "TOGGLE_ARIA": "Chat mit dem Studierendenassistenten",
     "PLACEHOLDER": "Geben Sie eine Frage ein...",
     "SEND": "Schicken",
     "THINKING": "Denken...",

@@ -68,6 +68,7 @@
   "CHAT": {
     "TITLE": "Assistant étudiant HW",
     "CLOSE_ARIA": "Fermer la conversation",
+    "TOGGLE_ARIA": "Conversation avec l’assistant étudiant",
     "PLACEHOLDER": "Saisissez une question...",
     "SEND": "Envoyer",
     "THINKING": "Pensée...",

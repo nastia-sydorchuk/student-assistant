@@ -17,12 +17,11 @@
       <div class="col-md-6 col-lg-4">
         <a class="card h-100 shadow-sm border-0 text-center p-4 hover-lift text-decoration-none text-reset"
            [routerLink]="card.route"
-           [attr.aria-label]="card.title"
            style="cursor: pointer;">
 
           <div class="d-flex justify-content-center mb-4">
             <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
-              <span class="material-icons display-4">{{ card.icon }}</span>
+              <span class="material-icons display-4" aria-hidden="true">{{ card.icon }}</span>
             </div>
           </div>
 

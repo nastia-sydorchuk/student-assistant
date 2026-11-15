@@ -4,7 +4,11 @@
   
   /* 2. The RGB version (REQUIRED for Bootstrap's opacity classes to work!) */
   /* #004b87 converts to RGB: 0, 75, 135 */
-  --bs-primary-rgb: 0, 75, 135; 
+  --bs-primary-rgb: 0, 75, 135;
+
+  /* Bootstrap's default secondary (#6c757d) misses WCAG AA contrast on bg-light and on the
+     chat bubbles; gray-700 (#495057) passes on both */
+  --bs-secondary-rgb: 73, 80, 87;
 }
 
 /* Solid Primary Button States */

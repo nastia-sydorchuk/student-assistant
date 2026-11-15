@@ -5,7 +5,7 @@
 
   <main class="container mb-5">
     <div class="alert alert-info border-info border-opacity-25 shadow-sm d-flex gap-3 align-items-center p-3 mb-5 rounded-4">
-      <span class="material-icons text-info fs-3">info</span>
+      <span class="material-icons text-info fs-3" aria-hidden="true">info</span>
       <p class="mb-0 text-dark">
           <strong>{{ 'WELLBEING.SUBTITLE' | translate }}</strong> {{ 'WELLBEING.SUBSUBTITLE' | translate }}
       </p>
@@ -21,7 +21,7 @@
               
               <div class="d-flex align-items-center gap-3 mb-4">
                 <div class="bg-primary-subtle text-primary rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 60px; height: 60px;">
-                  <span class="material-icons fs-2">{{ resource.icon }}</span>
+                  <span class="material-icons fs-2" aria-hidden="true">{{ resource.icon }}</span>
                 </div>
                 <h3 class="h5 fw-bold text-dark mb-0 lh-sm">{{ resource.title }}</h3>
               </div>
@@ -30,7 +30,7 @@
               
               <a [href]="resource.url" target="_blank" rel="noopener noreferrer" class="text-decoration-none fw-bold text-primary action-link d-inline-flex align-items-center border-top pt-3">
                 {{ resource.actionText }}
-                <span class="material-icons ms-1 fs-6 transition-transform">arrow_forward</span>
+                <span class="material-icons ms-1 fs-6 transition-transform" aria-hidden="true">arrow_forward</span>
               </a>
               
             </div>

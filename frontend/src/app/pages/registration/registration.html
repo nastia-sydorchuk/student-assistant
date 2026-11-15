@@ -41,7 +41,7 @@
     </div>
   
     <div class="alert border border-secondary border-opacity-25 shadow-sm d-flex gap-3 align-items-center p-4 mb-4 rounded-4 bg-light">
-      <span class="material-icons text-primary display-6 flex-shrink-0">support_agent</span>
+      <span class="material-icons text-primary display-6 flex-shrink-0" aria-hidden="true">support_agent</span>
       <div>
         <h4 class="alert-heading fw-bold mb-1 text-dark">{{ 'REGISTRATION.PART2SUBTITLE' | translate }}</h4>
         <p class="mb-0 text-secondary">
@@ -58,7 +58,7 @@
               
               <div class="d-flex justify-content-between align-items-start mb-4">
                 <div class="bg-primary-subtle text-primary rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 60px; height: 60px;">
-                  <span class="material-icons fs-2">{{ item.icon }}</span>
+                  <span class="material-icons fs-2" aria-hidden="true">{{ item.icon }}</span>
                 </div>
                 <span class="badge {{ item.badgeClass }} rounded-pill px-3 py-2 shadow-sm fw-semibold mt-1">
                   {{ item.label }}
@@ -70,7 +70,7 @@
               
               <a [href]="item.url" target="_blank" rel="noopener noreferrer" class="text-decoration-none fw-bold text-primary action-link d-inline-flex align-items-center">
                 {{ item.actionText }}
-                <span class="material-icons ms-1 fs-6 transition-transform">arrow_forward</span>
+                <span class="material-icons ms-1 fs-6 transition-transform" aria-hidden="true">arrow_forward</span>
               </a>
               
             </div>

@@ -16,18 +16,18 @@
           <div class="card h-100 shadow-sm border-0 hover-lift overflow-hidden">
             <div class="row g-0 h-100">
               <div class="col-auto bg-primary text-white d-flex align-items-center justify-content-center p-4" style="width: 100px;">
-                <span class="material-icons display-5">{{ facility.icon }}</span>
+                <span class="material-icons display-5" aria-hidden="true">{{ facility.icon }}</span>
               </div>
               <div class="col p-4 d-flex flex-column">
                 <h3 class="h5 fw-bold text-dark mb-2">{{ facility.title }}</h3>
                 <a href="#" (click)="highlightOnMap(facility.location, $event)" 
                    class="badge bg-primary-subtle text-primary rounded-pill mb-3 align-self-start d-flex align-items-center gap-1 px-3 py-2 text-decoration-none hover-lift"
                    title="Click to view on map above">
-                  <span class="material-icons fs-6">place</span> {{ facility.location }}
+                  <span class="material-icons fs-6" aria-hidden="true">place</span> {{ facility.location }}
                 </a>
                 <p class="text-secondary mb-3 flex-grow-1">{{ facility.description }}</p>
                 <a [href]="facility.url" target="_blank" rel="noopener noreferrer" class="text-decoration-none fw-bold text-primary action-link d-inline-flex align-items-center">
-                  {{ facility.actionText }} <span class="material-icons ms-1 fs-6 transition-transform">arrow_forward</span>
+                  {{ facility.actionText }} <span class="material-icons ms-1 fs-6 transition-transform" aria-hidden="true">arrow_forward</span>
                 </a>
               </div>
             </div>

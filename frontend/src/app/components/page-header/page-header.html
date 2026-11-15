@@ -1,7 +1,7 @@
 <div class="bg-primary text-white p-4 p-md-5 mb-5 shadow-sm">
   <div class="container">
-    <a [routerLink]="backLink()" class="text-white-50 text-decoration-none d-inline-flex align-items-center mb-4 fw-semibold back-link">
-      <span class="material-icons me-2 fs-5">arrow_back</span> {{ backLabel() | translate }}
+    <a [routerLink]="backLink()" class="text-white text-opacity-75 text-decoration-none d-inline-flex align-items-center mb-4 fw-semibold back-link">
+      <span class="material-icons me-2 fs-5" aria-hidden="true">arrow_back</span> {{ backLabel() | translate }}
     </a>
     <ng-content />
     <h1 class="display-5 fw-bold" [class.mb-2]="description()" [class.mb-0]="!description()">{{ title() }}</h1>

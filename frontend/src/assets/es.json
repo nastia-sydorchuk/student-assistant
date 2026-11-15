@@ -68,6 +68,7 @@
   "CHAT": {
     "TITLE": "Asistente Estudiantil HW",
     "CLOSE_ARIA": "Cerrar chat",
+    "TOGGLE_ARIA": "Chat del asistente estudiantil",
     "PLACEHOLDER": "Escribe una pregunta...",
     "SEND": "Enviar",
     "THINKING": "Pensando...",
