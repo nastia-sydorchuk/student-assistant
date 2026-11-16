@@ -1,8 +1,9 @@
-import { Component, ElementRef, ViewChild, PLATFORM_ID, SimpleChanges, Input, OnChanges, OnInit, inject, signal } from '@angular/core';
+import { Component, DestroyRef, ElementRef, Injector, ViewChild, PLATFORM_ID, SimpleChanges, Input, OnChanges, OnInit, afterNextRender, inject, signal, viewChild } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { GoogleMapsModule, GoogleMap, MapDirectionsRenderer, MapDirectionsService } from '@angular/google-maps';
 import { isPlatformBrowser, CommonModule } from '@angular/common';
 import { environment } from '../../../environments/environment';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { LoggerService } from '../../services/logger.service';
 
 declare global {
@@ -21,12 +22,16 @@ export class Map implements OnInit, OnChanges {
   @ViewChild('searchContainer') searchContainer!: ElementRef;
   @ViewChild('originContainer') originContainer?: ElementRef;
   @ViewChild(GoogleMap) mapComponent!: GoogleMap;
+  private navigationButton = viewChild<ElementRef<HTMLButtonElement>>('navigationButton');
 
   @Input() targetLocation: string | null = null;
 
   private platformId = inject(PLATFORM_ID);
   private directionsService = inject(MapDirectionsService);
   private logger = inject(LoggerService);
+  private translate = inject(TranslateService);
+  private injector = inject(Injector);
+  private destroyRef = inject(DestroyRef);
 
   apiLoaded = signal(false);
   center = signal<google.maps.LatLngLiteral>({ lat: 55.9097, lng: -3.3203 }); // HW
@@ -36,7 +41,10 @@ export class Map implements OnInit, OnChanges {
   activeMarker: google.maps.marker.AdvancedMarkerElement | null = null;
 
   directionsResults = signal<google.maps.DirectionsResult | undefined>(undefined);
+  // A translation key, translated in the template
   routeError = signal('');
+  // Distance and walking time of the current route, for the screen reader announcement
+  routeSummary = signal<{ distance: string; duration: string } | null>(null);
   originAutocompleteElement: google.maps.places.PlaceAutocompleteElement | null = null;
   showNavigation = signal(false);
   currentDestinationCoords = signal<google.maps.LatLngLiteral | null>(null);
@@ -52,6 +60,10 @@ export class Map implements OnInit, OnChanges {
   };
 
   async ngOnInit(): Promise<void> {
+    this.translate.onLangChange
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.updateFieldLabels());
+
     if (isPlatformBrowser(this.platformId)) {
       try {
         await this.loadGoogleMapsApi();
@@ -145,6 +157,7 @@ export class Map implements OnInit, OnChanges {
     this.autocompleteElement = autocompleteElement;
 
     this.searchContainer.nativeElement.appendChild(autocompleteElement);
+    this.updateFieldLabels();
 
     autocompleteElement.addEventListener('gmp-select', async (event) => {
       const place = event.placePrediction.toPlace();
@@ -188,20 +201,25 @@ export class Map implements OnInit, OnChanges {
     };
 
     this.routeError.set('');
+    this.routeSummary.set(null);
 
     this.directionsService.route(request).subscribe({
       next: (response) => {
         if (response.result) {
           this.logger.log("Route calculated successfully!");
           this.directionsResults.set(response.result);
+          const leg = response.result.routes[0]?.legs[0];
+          if (leg?.distance && leg.duration) {
+            this.routeSummary.set({ distance: leg.distance.text, duration: leg.duration.text });
+          }
         } else {
           this.logger.warn("Google returned an empty route.");
-          this.routeError.set('Could not calculate a walking route. Please try a different location.');
+          this.routeError.set('MAP.ROUTE_ERROR');
         }
       },
       error: (err) => {
         this.logger.error("Directions API failed:", err);
-        this.routeError.set('Could not calculate a walking route. Please try a different location.');
+        this.routeError.set('MAP.ROUTE_ERROR');
       }
     });
   }
@@ -210,13 +228,16 @@ export class Map implements OnInit, OnChanges {
     if (!this.currentDestinationCoords()) return;
 
     this.showNavigation.set(true);
+    this.updateFieldLabels();
 
     setTimeout(async () => {
       await this.initOriginAutocomplete();
+      // The Start Navigation button that had focus is gone, so move on to the new starting point field
+      this.originAutocompleteElement?.focus();
       const liveLocation = await this.getUserLocation();
 
       if (this.originAutocompleteElement) {
-        this.originAutocompleteElement.value = "Your Current Location";
+        this.originAutocompleteElement.value = this.translate.instant('MAP.CURRENT_LOCATION');
       }
 
       this.calculateRoute(liveLocation, this.currentDestinationCoords()!);
@@ -227,7 +248,11 @@ export class Map implements OnInit, OnChanges {
     this.showNavigation.set(false);
     this.directionsResults.set(undefined);
     this.routeError.set('');
+    this.routeSummary.set(null);
     this.originAutocompleteElement = null;
+    this.updateFieldLabels();
+    // The Cancel button that had focus is gone; Start Navigation comes back in its place
+    afterNextRender(() => this.navigationButton()?.nativeElement.focus(), { injector: this.injector });
 
     const destination = this.currentDestinationCoords();
     if (destination && this.mapComponent) {
@@ -251,6 +276,7 @@ export class Map implements OnInit, OnChanges {
     });
     this.originAutocompleteElement = originAutocompleteElement;
     this.originContainer.nativeElement.appendChild(originAutocompleteElement);
+    this.updateFieldLabels();
 
     originAutocompleteElement.addEventListener('gmp-select', async (event) => {
       const place = event.placePrediction.toPlace();
@@ -262,6 +288,14 @@ export class Map implements OnInit, OnChanges {
         this.calculateRoute(customOrigin, destination);
       }
     });
+  }
+
+  // Google's fields render in a closed shadow DOM, so a <label> can't point at them;
+  // an aria-label on the element itself becomes the combobox's accessible name
+  private updateFieldLabels() {
+    const searchKey = this.showNavigation() ? 'MAP.DESTINATION_LABEL' : 'MAP.SEARCH_ARIA';
+    this.autocompleteElement?.setAttribute('aria-label', this.translate.instant(searchKey));
+    this.originAutocompleteElement?.setAttribute('aria-label', this.translate.instant('MAP.STARTING_LABEL'));
   }
 
   getUserLocation(): Promise<google.maps.LatLngLiteral> {

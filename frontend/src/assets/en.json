@@ -50,7 +50,11 @@
     "SEARCH_LABEL": "Search",
     "NAVIGATION_BUTTON": "Start Navigation",
     "CANCEL_BUTTON": "Cancel Route",
-    "LOADING": "Loading Map..."
+    "LOADING": "Loading Map...",
+    "SEARCH_ARIA": "Search campus buildings",
+    "ROUTE_FOUND": "Walking route shown on the map: {{distance}}, about {{duration}}.",
+    "ROUTE_ERROR": "Could not calculate a walking route. Please try a different location.",
+    "CURRENT_LOCATION": "Your Current Location"
   },
   "GREETINGS": {
     "HOME": "Welcome back to your Student Portal! Can I help you find any specific resources today?",

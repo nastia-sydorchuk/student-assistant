@@ -50,7 +50,11 @@
     "SEARCH_LABEL": "Recherche",
     "NAVIGATION_BUTTON": "Démarrer la navigation",
     "CANCEL_BUTTON": "Annuler l'itinéraire",
-    "LOADING": "Chargement de la carte..."
+    "LOADING": "Chargement de la carte...",
+    "SEARCH_ARIA": "Recherche de bâtiments du campus",
+    "ROUTE_FOUND": "Itinéraire à pied affiché sur la carte : {{distance}}, environ {{duration}}.",
+    "ROUTE_ERROR": "Impossible de calculer un itinéraire à pied. Veuillez essayer un autre lieu.",
+    "CURRENT_LOCATION": "Votre position actuelle"
   },
   "GREETINGS": {
     "HOME": "Bienvenue sur votre portail étudiant ! Puis-je vous aider à trouver des ressources spécifiques aujourd'hui ?",

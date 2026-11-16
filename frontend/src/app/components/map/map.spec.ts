@@ -47,15 +47,24 @@ describe('Map', () => {
     expect(component.routeError()).toBe('');
   });
 
+  it('summarises the route for screen readers', () => {
+    const mockResult = {
+      routes: [{ legs: [{ distance: { text: '0.4 km' }, duration: { text: '6 mins' } }] }],
+    } as unknown as google.maps.DirectionsResult;
+    directionsService.route.mockReturnValue(of({ result: mockResult }));
+
+    component.calculateRoute({ lat: 1, lng: 1 }, { lat: 2, lng: 2 });
+
+    expect(component.routeSummary()).toEqual({ distance: '0.4 km', duration: '6 mins' });
+  });
+
   it('surfaces a route error message when the request errors', () => {
     directionsService.route.mockReturnValue(throwError(() => new Error('routing failed')));
 
     component.calculateRoute({ lat: 1, lng: 1 }, { lat: 2, lng: 2 });
 
     expect(component.directionsResults()).toBeUndefined();
-    expect(component.routeError()).toBe(
-      'Could not calculate a walking route. Please try a different location.',
-    );
+    expect(component.routeError()).toBe('MAP.ROUTE_ERROR');
   });
 
   it('surfaces a route error message when the response has no result', () => {
@@ -63,9 +72,7 @@ describe('Map', () => {
 
     component.calculateRoute({ lat: 1, lng: 1 }, { lat: 2, lng: 2 });
 
-    expect(component.routeError()).toBe(
-      'Could not calculate a walking route. Please try a different location.',
-    );
+    expect(component.routeError()).toBe('MAP.ROUTE_ERROR');
   });
 
   it('resolves the fallback origin when geolocation is unavailable', async () => {
@@ -100,7 +107,7 @@ describe('Map', () => {
   it('resets navigation state on cancel', () => {
     component.showNavigation.set(true);
     component.directionsResults.set({ routes: [] } as unknown as google.maps.DirectionsResult);
-    component.routeError.set('Could not calculate a walking route. Please try a different location.');
+    component.routeError.set('MAP.ROUTE_ERROR');
     component.originAutocompleteElement = {} as unknown as typeof component.originAutocompleteElement;
 
     component.cancelNavigation();

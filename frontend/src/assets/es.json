@@ -50,7 +50,11 @@
     "SEARCH_LABEL": "Buscar",
     "NAVIGATION_BUTTON": "Iniciar navegación",
     "CANCEL_BUTTON": "Cancelar ruta",
-    "LOADING": "Cargando mapa..."
+    "LOADING": "Cargando mapa...",
+    "SEARCH_ARIA": "Buscar edificios del campus",
+    "ROUTE_FOUND": "Ruta a pie mostrada en el mapa: {{distance}}, unos {{duration}}.",
+    "ROUTE_ERROR": "No se pudo calcular una ruta a pie. Prueba con otra ubicación.",
+    "CURRENT_LOCATION": "Tu ubicación actual"
   },
   "GREETINGS": {
     "HOME": "¡Bienvenido/a de nuevo a tu Portal de Estudiantes! ¿Puedo ayudarte a encontrar algún recurso en particular hoy?",

@@ -50,7 +50,11 @@
     "SEARCH_LABEL": "Suchen",
     "NAVIGATION_BUTTON": "Navigation starten",
     "CANCEL_BUTTON": "Route abbrechen",
-    "LOADING": "Karte wird geladen..."
+    "LOADING": "Karte wird geladen...",
+    "SEARCH_ARIA": "Suche nach Gebäuden auf dem Campus",
+    "ROUTE_FOUND": "Fußweg auf der Karte angezeigt: {{distance}}, etwa {{duration}}.",
+    "ROUTE_ERROR": "Es konnte keine Fußroute berechnet werden. Bitte versuchen Sie einen anderen Ort.",
+    "CURRENT_LOCATION": "Ihr aktueller Standort"
   },
   "GREETINGS": {
     "HOME": "Willkommen zurück im Studentenportal! Kann ich Ihnen heute bei der Suche nach bestimmten Ressourcen behilflich sein?",

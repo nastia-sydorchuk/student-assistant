@@ -2,30 +2,37 @@
   <div class="position-absolute top-0 start-0 m-3 p-3 bg-white rounded shadow" style="width: 320px; max-width: calc(100vw - 2rem); z-index: 10;">
       @if (showNavigation()) {
         <div class="mb-3">
-          <span class="form-label small text-muted mb-1 fw-bold d-block">{{ 'MAP.STARTING_LABEL' | translate }}</span>
+          <span class="form-label small text-muted mb-1 fw-bold d-block" aria-hidden="true">{{ 'MAP.STARTING_LABEL' | translate }}</span>
           <div #originContainer></div></div>
       }
       <div>
-        <span class="form-label small text-muted mb-1 fw-bold d-block">
+        <span class="form-label small text-muted mb-1 fw-bold d-block" aria-hidden="true">
           {{ (showNavigation() ? 'MAP.DESTINATION_LABEL' : 'MAP.SEARCH_LABEL') | translate }}
         </span>
         <div #searchContainer></div>
       </div>
 
       @if (currentDestinationCoords() && !showNavigation()) {
-        <button class="btn btn-primary w-100 mt-3 shadow-sm fw-bold" (click)="startNavigation()">
+        <button type="button" #navigationButton class="btn btn-primary w-100 mt-3 shadow-sm fw-bold" (click)="startNavigation()">
           {{ 'MAP.NAVIGATION_BUTTON' | translate }}
         </button>
       }
 
       @if (showNavigation()) {
-        <button class="btn btn-light border w-100 mt-3 btn-sm text-danger" (click)="cancelNavigation()">
+        <button type="button" class="btn btn-light border w-100 mt-3 btn-sm text-danger" (click)="cancelNavigation()">
           {{ 'MAP.CANCEL_BUTTON' | translate }}
         </button>
       }
 
+      <!-- The route is only drawn on the map, so describing it in words for screen readers -->
+      <div class="visually-hidden" aria-live="polite">
+        @if (routeSummary(); as summary) {
+          {{ 'MAP.ROUTE_FOUND' | translate: summary }}
+        }
+      </div>
+
       @if (routeError()) {
-        <div class="alert alert-danger py-2 px-3 mt-3 mb-0 small">{{ routeError() }}</div>
+        <div class="alert alert-danger py-2 px-3 mt-3 mb-0 small" role="alert">{{ routeError() | translate }}</div>
       }
     </div>
 
@@ -43,8 +50,8 @@
         }
       </google-map>
     } @else {
-      <div class="d-flex flex-column align-items-center justify-content-center bg-light w-100" style="height: 500px;">
-        <div class="spinner-border text-primary" role="status"></div>
+      <div class="d-flex flex-column align-items-center justify-content-center bg-light w-100" style="height: 500px;" role="status">
+        <div class="spinner-border text-primary" aria-hidden="true"></div>
         <span class="mt-2 text-muted fw-semibold">{{ 'MAP.LOADING' | translate }}</span>
       </div>
     }
